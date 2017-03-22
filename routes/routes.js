@@ -11,7 +11,6 @@ var config = require('../config');
 
 // controllers
 var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
-    dictnumberCtrl = require('../controllers/dictNumber_controller'),
     userCtrl = require('../controllers/user_controller');
 
 module.exports = function(app,webEntry) {
@@ -27,7 +26,6 @@ module.exports = function(app,webEntry) {
   });
 
   app.get('/dict/typeTwo', dictTypeTwoCtrl.insertCategory);
-  app.get('/dict/number', dictnumberCtrl.getOne);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   //app.get('/find',function(req, res){
