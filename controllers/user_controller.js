@@ -16,7 +16,7 @@ exports.getUserList = function(req, res) {
 
 exports.insertUser = function(req, res) {
 	var userData = {
-		userId: "testInsert",						
+		userId: "whoareyou",						
 		userName: "chi",					
 		openId: "qwe",						
 		phoneNo: "135",					
@@ -25,6 +25,11 @@ exports.insertUser = function(req, res) {
 		role:["pt"],
 		loginStatus:1,
 		lastLogin:new Date(),
+		jpush:{
+			registrationID:"reg",
+			alias:"String",
+			tags:["String"]
+		},
 		revisionInfo:{
 			operationTime:new Date(),
 			userId:"a123",

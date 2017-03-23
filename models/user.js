@@ -8,9 +8,14 @@ var userSchema = new mongoose.Schema({
 	phoneNo: String,					
 	password:String,
 	photoUrl:String,
-	role:[],
+	role:[String],
 	loginStatus:Number,
 	lastLogin:Date,
+	jpush:{
+		registrationID:String,
+		alias:String,
+		tags:[String]
+	},
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,
