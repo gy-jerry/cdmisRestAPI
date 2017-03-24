@@ -28,6 +28,8 @@ module.exports = function(app,webEntry) {
   app.get('/dict/typeTwo', dictTypeTwoCtrl.insertCategory);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
+  app.get('/user/one', userCtrl.getUser);
+
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);
   //  var query = url_parts.query;

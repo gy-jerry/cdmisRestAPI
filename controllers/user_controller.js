@@ -2,6 +2,19 @@ var	config = require('../config'),
 		User = require('../models/user');
 
 
+exports.getUser = function(req, res) {
+	var _userId = req.query.userId
+	var query = {userId:_userId};
+
+	User.getOne(query, function(err, item) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	res.json({results: item});
+	});
+}
+
+
 exports.getUserList = function(req, res) {
 	var query = {};
 
@@ -13,6 +26,7 @@ exports.getUserList = function(req, res) {
     res.json({results: userlist});
 	});
 }
+
 
 exports.insertUser = function(req, res) {
 	var userData = {
