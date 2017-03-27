@@ -25,7 +25,7 @@ module.exports = function(app,webEntry) {
     res.send("Server Root");
   });
 
-  app.get('/dict/typeTwo', dictTypeTwoCtrl.insertCategory);
+  app.get('/dict/typeTwo', dictTypeTwoCtrl.getCategory);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   app.get('/user/one', userCtrl.getUser);

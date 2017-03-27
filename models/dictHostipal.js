@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var dictHospitalSchema = new mongoose.Schema({
 	hospitalCode: String,
 	hospitalName:String,
+	alias:String,
 	inputCode:String,
 	location:{
 		province:String,

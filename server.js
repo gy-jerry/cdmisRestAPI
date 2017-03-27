@@ -28,7 +28,7 @@ if (typeof(db.db) === 'undefined') {
 }
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-  console.log(domainName + ' MongoDB: init.js');
+  console.log(domainName + ' MongoDB connected!');
 });
 
 // node服务
