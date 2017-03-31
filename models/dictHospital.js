@@ -2,16 +2,11 @@
 var mongoose = require('mongoose');
 
 var dictHospitalSchema = new mongoose.Schema({
+	locationCode:String,
 	hospitalCode: String,
 	hospitalName:String,
 	alias:String,
-	inputCode:String,
-	location:{
-		province:String,
-		city:String,
-		district:String
-	}
-
+	inputCode:String
 });
 
 
