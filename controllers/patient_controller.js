@@ -48,6 +48,7 @@ exports.getDoctorLists = function(req, res) {
 }
 
 //通过patient表中userId返回PatientObject 2017-03-30 GY 
+//修改：增加判断不存在ID情况 2017-04-05 GY
 exports.getPatientObject = function (req, res, next) {
     var query = { 
         userId: req.query.userId
@@ -57,26 +58,30 @@ exports.getPatientObject = function (req, res, next) {
             console.log(err);
             return res.status(500).send('服务器错误, 用户查询失败!');
         }
+        if (patient == null) {
+        	return res.status(404).send('不存在的患者ID！');
+        }
         req.body.patientObject = patient;
         next();
     });
 };
 
 //获取患者的所有医生 2017-03-30 GY
+//2017-04-05 GY 修改：按照要求更换查询表
 exports.getMyDoctor = function(req, res) {
 	//查询条件
-	var patientObject = req.body.patientObject;
-	//var _doctorId = req.query.doctorId;
-	var query = {'patients.patientId':patientObject._id};
+	//var patientObject = req.body.patientObject;
+	var _patientId = req.query.userId;
+	var query = {userId:_patientId};
 
 	
 	var opts = '';
-	var fields = {'_id':0, 'doctors':0, 'revisionInfo':0, 'patients':0};
+	var fields = {'_id':0, 'doctors':1};
 	//通过子表查询主表，定义主表查询路径及输出内容
 	
-	var populate = {path: 'doctorId', select: {'_id':0, 'IDNo':0, 'revisionInfo':0, 'teams':0}};
+	var populate = {path: 'doctors.doctorId', select: {'_id':0, 'IDNo':0, 'revisionInfo':0, 'teams':0}};
 
-	DpRelation.getSome(query, function(err, item) {
+	Patient.getOne(query, function(err, item) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
@@ -94,7 +99,7 @@ exports.getCounselRecords = function(req, res) {
 	var opts = '';
 	var fields = {'_id':0, 'doctorId':1, 'time':1, 'messages':1};
 	//通过子表查询主表，定义主表查询路径及输出内容	
-	var populate = {path: 'doctorId', select: {'_id':0, 'userId':1, 'name':1}};
+	var populate = {path: 'doctorId', select: {'_id':0, 'userId':1, 'name':1, 'photoUrl':1}};
 
 	Counsel.getSome(query, function(err, item) {
 		if (err) {

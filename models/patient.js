@@ -22,7 +22,7 @@ var patientSchema = new mongoose.Schema({
 	hypertension: Number, 
 	doctors: [
 	  {
-	  	doctorId: String, 
+	  	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	  	firstTime: Date, 
 	  	invalidFlag: Number
 	  }
