@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var doctorSchema = new mongoose.Schema({
 	userId: String, 
 	name: String, 
+	photoUrl:String, 
 	birthday: Date, 
 	gender: Number, 
 	IDNo: String, 

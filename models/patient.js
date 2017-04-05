@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var patientSchema = new mongoose.Schema({					
 	userId: String, 
 	name: String, 
+	photoUrl: String, 
 	birthday: Date, 
 	gender: Number, 
 	IDNo: String, 
@@ -29,7 +30,7 @@ var patientSchema = new mongoose.Schema({
 	  {
 	  	name: String, 
 	  	time: Date, 
-	  	doctor: String
+	  	doctor: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}
 	  }
 	], 
 	revisionInfo:{
