@@ -14,7 +14,8 @@ var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
     dictTypeOneCtrl = require('../controllers/dictTypeOne_controller'),
     dictDistrictCtrl = require('../controllers/dictDistrict_controller'),
     dictHospitalCtrl = require('../controllers/dictHospital_controller'),
-    taskCtrl = require('../controllers/task_controller');
+    taskCtrl = require('../controllers/task_controller'),
+    complianceCtrl = require('../controllers/compliance_controller');
 
 // controllers updated by GY 
 var doctorCtrl = require('../controllers/doctor_controller'), 
@@ -37,6 +38,7 @@ module.exports = function(app,webEntry) {
     res.send("Server Root");
   });
 
+  // csq 
   app.get('/dict/typeTwo/category', dictTypeTwoCtrl.getCategory);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
@@ -47,8 +49,8 @@ module.exports = function(app,webEntry) {
   app.get('/tasks', taskCtrl.getTasks);
   app.get('/tasks/status', taskCtrl.updateStatus);
   app.get('/tasks/time', taskCtrl.updateStartTime);
-
-
+  app.post('/compliance', complianceCtrl.insertOne);
+  app.get('/compliance', complianceCtrl.getComplianceByDay);
 
   //routes updated by GY
   //doctor_Info
