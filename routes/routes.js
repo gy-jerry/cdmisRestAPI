@@ -14,7 +14,8 @@ var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
     userCtrl = require('../controllers/user_controller'),
     dictTypeOneCtrl = require('../controllers/dictTypeOne_controller'),
     dictDistrictCtrl = require('../controllers/dictDistrict_controller'),
-    dictHospital = require('../controllers/dictHospital_controller');
+    dictHospitalCtrl = require('../controllers/dictHospital_controller'),
+    taskCtrl = require('../controllers/task_controller');
 
 module.exports = function(app,webEntry) {
   
@@ -34,7 +35,12 @@ module.exports = function(app,webEntry) {
   app.get('/user/one', userCtrl.getUser);
   app.get('/dict/typeOne/category', dictTypeOneCtrl.getCategory);
   app.get('/dict/district', dictDistrictCtrl.getDistrict);
-  app.get('/dict/hospital', dictHospital.getHospital);
+  app.get('/dict/hospital', dictHospitalCtrl.getHospital);
+  app.get('/tasks', taskCtrl.getTasks);
+  app.get('/tasks/status', taskCtrl.updateStatus);
+  app.get('/tasks/time', taskCtrl.updateStartTime);
+
+  
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);
   //  var query = url_parts.query;

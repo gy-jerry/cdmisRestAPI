@@ -16,7 +16,7 @@ exports.getHospital = function(req, res) {
 	{
 		query["hostipalCode"] = hostipalCode
 	}
-	console.log(query);
+	// console.log(query);
 	
 	DictHospital.getSome(query, function(err, items) {
 		if (err) {
