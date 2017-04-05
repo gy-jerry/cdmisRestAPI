@@ -2,10 +2,10 @@ var mongoose = require('mongoose');
 
 var consultationSchema = new mongoose.Schema({
 	consultationId: String,						
-	sponsorId: String, 
-	patientId: String, 
+	sponsorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
+	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	time: Date, 
-	diseaseInfo: String, 
+	diseaseInfo: {type: mongoose.Schema.Types.ObjectId, ref:'counsel'}, 
 	messages: [
 	  {
 	  	sender: String, 
@@ -15,7 +15,7 @@ var consultationSchema = new mongoose.Schema({
 	  }
 	], 
 	conclusion: String, 
-	teamId: String, 
+	teamId: {type: mongoose.Schema.Types.ObjectId, ref:'team'}, 
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,

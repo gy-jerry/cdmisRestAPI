@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 
 var commentSchema = new mongoose.Schema({
 	commentId: String,						
-	doctorId: String, 
-	patientId: String, 
+	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
+	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	type: Number, 
 	time: Date, 
 	helpScore: Number, 
