@@ -1,3 +1,4 @@
+
 var mongoose = require('mongoose');
 
 var dpRelationSchema = new mongoose.Schema({					
@@ -90,3 +91,4 @@ DpRelation.updateOne = function(query, obj, callback, opts, populate) {
 
 
 module.exports = DpRelation;
+

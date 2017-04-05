@@ -1,3 +1,4 @@
+
 var mongoose = require('mongoose');
 
 var patientSchema = new mongoose.Schema({					
@@ -110,3 +111,4 @@ Patient.updateOne = function(query, obj, callback, opts, populate) {
 
 
 module.exports = Patient;
+

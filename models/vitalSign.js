@@ -1,3 +1,4 @@
+
 var mongoose = require('mongoose');
 
 var vitalSignSchema = new mongoose.Schema({
@@ -89,3 +90,4 @@ VitalSign.updateOne = function(query, obj, callback, opts, populate) {
 
 
 module.exports = VitalSign;
+

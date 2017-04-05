@@ -1,4 +1,5 @@
 
+
 var mongoose = require('mongoose');
 
 var messageSchema = new mongoose.Schema({
@@ -81,8 +82,6 @@ Message.updateOne = function(query, obj, callback, opts, populate) {
 			callback(null, upmessage);
 		});
 };
-
-
 
 
 module.exports = Message;
