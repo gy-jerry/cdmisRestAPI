@@ -23,7 +23,8 @@ exports.insertDocBasic = function(req, res) {
 	var doctorData = {
 		userId: req.body.userId, 							//doctest01
 		name: req.body.name, 								//新01
-		birthday: new Date(), 						//1956-01-01
+		//注意时区问题
+		birthday: new Date(req.body.birthday), 				//1956/01/01
 		gender: req.body.gender, 							//1
 		IDNo: req.body.IDNo, 								
 		workUnit: req.body.workUnit, 						//浙江省人民医院
@@ -73,6 +74,7 @@ exports.getTeams = function(req, res) {
 }
 
 //通过doctor表中userId查询_id 2017-03-30 GY 
+//修改：增加判断不存在ID情况 2017-04-05 GY
 exports.getDoctorObject = function (req, res, next) {
     var query = { 
         userId: req.query.userId
@@ -81,6 +83,9 @@ exports.getDoctorObject = function (req, res, next) {
         if (err) {
             console.log(err);
             return res.status(500).send('服务器错误, 用户查询失败!');
+        }
+        if (doctor == null) {
+        	return res.status(404).send('不存在的医生ID！');
         }
         req.body.doctorObject = doctor;
         next();
@@ -143,7 +148,7 @@ exports.getGroupPatientList = function(req, res) {
 		path: 'diseaseInfo patientId', 
 		select: {
 			'_id':0, 
-			'name':1, 'gender':1, 'birthday':1, 
+			'name':1, 'gender':1, 'birthday':1, 'photoUrl':1, 
 			'topic':1, 'content':1, 'title':1, 'sickTime':1, 'symptom':1, 'symptomPhotoUrl':1, 'descirption':1, 'drugs':1, 'history':1, 'help':1
 		}
 	};
