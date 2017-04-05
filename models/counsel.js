@@ -1,9 +1,10 @@
+
 var mongoose = require('mongoose');
 
 var counselSchema = new mongoose.Schema({
 	counselId: String,						
-	doctorId: String, 
-	patientId: String, 
+	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
+	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	type: Number, 
 	time: Date, 
 	status: Number, 
@@ -104,3 +105,4 @@ Counsel.updateOne = function(query, obj, callback, opts, populate) {
 
 
 module.exports = Counsel;
+
