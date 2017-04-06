@@ -10,7 +10,12 @@ var config = require('../config');
 
 // controllers
 var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
-    userCtrl = require('../controllers/user_controller'),   
+
+    userCtrl = require('../controllers/user_controller'),
+    healthInfoCtrl = require('../controllers/healthInfo_controller'),
+    dictNumberCtrl = require('../controllers/dictNumber_controller');
+
+  
     dictTypeOneCtrl = require('../controllers/dictTypeOne_controller'),
     dictDistrictCtrl = require('../controllers/dictDistrict_controller'),
     dictHospitalCtrl = require('../controllers/dictHospital_controller'),
@@ -26,6 +31,7 @@ var doctorCtrl = require('../controllers/doctor_controller'),
     accountCtrl = require('../controllers/account_controller'), 
     communicationCtrl = require('../controllers/communication_controller'), 
     messageCtrl = require('../controllers/message_controller');
+
 
 module.exports = function(app,webEntry) {
   
@@ -44,6 +50,7 @@ module.exports = function(app,webEntry) {
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   app.get('/user/one', userCtrl.getUser);
+
   app.get('/dict/typeOne/category', dictTypeOneCtrl.getCategory);
   app.get('/dict/district', dictDistrictCtrl.getDistrict);
   app.get('/dict/hospital', dictHospitalCtrl.getHospital);
@@ -52,6 +59,19 @@ module.exports = function(app,webEntry) {
   app.get('/tasks/time', taskCtrl.updateStartTime);
   app.post('/compliance', complianceCtrl.insertOne);
   app.get('/compliance', complianceCtrl.getComplianceByDay);
+
+  // wf
+  app.post('/user/register', userCtrl.register);
+  app.post('/user/reset', userCtrl.reset);
+  app.get('/user/login', userCtrl.login);
+  app.post('/user/logout', userCtrl.logout);
+  app.get('/user/getUserID', userCtrl.getUserID);
+  app.get('/healthInfo/getAllHealthInfo', healthInfoCtrl.getAllHealthInfo);
+  app.get('/healthInfo/getHealthDetail', healthInfoCtrl.getHealthDetail);
+  app.post('/healthInfo/insertHealthInfo', healthInfoCtrl.insertHealthInfo);
+  app.post('/healthInfo/modifyHealthDetail', healthInfoCtrl.modifyHealthDetail);
+  app.post('/healthInfo/deleteHealthDetail', healthInfoCtrl.deleteHealthDetail);
+  app.get('/dictNumber/getNo', dictNumberCtrl.getNo);
 
   //routes updated by GY
   //说明：测试需要，post方法返回的均为post内容，测试通过需要修改为成功或失败
