@@ -2,7 +2,7 @@
 var	config = require('../config'),
 		User = require('../models/user'),
 		DictNumber = require('../models/dictNumber'),
-		Numbering = require('../models/Numbering');
+		Numbering = require('../models/numbering');
 
 function getNowFormatDate() {
     var date = new Date();
