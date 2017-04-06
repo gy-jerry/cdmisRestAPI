@@ -90,9 +90,10 @@ module.exports = function(app,webEntry) {
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
   app.get('/patient/getMyDoctors', patientCtrl.getMyDoctor);
-  app.post('/patient/editPatientDiagnosis');
+  app.post('/patient/insertDiagnosis', patientCtrl.getDoctorObject, patientCtrl.insertDiagnosis);
   app.get('/patient/getDoctorLists', patientCtrl.getDoctorLists);
-  app.post('/patient/setPatientDetail');
+  app.post('/patient/newPatientDetail', patientCtrl.checkPatientId, patientCtrl.newPatientDetail);
+  app.post('/patient/editPatientDetail', patientCtrl.editPatientDetail)
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
 
   //comment_query
@@ -100,6 +101,7 @@ module.exports = function(app,webEntry) {
 
   //vitalSign_query
   app.get('/vitalSign/getVitalSigns', patientCtrl.getPatientObject, vitalSignCtrl.getVitalSigns);
+  app.post('/vitalSign/insertVitalSign', vitalSignCtrl.getPatientObject, vitalSignCtrl.getVitalSign, vitalSignCtrl.insertData);
 
   //account_Info
   //需要和user表连接
@@ -111,11 +113,12 @@ module.exports = function(app,webEntry) {
 
   //communication
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
-  app.post('/communication/updateTeam');
-  app.post('/communication/newTeam');
+  app.post('/communication/insertMember', communicationCtrl.insertMember);
+  app.post('/communication/removeMember', communicationCtrl.removeMember);
+  app.post('/communication/newTeam', communicationCtrl.newTeam);
   app.get('/communication/getTeam', communicationCtrl.getTeam);
-  app.post('/communication/newConsultation');
-  app.post('/communication/updateConclusion');
+  app.post('/communication/newConsultation', communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
+  app.post('/communication/conclusion', communicationCtrl.conclusion);
   //app.get('/communication/getMessages');
   //app.get('/communication/getConsultation');
 
