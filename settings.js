@@ -1,11 +1,13 @@
 
 // configurations
+var port="27017"
+var ip="10.12.43.40"
 module.exports = {
   webEntry: {
-    domain: 'localhost',
-    domainName: 'localhost',
+    domain: ip,
+    domainName: ip,
     path: '',
-    dbUri: 'mongodb://localhost:27017/cdmis',
+    dbUri: 'mongodb://'+ip+':'+port+'/cdmis',
     restPort:4050,
     route: 'routes',
     routeIO: '',

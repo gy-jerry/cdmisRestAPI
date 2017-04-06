@@ -56,7 +56,7 @@ HealthInfo.getSome = function(query, callback, opts, fields, populate) {
 	var fields = fields || null;
 	var populate = populate || '';
 	healthInfoModel
-		.find(query, fields, options)
+		.find(query, fields, options).sort({time:-1})
 		.populate(populate)
 		.exec(function(err, healthInfos) {
 			if(err) {
@@ -66,7 +66,7 @@ HealthInfo.getSome = function(query, callback, opts, fields, populate) {
 		});
 };
 
-HealthInfo.updateOne = function(query, obj, callback, opts, populate) {
+HealthInfo.updateOne = function(query, obj, opts, callback, populate) {
 	var options = opts || {};
 	var populate = populate || '';
 
@@ -81,7 +81,26 @@ HealthInfo.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+HealthInfo.remove = function(query, callback) {
+	healthInfoModel
+		.remove(query)
+		.exec(function(err) {
+			callback(err);
+		});
 
+};
+
+HealthInfo.removeOne = function(query, callback, opts) {
+	var options = opts || {};
+
+	healthInfoModel
+		.findOneAndRemove(query, options, function(err, health) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, health);
+		});
+};
 
 
 module.exports = HealthInfo;
