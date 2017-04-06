@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 
 var counselSchema = new mongoose.Schema({
-	counselId: String,						
+	counselId: {type:String, unique:true},						
 	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	type: Number, 
