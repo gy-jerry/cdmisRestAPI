@@ -53,7 +53,7 @@ exports.getPatientObject = function (req, res, next) {
             return res.status(500).send('服务器错误, 用户查询失败!');
         }
         if (patient == null) {
-        	return res.status(404).send('不存在的患者ID！');
+        	return res.json({result:'不存在的患者ID！'});
         }
         req.body.patientObject = patient;
         next();
@@ -70,7 +70,7 @@ exports.getDoctorObject = function (req, res, next) {
             return res.status(500).send('服务器错误, 用户查询失败!');
         }
         if (doctor == null) {
-        	return res.status(404).send('不存在的医生ID！');
+        	return res.json({result:'不存在的医生ID！'});
         }
         req.body.doctorObject = doctor;
         next();
@@ -88,14 +88,14 @@ exports.saveQuestionaire = function(req, res) {
 		// topic: req.body.topic, 
 		// content: req.body.content, 
 		// title: req.body.title, 
-		// sickTime: req.body.sickTime, 
+		sickTime: req.body.sickTime, 
 		// visited: req.body.visited, 
-		// symptom: req.body.symptom, 
-		// symptomPhotoUrl: req.body.symptomPhotoUrl, 
+		symptom: req.body.symptom, 
+		symptomPhotoUrl: req.body.symptomPhotoUrl, 
 		// description: req.body.description, 
 		// drugs: req.body.drugs, 
 		// history: req.body.history, 
-		// help: req.body.help, 
+		help: req.body.help, 
 		// comment: req.body.comment, 
 
 		revisionInfo:{
@@ -105,7 +105,7 @@ exports.saveQuestionaire = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
-	//return res.status(200).send(counselData);
+	
 	var newCounsel = new Counsel(counselData);
 	newCounsel.save(function(err, counselInfo) {
 		if (err) {

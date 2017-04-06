@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var consultationSchema = new mongoose.Schema({
-	consultationId: String,						
+	consultationId: {type:String, unique:true},						
 	sponsorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	time: Date, 

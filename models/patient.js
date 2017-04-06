@@ -1,13 +1,14 @@
 var mongoose = require('mongoose');
 
 var patientSchema = new mongoose.Schema({					
-	userId: String, 
+	userId: {type:String, unique:true}, 
 	name: String, 
 	photoUrl: String, 
 	birthday: Date, 
 	gender: Number, 
 	IDNo: String, 
 	height: String, 
+	weitht: String, 
 	occupation: String, 
 	bloodType: Number, 
 	address: {
@@ -17,6 +18,7 @@ var patientSchema = new mongoose.Schema({
 	}, 
 	class: String, 
 	class_info: [String], 
+	operationTime: Date, 
 	VIP: Number, 
 	hypertension: Number, 
 	doctors: [
@@ -28,8 +30,11 @@ var patientSchema = new mongoose.Schema({
 	], 
 	diagnosisInfo: [
 	  {
+	  	_id:0, 
 	  	name: String, 
 	  	time: Date, 
+	  	progress: String, 
+	  	content: String, 
 	  	doctor: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}
 	  }
 	], 
@@ -106,7 +111,20 @@ Patient.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+Patient.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
 
+  patientModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, patient) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, patient);
+  });
+};
 
 
 module.exports = Patient;

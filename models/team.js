@@ -1,14 +1,15 @@
 var mongoose = require('mongoose');
 
 var teamSchema = new mongoose.Schema({
-	teamId: String,						
+	teamId: {type:String, unique:true},						
 	name: String, 
 	sponsorId: String, 
 	sponsorName: String, 
 	members: [
 	  {
-	  	userId: String, 
-	  	name: String
+	  	userId: {type:String, unique:true}, 
+	  	name: String, 
+	  	_id:0
 	  }
 	], 
 	time: Date, 
@@ -87,7 +88,31 @@ Team.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+Team.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
 
+  teamModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, team) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, team);
+  });
+};
 
+Team.removeOne = function(query, callback, opts) {
+	var options = opts || {};
+
+	teamModel
+		.findOneAndRemove(query, options, function(err, teamItem) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, teamItem);
+		});
+};
 
 module.exports = Team;
