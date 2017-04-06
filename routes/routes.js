@@ -1,5 +1,4 @@
 
-
 // 3rd packages
 
 
@@ -11,7 +10,13 @@ var config = require('../config');
 
 // controllers
 var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
-    userCtrl = require('../controllers/user_controller');
+    userCtrl = require('../controllers/user_controller'),   
+    dictTypeOneCtrl = require('../controllers/dictTypeOne_controller'),
+    dictDistrictCtrl = require('../controllers/dictDistrict_controller'),
+    dictHospitalCtrl = require('../controllers/dictHospital_controller'),
+    taskCtrl = require('../controllers/task_controller'),
+    complianceCtrl = require('../controllers/compliance_controller');
+
 // controllers updated by GY 
 var doctorCtrl = require('../controllers/doctor_controller'), 
     counselCtrl = require('../controllers/counsel_controller'), 
@@ -34,11 +39,19 @@ module.exports = function(app,webEntry) {
     res.send("Server Root");
   });
 
-  app.get('/dict/typeTwo', dictTypeTwoCtrl.insertCategory);
+  // csq 
+  app.get('/dict/typeTwo/category', dictTypeTwoCtrl.getCategory);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   app.get('/user/one', userCtrl.getUser);
-
+  app.get('/dict/typeOne/category', dictTypeOneCtrl.getCategory);
+  app.get('/dict/district', dictDistrictCtrl.getDistrict);
+  app.get('/dict/hospital', dictHospitalCtrl.getHospital);
+  app.get('/tasks', taskCtrl.getTasks);
+  app.get('/tasks/status', taskCtrl.updateStatus);
+  app.get('/tasks/time', taskCtrl.updateStartTime);
+  app.post('/compliance', complianceCtrl.insertOne);
+  app.get('/compliance', complianceCtrl.getComplianceByDay);
 
   //routes updated by GY
   //说明：测试需要，post方法返回的均为post内容，测试通过需要修改为成功或失败
@@ -98,3 +111,4 @@ module.exports = function(app,webEntry) {
   //   res.send("Get User: " + req.param("userid"));
   // });
 };
+

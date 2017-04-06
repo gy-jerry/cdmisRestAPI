@@ -80,5 +80,4 @@ Communication.updateOne = function(query, obj, callback, opts, populate) {
 
 
 
-
 module.exports = Communication;

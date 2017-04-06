@@ -6,12 +6,20 @@ var taskSchema = new mongoose.Schema({
 	name: String, 
 	date: Date, 
 	description: String, 
+	invalidFlag:Number,
 	task: [
 	  {
-	  	type: String, 
-	  	code: String, 
-	  	instruction: String, 
-	  	content: String
+	  	type: {type:String}, 
+	    details:[{
+	    	code:String,
+	    	instruction:String,
+	    	content:String,
+	    	startTime : Date,
+            endTime : Date,
+            frequencyTimes : Number,
+            frequencyUnits : String,
+            status:Number
+	    }]
 	  }
 	], 
 	revisionInfo:{
