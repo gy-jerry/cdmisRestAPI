@@ -1,3 +1,4 @@
+
 var mongoose = require('mongoose');
 
 var healthInfoSchema = new mongoose.Schema({
@@ -104,3 +105,5 @@ HealthInfo.removeOne = function(query, callback, opts) {
 
 
 module.exports = HealthInfo;
+
+

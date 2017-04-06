@@ -1,7 +1,8 @@
+
 var mongoose = require('mongoose');
 
 var vitalSignSchema = new mongoose.Schema({
-	userId: String,						
+	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'},						
 	type: String, 
 	code: String, 
 	date: Date,   //YYYY-MM-DD
@@ -89,3 +90,4 @@ VitalSign.updateOne = function(query, obj, callback, opts, populate) {
 
 
 module.exports = VitalSign;
+

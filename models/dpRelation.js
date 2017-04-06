@@ -1,10 +1,11 @@
+
 var mongoose = require('mongoose');
 
 var dpRelationSchema = new mongoose.Schema({					
-	doctorId: String, 
+	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	patients: [
 	  {
-	  	patientId: String, 
+	  	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	  	labels: [String]
 	  }
 	], 
@@ -89,5 +90,5 @@ DpRelation.updateOne = function(query, obj, callback, opts, populate) {
 
 
 
-
 module.exports = DpRelation;
+

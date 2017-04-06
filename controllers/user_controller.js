@@ -1,3 +1,4 @@
+
 var	config = require('../config'),
 		User = require('../models/user'),
 		DictNumber = require('../models/dictNumber'),
@@ -319,3 +320,4 @@ exports.getUserID = function(req, res) {
 exports.sendSMS = function(req, res) {
 
 }
+
