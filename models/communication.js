@@ -20,9 +20,9 @@ function Communication(communication) {
 	this.communication = communication;
 }
 
-communication.prototype.save = function(callback) {
+Communication.prototype.save = function(callback) {
 	var communication = this.communication;
-	var newcommunication = new communicationModel(communication);
+	var newCommunication = new communicationModel(communication);
 	newCommunication.save(function(err, communicationItem) {
 		if (err) {
 			return callback(err);
@@ -31,7 +31,7 @@ communication.prototype.save = function(callback) {
 	});
 }
 
-communication.getOne = function(query, callback, opts, fields, populate) {
+Communication.getOne = function(query, callback, opts, fields, populate) {
 	var options = opts || {};
 	var fields = fields || null;
 	var populate = populate || '';
@@ -48,7 +48,7 @@ communication.getOne = function(query, callback, opts, fields, populate) {
 };
 
 
-communication.getSome = function(query, callback, opts, fields, populate) {
+Communication.getSome = function(query, callback, opts, fields, populate) {
 	var options = opts || {};
 	var fields = fields || null;
 	var populate = populate || '';
@@ -63,7 +63,7 @@ communication.getSome = function(query, callback, opts, fields, populate) {
 		});
 };
 
-communication.updateOne = function(query, obj, callback, opts, populate) {
+Communication.updateOne = function(query, obj, callback, opts, populate) {
 	var options = opts || {};
 	var populate = populate || '';
 
@@ -77,7 +77,6 @@ communication.updateOne = function(query, obj, callback, opts, populate) {
 			callback(null, upcommunication);
 		});
 };
-
 
 
 

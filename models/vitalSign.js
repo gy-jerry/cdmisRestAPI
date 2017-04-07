@@ -1,12 +1,14 @@
+
 var mongoose = require('mongoose');
 
 var vitalSignSchema = new mongoose.Schema({
-	userId: String,						
+	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'},						
 	type: String, 
 	code: String, 
 	date: Date,   //YYYY-MM-DD
 	data: [
 	  {
+	  	_id:0, 
 	  	time: Date, 
 	  	value: Number
 	  }
@@ -85,7 +87,21 @@ VitalSign.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+VitalSign.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
 
+  vitalSignModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, vitalSign) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, vitalSign);
+  });
+};
 
 
 module.exports = VitalSign;
+

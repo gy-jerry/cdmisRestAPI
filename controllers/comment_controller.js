@@ -1,0 +1,22 @@
+var	config = require('../config'),
+	Comment = require('../models/comment');
+
+//根据doctorId查询相关评价 2017-03-30 GY 
+exports.getCommentsByDoc = function(req, res) {
+	//查询条件
+	var doctorObject = req.body.doctorObject;
+	var query = {doctorId:doctorObject._id};
+
+	//设置参数
+	var opts = '';
+	var fields = {'patientId':1, 'time':1, 'content':1, '_id':0};
+	var populate = {path: 'patientId', select:{'_id':0, 'userId':1, 'name':1}};
+
+	Comment.getSome(query, function(err, item) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	res.json({results: item});
+	}, opts, fields, populate);
+}
+

@@ -1,4 +1,5 @@
 
+
 var mongoose = require('mongoose');
 
 var messageSchema = new mongoose.Schema({
@@ -24,7 +25,7 @@ function Message(message) {
 	this.message = message;
 }
 
-message.prototype.save = function(callback) {
+Message.prototype.save = function(callback) {
 	var message = this.message;
 	var newmessage = new messageModel(message);
 	newMessage.save(function(err, messageItem) {
@@ -35,7 +36,7 @@ message.prototype.save = function(callback) {
 	});
 }
 
-message.getOne = function(query, callback, opts, fields, populate) {
+Message.getOne = function(query, callback, opts, fields, populate) {
 	var options = opts || {};
 	var fields = fields || null;
 	var populate = populate || '';
@@ -52,7 +53,7 @@ message.getOne = function(query, callback, opts, fields, populate) {
 };
 
 
-message.getSome = function(query, callback, opts, fields, populate) {
+Message.getSome = function(query, callback, opts, fields, populate) {
 	var options = opts || {};
 	var fields = fields || null;
 	var populate = populate || '';
@@ -67,7 +68,7 @@ message.getSome = function(query, callback, opts, fields, populate) {
 		});
 };
 
-message.updateOne = function(query, obj, callback, opts, populate) {
+Message.updateOne = function(query, obj, callback, opts, populate) {
 	var options = opts || {};
 	var populate = populate || '';
 
@@ -81,8 +82,6 @@ message.updateOne = function(query, obj, callback, opts, populate) {
 			callback(null, upmessage);
 		});
 };
-
-
 
 
 module.exports = Message;

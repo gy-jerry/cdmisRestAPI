@@ -1,4 +1,7 @@
 
+
+
+
 // 慢病管理 REST 2017-03-14 池胜强 创建文档
 
 // import necessary 3rd modules
@@ -42,7 +45,6 @@ app.set('port', restPort);
 
 app.use(bodyParser.json({ limit: config.bodyParserJSONLimit })); 
 app.use(bodyParser.urlencoded({ extended: true })); 
-
 //app.use(expressValidator());
 //app.use(useragent.express());
 
@@ -84,5 +86,6 @@ app.all('/*', function(req, res, next) {
 //});
 
 app.listen(app.get('port'));
+
 
 
