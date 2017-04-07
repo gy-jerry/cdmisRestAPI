@@ -46,12 +46,12 @@ module.exports = function(app,webEntry) {
   });
 
   // csq 
-  app.get('/dict/typeTwo/category', dictTypeTwoCtrl.getCategory);
+  app.get('/dict/typeTwo', dictTypeTwoCtrl.getCategory);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   app.get('/user/one', userCtrl.getUser);
 
-  app.get('/dict/typeOne/category', dictTypeOneCtrl.getCategory);
+  app.get('/dict/typeOne', dictTypeOneCtrl.getCategory);
   app.get('/dict/district', dictDistrictCtrl.getDistrict);
   app.get('/dict/hospital', dictHospitalCtrl.getHospital);
   app.get('/tasks', taskCtrl.getTasks);
