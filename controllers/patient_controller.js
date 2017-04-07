@@ -29,8 +29,14 @@ exports.getDoctorLists = function(req, res) {
 	var _name = req.query.name;
 	var query;
 	//name选填
-	if(_name == null){
+	if(_name == null && _workUnit != null){
 		query = {workUnit:_workUnit};
+	}
+	else if (_name == null && _workUnit == null){
+		query = {};
+	}
+	else if (_name != null && _workUnit == null){
+		query = {name:_name};
 	}
 	else{
 		query = {workUnit:_workUnit, name:_name};
