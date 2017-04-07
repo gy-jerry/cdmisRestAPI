@@ -1,8 +1,193 @@
 var	config = require('../config'),
 		User = require('../models/user'),
 		DictNumber = require('../models/dictNumber'),
-		Numbering = require('../models/Numbering');
-
+		Numbering = require('../models/Numbering'),
+		Sms = require('../models/sms'),
+		crypto = require('crypto'),
+		https = require('https');
+var Base64 = {  
+    // 转码表  
+    table : [  
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',  
+            'I', 'J', 'K', 'L', 'M', 'N', 'O' ,'P',  
+            'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',  
+            'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',  
+            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',  
+            'o', 'p', 'q', 'r', 's', 't', 'u', 'v',  
+            'w', 'x', 'y', 'z', '0', '1', '2', '3',  
+            '4', '5', '6', '7', '8', '9', '+', '/' 
+    ],  
+    UTF16ToUTF8 : function(str) {  
+        var res = [], len = str.length;  
+        for (var i = 0; i < len; i++) {  
+            var code = str.charCodeAt(i);  
+            if (code > 0x0000 && code <= 0x007F) {  
+                // 单字节，这里并不考虑0x0000，因为它是空字节  
+                // U+00000000 – U+0000007F  0xxxxxxx  
+                res.push(str.charAt(i));  
+            } else if (code >= 0x0080 && code <= 0x07FF) {  
+                // 双字节  
+                // U+00000080 – U+000007FF  110xxxxx 10xxxxxx  
+                // 110xxxxx  
+                var byte1 = 0xC0 | ((code >> 6) & 0x1F);  
+                // 10xxxxxx  
+                var byte2 = 0x80 | (code & 0x3F);  
+                res.push(  
+                    String.fromCharCode(byte1),   
+                    String.fromCharCode(byte2)  
+                );  
+            } else if (code >= 0x0800 && code <= 0xFFFF) {  
+                // 三字节  
+                // U+00000800 – U+0000FFFF  1110xxxx 10xxxxxx 10xxxxxx  
+                // 1110xxxx  
+                var byte1 = 0xE0 | ((code >> 12) & 0x0F);  
+                // 10xxxxxx  
+                var byte2 = 0x80 | ((code >> 6) & 0x3F);  
+                // 10xxxxxx  
+                var byte3 = 0x80 | (code & 0x3F);  
+                res.push(  
+                    String.fromCharCode(byte1),   
+                    String.fromCharCode(byte2),   
+                    String.fromCharCode(byte3)  
+                );  
+            } else if (code >= 0x00010000 && code <= 0x001FFFFF) {  
+                // 四字节  
+                // U+00010000 – U+001FFFFF  11110xxx 10xxxxxx 10xxxxxx 10xxxxxx  
+            } else if (code >= 0x00200000 && code <= 0x03FFFFFF) {  
+                // 五字节  
+                // U+00200000 – U+03FFFFFF  111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx  
+            } else /** if (code >= 0x04000000 && code <= 0x7FFFFFFF)*/ {  
+                // 六字节  
+                // U+04000000 – U+7FFFFFFF  1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx  
+            }  
+        }  
+ 
+        return res.join('');  
+    },  
+    UTF8ToUTF16 : function(str) {  
+        var res = [], len = str.length;  
+        var i = 0;  
+        for (var i = 0; i < len; i++) {  
+            var code = str.charCodeAt(i);  
+            // 对第一个字节进行判断  
+            if (((code >> 7) & 0xFF) == 0x0) {  
+                // 单字节  
+                // 0xxxxxxx  
+                res.push(str.charAt(i));  
+            } else if (((code >> 5) & 0xFF) == 0x6) {  
+                // 双字节  
+                // 110xxxxx 10xxxxxx  
+                var code2 = str.charCodeAt(++i);  
+                var byte1 = (code & 0x1F) << 6;  
+                var byte2 = code2 & 0x3F;  
+                var utf16 = byte1 | byte2;  
+                res.push(Sting.fromCharCode(utf16));  
+            } else if (((code >> 4) & 0xFF) == 0xE) {  
+                // 三字节  
+                // 1110xxxx 10xxxxxx 10xxxxxx  
+                var code2 = str.charCodeAt(++i);  
+                var code3 = str.charCodeAt(++i);  
+                var byte1 = (code << 4) | ((code2 >> 2) & 0x0F);  
+                var byte2 = ((code2 & 0x03) << 6) | (code3 & 0x3F);  
+                utf16 = ((byte1 & 0x00FF) << 8) | byte2  
+                res.push(String.fromCharCode(utf16));  
+            } else if (((code >> 3) & 0xFF) == 0x1E) {  
+                // 四字节  
+                // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx  
+            } else if (((code >> 2) & 0xFF) == 0x3E) {  
+                // 五字节  
+                // 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx  
+            } else /** if (((code >> 1) & 0xFF) == 0x7E)*/ {  
+                // 六字节  
+                // 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx  
+            }  
+        }  
+ 
+        return res.join('');  
+    },  
+    encode : function(str) {  
+        if (!str) {  
+            return '';  
+        }  
+        var utf8    = this.UTF16ToUTF8(str); // 转成UTF8  
+        var i = 0; // 遍历索引  
+        var len = utf8.length;  
+        var res = [];  
+        while (i < len) {  
+            var c1 = utf8.charCodeAt(i++) & 0xFF;  
+            res.push(this.table[c1 >> 2]);  
+            // 需要补2个=  
+            if (i == len) {  
+                res.push(this.table[(c1 & 0x3) << 4]);  
+                res.push('==');  
+                break;  
+            }  
+            var c2 = utf8.charCodeAt(i++);  
+            // 需要补1个=  
+            if (i == len) {  
+                res.push(this.table[((c1 & 0x3) << 4) | ((c2 >> 4) & 0x0F)]);  
+                res.push(this.table[(c2 & 0x0F) << 2]);  
+                res.push('=');  
+                break;  
+            }  
+            var c3 = utf8.charCodeAt(i++);  
+            res.push(this.table[((c1 & 0x3) << 4) | ((c2 >> 4) & 0x0F)]);  
+            res.push(this.table[((c2 & 0x0F) << 2) | ((c3 & 0xC0) >> 6)]);  
+            res.push(this.table[c3 & 0x3F]);  
+        }  
+ 
+        return res.join('');  
+    },  
+    decode : function(str) {  
+        if (!str) {  
+            return '';  
+        }  
+ 
+        var len = str.length;  
+        var i   = 0;  
+        var res = [];  
+ 
+        while (i < len) {  
+            code1 = this.table.indexOf(str.charAt(i++));  
+            code2 = this.table.indexOf(str.charAt(i++));  
+            code3 = this.table.indexOf(str.charAt(i++));  
+            code4 = this.table.indexOf(str.charAt(i++));  
+ 
+            c1 = (code1 << 2) | (code2 >> 4);  
+            c2 = ((code2 & 0xF) << 4) | (code3 >> 2);  
+            c3 = ((code3 & 0x3) << 6) | code4;  
+ 
+            res.push(String.fromCharCode(c1));  
+ 
+            if (code3 != 64) {  
+                res.push(String.fromCharCode(c2));  
+            }  
+            if (code4 != 64) {  
+                res.push(String.fromCharCode(c3));  
+            }  
+ 
+        }  
+ 
+        return this.UTF8ToUTF16(res.join(''));  
+    }  
+};
+function stringToBytes ( str ) {  
+  var ch, st, re = [];  
+  for (var i = 0; i < str.length; i++ ) {  
+    ch = str.charCodeAt(i);  // get char   
+    st = [];                 // set up "stack"  
+    do {  
+      st.push( ch & 0xFF );  // push byte to stack  
+      ch = ch >> 8;          // shift value down by 1 byte  
+    }    
+    while ( ch );  
+    // add stack contents to result  
+    // done because chars have "wrong" endianness  
+    re = re.concat( st.reverse() );  
+  }  
+  // return an array of bytes  
+  return re;  
+}
 function getNowFormatDate() {
     var date = new Date();
     var month = date.getMonth() + 1;
@@ -16,6 +201,10 @@ function getNowFormatDate() {
     var currentdate = date.getFullYear()+month+strDate;
     return currentdate;
     // YYYYMMDD
+}
+function paddNum(num){
+	num += "";
+	return num.replace(/^(\d)$/,"0$1");
 }
 function ConvAlphameric(Seq)
 {
@@ -43,8 +232,6 @@ exports.getUser = function(req, res) {
     	res.json({results: item});
 	});
 }
-
-
 exports.getUserList = function(req, res) {
 	var query = {};
 
@@ -56,8 +243,6 @@ exports.getUserList = function(req, res) {
     res.json({results: userlist});
 	});
 }
-
-
 exports.insertUser = function(req, res) {
 	var userData = {
 		userId: "whoareyou",						
@@ -90,7 +275,6 @@ exports.insertUser = function(req, res) {
     res.json({results: userInfo});
 	});
 }
-
 exports.register = function(req, res) {
 	var _phoneNo = req.query.phoneNo
 	var _password = req.query.password
@@ -226,7 +410,6 @@ exports.register = function(req, res) {
 		}
 	});
 }
-
 exports.reset = function(req, res) {
 	var _phoneNo = req.query.phoneNo
 	var _password = req.query.password
@@ -248,7 +431,6 @@ exports.reset = function(req, res) {
 		}
 	});
 }
-
 exports.login = function(req, res) {
 	var _phoneNo = req.query.phoneNo
 	var _password = req.query.password
@@ -277,7 +459,6 @@ exports.login = function(req, res) {
 		}
 	});
 }
-
 exports.logout = function(req, res) {
 	var _userId = req.query.userId
 	var query = {userId:_userId};
@@ -299,7 +480,6 @@ exports.logout = function(req, res) {
 		}
 	});
 }
-
 exports.getUserID = function(req, res) {
 	var _phoneNo = req.query.phoneNo
 	var query = {phoneNo:_phoneNo};
@@ -315,7 +495,145 @@ exports.getUserID = function(req, res) {
 		}
 	});
 }
-
 exports.sendSMS = function(req, res) {
+	var now = new Date()
+	var _mobile = req.query.mobile;
+	var _smsType = req.query.smsType;
+	var token = "849407bfab0cf4c1a998d3d6088d957b";
+	var appId = "38b50013289b417f9ce474c8210aebcf";
+	var accountSid = "b839794e66174938828d1b8ea9c58412";
+	var tplId = "40860";
+	var Jsonstring1 = "templateSMS";
+	var Jsonstring2 = "appId";
+	var Jsonstring3 = "param";
+	var Jsonstring4 = "templateId";
+	var Jsonstring5 = "to";
+	var J6 = "{";
 
+	var rand = Math.random();
+	var min = 100000;
+	var max = 1000000;
+	var _randNum =Math.floor(min+(max-min)*rand);
+	var param = _randNum + "," + 3;
+	var JSONData = J6 + '"' + Jsonstring1 + '"' + ':' + '{' + '"' + Jsonstring2 + '"' + ':' + '"' + appId + '"' + ',' + '"' + Jsonstring3 + '"' + ':' + '"' + param + '"' + ',' + '"' + Jsonstring4 + '"' + ':' + '"' + tplId + '"' + ',' + '"' + Jsonstring5 + '"' + ':' + '"' + _mobile + '"' + '}' + '}';
+	//delete all expired smss
+
+	var query={"Expire":{"$lte":now.getTime()}}
+	Sms.remove(query, function(err, item){
+		if (err) {
+			return res.status(500).send(err.errmsg);
+		}
+		// res.json({results: 0});
+			//query by _mobile and _smsType
+		if (_mobile != null && _mobile != "" && _mobile != undefined && _smsType != null && _smsType != "" && _smsType != undefined){
+			var query1 = {mobile:_mobile,smsType:_smsType};
+			Sms.getOne(query1, function(err, item) {
+				if (err) {
+					return res.status(500).send(err.errmsg);
+				}
+				if(item==null){
+					//not exist
+					var _expire=60*3
+					
+					//insert a sms
+					var smsData = {
+						mobile: _mobile,
+						smsType: _smsType,
+						randNum: _randNum,
+						Expire: _expire*1000+now.getTime(),
+						insertTime: now
+					};
+					var newSms = new Sms(smsData);
+					newSms.save(function(err, Info){
+						if (err) {
+							return res.status(500).send(err.errmsg);
+						}
+						// res.json({results: Info});
+						var timestamp=now.getFullYear()+paddNum(now.getMonth()+1)+paddNum(now.getDate())+now.getHours()+now.getMinutes()+now.getSeconds()
+						var md5=crypto.createHash('md5').update(accountSid + token + timestamp).digest('hex').toUpperCase();
+						//byte[] bytedata = encode.GetBytes(accountSid + ":" + timestamp);
+						var authorization = Base64.encode(accountSid + ":" + timestamp);
+						// console.log(md5)
+						// console.log(authorization)
+						var bytes=stringToBytes(JSONData)
+						var Url = "https://api.ucpaas.com/2014-06-30/Accounts/" + accountSid + "/Messages/templateSMS?sig=" + md5;
+						var options={
+							hostname:"api.ucpaas.com",
+							// port:80,
+							path:"/2014-06-30/Accounts/"+ accountSid + "/Messages/templateSMS?sig=" + md5,
+							method:"POST",
+							headers:{
+								"Accept":"application/json",
+								// "Accept-Encoding":"gzip, deflate",
+								// "Accept-Language":"zh-CN,zh;q=0.8",
+								// "Connection":"keep-alive",
+								"Content-Length":bytes.length,
+								"Content-Type":"application/json;charset=utf-8",
+								// "Cookie":"imooc_uuid=6cc9e8d5-424a-4861-9f7d-9cbcfbe4c6ae; imooc_isnew_ct=1460873157; loginstate=1; apsid=IzZDJiMGU0OTMyNTE0ZGFhZDAzZDNhZTAyZDg2ZmQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjkyOTk0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGNmNmFhMmVhMTYwNzRmMjczNjdmZWUyNDg1ZTZkMGM1BwhXVwcIV1c%3DMD; PHPSESSID=thh4bfrl1t7qre9tr56m32tbv0; Hm_lvt_f0cfcccd7b1393990c78efdeebff3968=1467635471,1467653719,1467654690,1467654957; Hm_lpvt_f0cfcccd7b1393990c78efdeebff3968=1467655022; imooc_isnew=2; cvde=577a9e57ce250-34",
+								// "Host":"www.imooc.com",
+								// "Origin":"http://www.imooc.com",
+								// "Referer":"http://www.imooc.com/video/8837",
+								// "User-Agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2763.0 Safari/537.36",
+								// "X-Requested-With":"XMLHttpRequest",
+								"Authorization": authorization
+							}
+						}
+						var req=https.request(options,function(res){
+							res.on("data",function(chunk){
+								console.log(chunk);
+							});
+							res.on("end",function(){
+								console.log("### end ##");
+							});
+							console.log(res.statusCode);
+						});
+
+						req.on("error",function(err){
+							console.log(err.message);
+						})
+						req.write(JSONData);
+						req.end();
+
+					});
+
+					res.json({results: 0,mesg:"User doesn't Exist!"});
+				}
+				else{
+					var ttl=(item.Expire-now.getTime())/1000
+					//sms exist
+					res.json({results: 0,mesg:"您的邀请码已发送，请等待"+Math.floor(ttl)+ "s后重新获取"});
+				}
+			});
+		}
+		else{
+			res.json({results: 1,mesg:"mobile and smsType input Error!"});
+		}
+	});
+}
+exports.verifySMS = function(req, res) {
+	var now = new Date()
+	var _mobile = req.query.mobile;
+	var _smsType = req.query.smsType;
+	var _smsCode = req.query.smsCode;
+
+
+	var query={"Expire":{"$gte":now.getTime()},"mobile":_mobile,"smsType":_smsType}
+	Sms.getOne(query, function(err, item){
+		if (err) {
+			return res.status(500).send(err.errmsg);
+		}
+		// res.json({results: 0});
+			//query by _mobile and _smsType
+		if (item != null ){
+			if(item.randNum==_smsCode){
+				res.json({results: 0,mesg:"验证码正确!"});
+			}
+			else{
+				res.json({results: 1,mesg:"验证码错误"});
+			}
+		}
+		else{
+			res.json({results: 2,mesg:"没有验证码或验证码已过期!"});
+		}
+	});
 }
