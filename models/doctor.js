@@ -17,6 +17,12 @@ var doctorSchema = new mongoose.Schema({
 	charge1: Number, 
 	charge2: Number, 
 	teams: [String], 
+	schedules: [
+		{
+			day: String, 
+			time: String
+		}
+	], 
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,
