@@ -8,12 +8,25 @@ var config = require('../config');
 
 // middlewares
 
+//引入multer模块  
+var multer = require ('multer');  
+var storage = multer.diskStorage({
+    destination: "uploads/photos",
+    filename: function (req, file, cb) {
+        // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
+        // cb(null, file.fieldname + '-' + Date.now());
+        cb(null, file.originalname);
+    }
+});
+var upload = multer({ storage: storage });  
+
 
 // controllers
 var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
     userCtrl = require('../controllers/user_controller'),
     healthInfoCtrl = require('../controllers/healthInfo_controller'),
-    dictNumberCtrl = require('../controllers/dictNumber_controller');
+    dictNumberCtrl = require('../controllers/dictNumber_controller'),
+    loadCtrl = require('../controllers/load_controller');
 
 module.exports = function(app,webEntry) {
   
@@ -44,6 +57,9 @@ module.exports = function(app,webEntry) {
   app.post('/healthInfo/modifyHealthDetail', healthInfoCtrl.modifyHealthDetail);
   app.post('/healthInfo/deleteHealthDetail', healthInfoCtrl.deleteHealthDetail);
   app.get('/dictNumber/getNo', dictNumberCtrl.getNo);
+  // app.post('/load/upload', loadCtrl.upload);  
+  app.post('/upload', upload.single('photo'), loadCtrl.upload);
+  // app.get('/download',loadCtrl.download);
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);
   //  var query = url_parts.query;
