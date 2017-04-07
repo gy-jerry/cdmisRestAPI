@@ -175,7 +175,7 @@ exports.getDoctorInfo = function(req, res) {
 		select: {
 			'_id':0, 
 			'userId':1, 'name':1, 'workUnit':1, 'title':1, 'department':1, 'major':1, 
-			'descirption':1, 'score':1, 'charge1':1, 'charge2':1, 'photoUrl':1
+			'descirption':1, 'score':1, 'charge1':1, 'charge2':1, 'photoUrl':1, 'schedules':1
 		}
 	};
 
