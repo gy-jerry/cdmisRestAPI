@@ -1,12 +1,13 @@
 
-var config = require('../config'),
-        User = require('../models/user'),
-        DictNumber = require('../models/dictNumber'),
+var	config = require('../config'),
+		User = require('../models/user'),
+		DictNumber = require('../models/dictNumber'),
+		Numbering = require('../models/numbering'),
+		Sms = require('../models/sms'),
+		crypto = require('crypto'),
+		https = require('https');
 
-        Numbering = require('../models/numbering');
-        Sms = require('../models/sms'),
-        crypto = require('crypto'),
-        https = require('https');
+
 var Base64 = {  
     // 转码表  
     table : [  
