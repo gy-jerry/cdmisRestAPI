@@ -6,13 +6,8 @@ var complianceSchema = new mongoose.Schema({
 	code: String, 
 	date: Date, 
 	status: Number, 
-	description: String, 
-	revisionInfo:{
-		operationTime:Date,
-		userId:String,
-		userName:String,
-		terminalIP:String
-	}
+	description: String
+	
 });
 
 

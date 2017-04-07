@@ -1,6 +1,6 @@
 var	config = require('../config'),
 		DictNumber = require('../models/dictNumber'),
-		Numbering = require('../models/Numbering');
+		Numbering = require('../models/numbering');
 
 function getNowFormatDate() {
     var date = new Date();
