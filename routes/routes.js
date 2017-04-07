@@ -66,6 +66,8 @@ module.exports = function(app,webEntry) {
   app.get('/user/login', userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
   app.get('/user/getUserID', userCtrl.getUserID);
+  app.post('/user/sendSMS', userCtrl.sendSMS);
+  app.get('/user/verifySMS', userCtrl.verifySMS);
   app.get('/healthInfo/getAllHealthInfo', healthInfoCtrl.getAllHealthInfo);
   app.get('/healthInfo/getHealthDetail', healthInfoCtrl.getHealthDetail);
   app.post('/healthInfo/insertHealthInfo', healthInfoCtrl.insertHealthInfo);
