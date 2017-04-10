@@ -192,8 +192,6 @@ function stringToBytes ( str ) {
   return re;  
 }
 
-        
-
 function getNowFormatDate() {
     var date = new Date();
     var month = date.getMonth() + 1;
@@ -644,3 +642,9 @@ exports.verifySMS = function(req, res) {
         }
     });
 }
+
+// var commonFunc = require('../middlewares/commonFunc');
+// exports.getIp = function(req, res) {
+//     var _ip = commonFunc.getClientIp(req)
+//     res.json({results: 0,Ip:_ip});
+// }

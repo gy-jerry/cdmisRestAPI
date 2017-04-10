@@ -87,8 +87,7 @@ module.exports = function(app,webEntry) {
   app.post('/healthInfo/modifyHealthDetail', healthInfoCtrl.modifyHealthDetail);
   app.post('/healthInfo/deleteHealthDetail', healthInfoCtrl.deleteHealthDetail);
   app.get('/dictNumber/getNo', dictNumberCtrl.getNo);
-
-  // app.post('/load/upload', loadCtrl.upload);  
+  // app.get('/user/getIp', userCtrl.getIp); 
   app.post('/upload', upload.single('photo'), loadCtrl.upload);
   // app.get('/download',loadCtrl.download);
 
