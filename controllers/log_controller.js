@@ -8,9 +8,11 @@ var log4js = require("log4js");
 exports.configure = function() {
     // log4js.configure(path.join(__dirname, "log4js.json"));    
 	log4js.configure({
-		"appenders": [{
-			"type": "console"
-		},{
+		"appenders": [
+		// {
+		// 	"type": "console"
+		// },
+		{
 			"type": "dateFile",
 			"filename": "logs/CKD.log",
 			"pattern": "-yyyy-MM-dd",
