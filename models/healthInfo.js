@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var healthInfoSchema = new mongoose.Schema({
 	userId: String,						
 	type: Number, 
+	insertTime: Date, 
 	time: Date, 
 	url: String, 
 	label: String, 
