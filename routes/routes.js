@@ -76,7 +76,7 @@ module.exports = function(app,webEntry) {
   // wf
   app.post('/user/register', userCtrl.register);
   app.post('/user/reset', userCtrl.reset);
-  app.get('/user/login', userCtrl.login);
+  app.post('/user/login', userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
   app.get('/user/getUserID', userCtrl.getUserID);
   app.post('/user/sendSMS', userCtrl.sendSMS);

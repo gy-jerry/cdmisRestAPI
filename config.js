@@ -1,7 +1,8 @@
 
+
 // configurations
 module.exports = { 
-  cookieSecret: '111', 
+  tokenSecret: 'zjubme319_ssgj', 
   cookieSecretExt: '111', 
   outerSecrets: ['111'], 
   defaultPwd: '123456', 
