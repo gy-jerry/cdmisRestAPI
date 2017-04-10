@@ -17,8 +17,8 @@ exports.getAllHealthInfo = function(req, res) {
 
 exports.getHealthDetail = function(req, res) {
 	var _userId = req.query.userId
-	var _label = req.query.label
-	var query = {userId:_userId,label:_label};
+	var _insertTime = new Date(req.query.insertTime)
+	var query = {userId:_userId,insertTime:_insertTime};
 
 	HealthInfo.getOne(query, function(err, item) {
 		if (err) {
@@ -32,6 +32,7 @@ exports.insertHealthInfo = function(req, res) {
 	var healthInfoData = {
 		userId: req.query.userId,
 		type: req.query.type,
+		insertTime: new Date(),
 		time: new Date(req.query.time),
 		url: req.query.url,
 		label: req.query.label,
@@ -71,7 +72,7 @@ exports.modifyHealthDetail = function(req, res) {
 		}
 	};
 
-	var query = {userId:req.query.userId,label:req.query.label};
+	var query = {userId:req.query.userId,insertTime:new Date(req.query.insertTime)};
 	var ops = {upsert:true}
 
 	HealthInfo.updateOne(query,{ $set: healthInfoData },ops,function(err, item1){
@@ -83,7 +84,7 @@ exports.modifyHealthDetail = function(req, res) {
 }
 
 exports.deleteHealthDetail = function(req, res) {
-	var query = {userId:req.query.userId,label:req.query.label};
+	var query = {userId:req.query.userId,insertTime:new Date(req.query.insertTime)};
 
 	HealthInfo.removeOne(query,function(err, item1){
 		if (err) {
