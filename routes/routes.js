@@ -7,19 +7,6 @@ var config = require('../config');
 
 // middlewares
 
-//引入multer模块  
-var multer = require ('multer');  
-var storage = multer.diskStorage({
-    destination: "uploads/photos",
-    filename: function (req, file, cb) {
-        // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
-        // cb(null, file.fieldname + '-' + Date.now());
-        cb(null, file.originalname);
-    }
-});
-var upload = multer({ storage: storage });  
-
-
 // controllers
 var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
 
@@ -88,7 +75,8 @@ module.exports = function(app,webEntry) {
   app.post('/healthInfo/deleteHealthDetail', healthInfoCtrl.deleteHealthDetail);
   app.get('/dictNumber/getNo', dictNumberCtrl.getNo);
   // app.get('/user/getIp', userCtrl.getIp); 
-  app.post('/upload', upload.single('photo'), loadCtrl.upload);
+  app.post('/upload', loadCtrl.uploadphoto(), loadCtrl.upload);
+  // app.post('/upload', upload.single('photo'), loadCtrl.upload);
   // app.get('/download',loadCtrl.download);
 
 

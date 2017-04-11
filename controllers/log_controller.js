@@ -14,8 +14,8 @@ exports.configure = function() {
 		// },
 		{
 			"type": "dateFile",
-			"filename": "logs/CKD.log",
-			"pattern": "-yyyy-MM-dd",
+			"filename": "logs/CKD",
+			"pattern": "-yyyy-MM-dd.log",
 			"alwaysIncludePattern": true
 		}]
 	}); 
