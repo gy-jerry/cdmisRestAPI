@@ -9,7 +9,11 @@ exports.uploadphoto = function() {
 	    filename: function (req, file, cb) {
 	        // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
 	        // cb(null, file.fieldname + '-' + Date.now());
-	        cb(null, file.originalname);
+	        var type=req.query.type
+	        if(type==null||type==undefined){
+	        	type=""
+	        }
+	        cb(null, type+file.originalname);
 	    }
 	});
 	var upload = multer({ storage: storage }); 
@@ -19,7 +23,11 @@ exports.uploadphoto = function() {
 exports.upload = function(req, res) {
 	var file = req.file;
 	var path = file.path;
-	var path_resized=file.destination+"/resized"+file.originalname;
+	var type=req.query.type
+	if(type==null||type==undefined){
+		type=""
+	}
+	var path_resized=file.destination+"/resized"+type+file.originalname;
 	// console.log(path_resized)
 
 	images(path)                     //Load image from file 
