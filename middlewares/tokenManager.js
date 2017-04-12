@@ -32,8 +32,6 @@ exports.verifyToken = function () {
       return res.status(401).send('无授权信息!');
     }
     
-    
-    
   };
 };
 
