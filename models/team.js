@@ -6,6 +6,7 @@ var teamSchema = new mongoose.Schema({
 	name: String, 
 	sponsorId: String, 
 	sponsorName: String, 
+	photoAddress: String, 
 	members: [
 	  {
 	  	userId: {type:String, unique:true}, 
