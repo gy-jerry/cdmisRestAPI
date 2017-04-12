@@ -21,22 +21,6 @@ exports.getDoctor = function(req, res) {
 //新建医生基本信息 2017-04-01 GY
 exports.insertDocBasic = function(req, res) {
 	var doctorData = {
-		userId: req.body.userId, 							//doctest01
-		name: req.body.name, 								//新01
-		//注意时区问题
-		birthday: new Date(req.body.birthday), 				//1956/01/01
-		gender: req.body.gender, 							//1
-		IDNo: req.body.IDNo, 								
-		workUnit: req.body.workUnit, 						//浙江省人民医院
-		title: req.body.title, 								//副高
-		department: req.body.department, 					//泌尿外科
-		major: req.body.major, 								//肾移植
-		introduction: req.body.introduction,					//好
-
-		score: req.body.score, 
-		charge1: req.body.charge1, 
-		charge2: req.body.charge2, 
-		//teams: ["team1", "team2"], 
 		revisionInfo:{
 			operationTime:new Date(),
 			userId:"gy",
@@ -44,6 +28,52 @@ exports.insertDocBasic = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
+	var doctorData = {};
+	if (req.body.name != null){
+		doctorData['name'] = req.body.name;
+	}
+	if (req.body.photoUrl != null){
+		doctorData['photoUrl'] = req.body.photoUrl;
+	}
+	if (req.body.birthday != null){
+		doctorData['birthday'] = req.body.birthday;
+	}
+	if (req.body.gender != null){
+		doctorData['gender'] = req.body.gender;
+	}
+	if (req.body.IDNo != null){
+		doctorData['IDNo'] = req.body.IDNo;
+	}
+	if (req.body.province != null){
+		doctorData['province'] = req.body.province;
+	}
+	if (req.body.city != null){
+		doctorData['city'] = req.body.city;
+	}
+	if (req.body.workUnit != null){
+		doctorData['workUnit'] = req.body.workUnit;
+	}
+	if (req.body.title != null){
+		doctorData['title'] = req.body.title;
+	}
+	if (req.body.job != null){
+		doctorData['job'] = req.body.job;
+	}
+	if (req.body.department != null){
+		doctorData['department'] = req.body.department;
+	}
+	if (req.body.major != null){
+		doctorData['major'] = req.body.major;
+	}
+	if (req.body.descirption != null){
+		doctorData['descirption'] = req.body.descirption;
+	}
+	if (req.body.charge1 != null){
+		doctorData['charge1'] = req.body.charge1;
+	}
+	if (req.body.charge2 != null){
+		doctorData['charge2'] = req.body.charge2;
+	}
 
 	var newDoctor = new Doctor(doctorData);
 	newDoctor.save(function(err, doctorInfo) {
@@ -63,7 +93,7 @@ exports.getTeams = function(req, res) {
 
 	//输出内容
 	var opts = '';
-	var fields = {"teamId":1, "name":1, "_id":0};
+	var fields = {"_id":0, 'revisionInfo':0};
 
 	Team.getSome(query, function(err, item) {
 		if (err) {
@@ -102,7 +132,7 @@ exports.getPatientList = function(req, res) {
 	var opts = '';
 	var fields = {'_id':0, 'patients.patientId':1};
 	//通过子表查询主表，定义主表查询路径及输出内容
-	var populate = {path: 'patients.patientId', select: {'_id':0, 'name':1, 'birthday':1, 'gender':1, 'class':1, 'photoUrl':1}};
+	var populate = {path: 'patients.patientId', select: {'_id':0, 'revisionInfo':1}};
 
 	DpRelation.getSome(query, function(err, item) {
 		if (err) {
@@ -161,28 +191,150 @@ exports.getGroupPatientList = function(req, res) {
 	}, opts, fields, populate);
 }
 
-//
-exports.getDoctorInfo = function(req, res) {
+// //
+// exports.getDoctorInfo = function(req, res) {
+// 	//查询条件
+// 	var doctorObject = req.body.doctorObject;
+// 	var query = {doctorId:doctorObject._id};
+
+// 	var opts = '';
+// 	var fields = {'_id':0, 'time':1, 'content':1, 'doctorId':1, 'patientId':1};
+// 	//通过子表查询主表，定义主表查询路径及输出内容
+// 	var populate = {
+// 		path: 'doctorId patientId', 
+// 		select: {
+// 			'_id':0, 
+// 			'userId':1, 'name':1, 'workUnit':1, 'title':1, 'department':1, 'major':1, 
+// 			'descirption':1, 'score':1, 'charge1':1, 'charge2':1, 'photoUrl':1, 'schedules':1
+// 		}
+// 	};
+
+// 	Comment.getSome(query, function(err, item) {
+// 		if (err) {
+//       		return res.status(500).send(err.errmsg);
+//     	}
+//     	res.json({results: item});
+// 	}, opts, fields, populate);
+// }
+
+//修改获取医生详细信息方法 2017-4-12 GY
+exports.getComments = function(req, res, next) {
 	//查询条件
 	var doctorObject = req.body.doctorObject;
 	var query = {doctorId:doctorObject._id};
 
 	var opts = '';
-	var fields = {'_id':0, 'time':1, 'content':1, 'doctorId':1, 'patientId':1};
+	var fields = {'_id':0, 'revisionInfo':0};
 	//通过子表查询主表，定义主表查询路径及输出内容
 	var populate = {
-		path: 'doctorId patientId', 
+		path: 'patientId', 
 		select: {
 			'_id':0, 
-			'userId':1, 'name':1, 'workUnit':1, 'title':1, 'department':1, 'major':1, 
-			'descirption':1, 'score':1, 'charge1':1, 'charge2':1, 'photoUrl':1, 'schedules':1
+			'userId':1, 'name':1
 		}
 	};
 
-	Comment.getSome(query, function(err, item) {
+	Comment.getSome(query, function(err, items) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item});
+    	if (items.length === 0) {
+    		req.body.comments = {result:'暂无评论！'};
+    	}
+    	else {
+    		req.body.comments = items;
+    	}
+    	
+    	next();
 	}, opts, fields, populate);
+}
+exports.getDoctorInfo = function(req, res){
+	var query = {userId: req.query.userId};
+	var comments = req.body.comments;
+	
+	var opts = '';
+	var fields = {'_id':0, 'revisionInfo':0};
+	var populate = '';
+
+	Doctor.getOne(query, function (err, doctor) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send('服务器错误, 用户查询失败!');
+        }
+        res.json({result:doctor, comments:comments});
+
+    }, opts, fields, populate);
+}
+
+//修改医生个人信息 2017-04-12 GY
+exports.editDoctorDetail = function(req, res) {
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result:'请填写userId!'});
+	}
+	var query = {
+		userId: req.body.userId
+	};
+	
+	var upObj = {
+		revisionInfo:{
+			operationTime:new Date(),
+			userId:"gy",
+			userName:"gy",
+			terminalIP:"10.12.43.32"
+		}
+	};
+	if (req.body.name != null){
+		upObj['name'] = req.body.name;
+	}
+	if (req.body.photoUrl != null){
+		upObj['photoUrl'] = req.body.photoUrl;
+	}
+	if (req.body.birthday != null){
+		upObj['birthday'] = req.body.birthday;
+	}
+	if (req.body.gender != null){
+		upObj['gender'] = req.body.gender;
+	}
+	if (req.body.IDNo != null){
+		upObj['IDNo'] = req.body.IDNo;
+	}
+	if (req.body.province != null){
+		upObj['province'] = req.body.province;
+	}
+	if (req.body.city != null){
+		upObj['city'] = req.body.city;
+	}
+	if (req.body.workUnit != null){
+		upObj['workUnit'] = req.body.workUnit;
+	}
+	if (req.body.title != null){
+		upObj['title'] = req.body.title;
+	}
+	if (req.body.job != null){
+		upObj['job'] = req.body.job;
+	}
+	if (req.body.department != null){
+		upObj['department'] = req.body.department;
+	}
+	if (req.body.major != null){
+		upObj['major'] = req.body.major;
+	}
+	if (req.body.descirption != null){
+		upObj['descirption'] = req.body.descirption;
+	}
+	if (req.body.charge1 != null){
+		upObj['charge1'] = req.body.charge1;
+	}
+	if (req.body.charge2 != null){
+		upObj['charge2'] = req.body.charge2;
+	}
+
+	//return res.json({query: query, upObj: upObj});
+	Doctor.updateOne(query, upObj, function(err, upPatient) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+
+		res.json({result: 1, editResult:upPatient});
+	}, {new: true});
 }
