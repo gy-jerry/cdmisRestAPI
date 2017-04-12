@@ -8,7 +8,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-
+var log4js = require('./controllers/log_controller');
 
 // import necessary self-defined modules
 
@@ -45,6 +45,8 @@ app.set('port', restPort);
 
 app.use(bodyParser.json({ limit: config.bodyParserJSONLimit })); 
 app.use(bodyParser.urlencoded({ extended: true })); 
+log4js.configure();
+app.use(log4js.useLog());
 //app.use(expressValidator());
 //app.use(useragent.express());
 

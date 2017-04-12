@@ -85,7 +85,11 @@ exports.updateStatus = function(req, res) {
   
           });
         }
-      	res.json({results: 1});
+        else
+        {
+          res.json({results: 1});
+        }
+      	
 
   	});
 	

@@ -5,7 +5,8 @@ var	config = require('../config'),
 		Numbering = require('../models/numbering'),
 		Sms = require('../models/sms'),
 		crypto = require('crypto'),
-		https = require('https');
+		https = require('https'),
+        jwt = require('jsonwebtoken');
 
 
 var Base64 = {  
@@ -191,8 +192,6 @@ function stringToBytes ( str ) {
   // return an array of bytes  
   return re;  
 }
-
-        
 
 function getNowFormatDate() {
     var date = new Date();
@@ -438,9 +437,23 @@ exports.reset = function(req, res) {
     });
 }
 exports.login = function(req, res) {
-    var _phoneNo = req.query.phoneNo
-    var _password = req.query.password
-    var query = {phoneNo:_phoneNo};
+    var username = req.body.username;
+    var password = req.body.password;
+    var role = req.body.role;
+
+    if (username === '' || password === '') {
+        return res.status(422).send('请输入用户名和密码!'); 
+    }
+
+
+    // var query = {phoneNo:_phoneNo};
+    var query = {
+        $or: [
+            {phoneNo: username},
+            {openId: username}
+        ]
+    };
+
     User.getOne(query, function(err, item) {
         if (err) {
             return res.status(500).send(err.errmsg);
@@ -449,22 +462,47 @@ exports.login = function(req, res) {
             res.json({results: 1,mesg:"User doesn't Exist!"});
         }
         else{
-            if(_password!=item.password){
+            if(password!=item.password){
                 res.json({results: 1,mesg:"User password isn't correct!"});
             }
-            else{
+            else if(item.role.indexOf(role) == -1)
+            {
+                res.json({results: 1,mesg:"No authority!"});
+            }
+            else
+            {
                 var _lastlogindate=item.lastLogin
                 // console.log(Date())
-                User.updateOne(query,{ $set: { loginStatus: 0 ,lastLogin:Date()} },function(err, item1){
+                User.updateOne(query,{ $set: { loginStatus: 0 ,lastLogin:Date()} },function(err, user){
                     if (err) {
                         return res.status(500).send(err.errmsg);
                     }
-                    res.json({results: 0,usrid:item.userId,lastlogin:_lastlogindate,PhotoUrl:item.photoUrl,mesg:"login success!"});
+
+                    // csq 返回token信息
+                    //console.log(user);
+                    userPayload = {
+                        _id: user._id,
+                        userId: user.userId,
+                        role:role
+                    };
+                    var token = jwt.sign(userPayload, config.tokenSecret, {algorithm:'HS256'},{expiresIn: config.TOKEN_EXPIRATION});
+                    
+                    var results = {
+                        status:0,
+                        userId:item.userId,
+                        lastlogin:_lastlogindate,
+                        PhotoUrl:item.photoUrl,
+                        mesg:"login success!",
+                        token:token
+                    };
+
+                    res.json({results: results});
                 });
             }
         }
     });
 }
+
 exports.logout = function(req, res) {
     var _userId = req.query.userId
     var query = {userId:_userId};
@@ -644,3 +682,9 @@ exports.verifySMS = function(req, res) {
         }
     });
 }
+
+// var commonFunc = require('../middlewares/commonFunc');
+// exports.getIp = function(req, res) {
+//     var _ip = commonFunc.getClientIp(req)
+//     res.json({results: 0,Ip:_ip});
+// }
