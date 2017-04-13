@@ -9,7 +9,7 @@ var patientSchema = new mongoose.Schema({
 	gender: Number, 
 	IDNo: String, 
 	height: String, 
-	weitht: String, 
+	// weight: String, 
 	occupation: String, 
 	bloodType: Number, 
 	address: {
@@ -39,6 +39,11 @@ var patientSchema = new mongoose.Schema({
 	  	doctor: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}
 	  }
 	], 
+	lastVisit: {
+		time: Date, 
+		hospital: String, 
+		diagnosis: String
+	}, 
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,
