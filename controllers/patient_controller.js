@@ -134,42 +134,27 @@ exports.checkPatientId = function (req, res, next) {
 };
 //新建患者个人信息 2017-04-06 GY
 exports.newPatientDetail = function(req, res) {
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result:'请填写userId!'});
+	}
+	if (req.body.birthday == null || req.body.birthday =='') {
+		return res.json({result:'请填写birthday!'});
+	}
+	if (req.body.bloodType == null || req.body.bloodType =='') {
+		return res.json({result:'请填写bloodType!'});
+	}
+	if (req.body.hypertension == null || req.body.hypertension =='') {
+		return res.json({result:'请填写hypertension!'});
+	}
 	var patientData = {
-		userId: req.body.userId, 
-		name: req.body.name, 
-		photoUrl: req.body.photoUrl, 
-		birthday: req.body.birthday, 
-		gender: req.body.gender, 
-		IDNo: req.body.IDNo, 
-		height: req.body.height, 
-		weight: req.body.weight, 
-		// occupation: req.body.occupation, 
-		bloodType: req.body.bloodType, 
-		// address: {
-		// 	nation: req.body.nation, 
-		// 	province: req.body.province, 
-		// 	city: req.body.city
-		// }, 
-		class: req.body.class, 
-		class_info: req.body.class_info, 
-		operationTime: req.body.operationTime, 
-		// VIP: req.body.VIP, 
-		hypertension: req.body.hypertension, 
-		// doctors: [
-	 //  		{
-	 //  			doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
-	 //  			firstTime: Date, 
-	 //  			invalidFlag: Number
-	 //  		}
-		// ], 
-		// diagnosisInfo: [
-	 //  		{
-	 //  			name: String, 
-	 //  			time: Date, 
-	 //  			doctor: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}
-	 //  		}
-		// ], 
-
+		userId:req.body.userId, 
+		name:req.body.name, 
+		gender:req.body.gender, 
+		bloodType:req.body.bloodType, 
+		hypertension:req.body.hypertension, 
+		class:req.body.class, 
+		class_info:req.body.class_info, 
+		birthday:new Date(req.body.birthday), 
 		revisionInfo:{
 			operationTime:new Date(),
 			userId:"gy",
@@ -177,59 +162,50 @@ exports.newPatientDetail = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
+	if (req.body.photoUrl != null){
+		patientData['photoUrl'] = req.body.photoUrl;
+	}
+	if (req.body.IDNo != null){
+		patientData['IDNo'] = req.body.IDNo;
+	}
+	if (req.body.height != null){
+		patientData['height'] = req.body.height;
+	}
+	if (req.body.occupation != null){
+		patientData['occupation'] = req.body.occupation;
+	}
+	if (req.body.nation != null){
+		patientData['address.nation'] = req.body.nation;
+	}
+	if (req.body.province != null){
+		patientData['address.province'] = req.body.province;
+	}
+	if (req.body.city != null){
+		patientData['address.city'] = req.body.city;
+	}
+	if (req.body.operationTime != null){
+		patientData['operationTime'] = req.body.operationTime;
+	}
 	//return res.status(200).send(counselData);
 	var newPatient = new Patient(patientData);
 	newPatient.save(function(err, patientInfo) {
 		if (err) {
       return res.status(500).send(err.errmsg);
     }
-    res.json({results: patientInfo});
+    res.json({result: '新建成功', newResults: patientInfo});
 	});
 }
 
 //修改患者个人信息 2017-04-06 GY
 exports.editPatientDetail = function(req, res) {
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result:'请填写userId!'});
+	}
 	var query = {
 		userId: req.body.userId
 	};
 	
 	var upObj = {
-		// userId: req.body.userId, 
-		name: req.body.name, 
-		photoUrl: req.body.photoUrl, 
-		birthday: req.body.birthday, 
-		gender: req.body.gender, 
-		IDNo: req.body.IDNo, 
-		height: req.body.height, 
-		weight: req.body.weight, 
-		// occupation: req.body.occupation, 
-		bloodType: req.body.bloodType, 
-		// address: {
-		// 	nation: req.body.nation, 
-		// 	province: req.body.province, 
-		// 	city: req.body.city
-		// }, 
-		class: req.body.class, 
-		class_info: req.body.class_info, 
-		operationTime: req.body.operationTime, 
-		// VIP: req.body.VIP, 
-
-		hypertension: req.body.hypertension, 
-		// doctors: [
-	 //  		{
-	 //  			doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
-	 //  			firstTime: Date, 
-	 //  			invalidFlag: Number
-	 //  		}
-		// ], 
-		// diagnosisInfo: [
-	 //  		{
-	 //  			name: String, 
-	 //  			time: Date, 
-	 //  			doctor: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}
-	 //  		}
-		// ], 
-
 		revisionInfo:{
 			operationTime:new Date(),
 			userId:"gy",
@@ -237,13 +213,63 @@ exports.editPatientDetail = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
+	if (req.body.userId != null){
+		upObj['userId'] = req.body.userId;
+	}
+	if (req.body.name != null){
+		upObj['name'] = req.body.name;
+	}
+	if (req.body.photoUrl != null){
+		upObj['photoUrl'] = req.body.photoUrl;
+	}
+	if (req.body.birthday != null){
+		upObj['birthday'] = req.body.birthday;
+	}
+	if (req.body.gender != null){
+		upObj['gender'] = req.body.gender;
+	}
+	if (req.body.IDNo != null){
+		upObj['IDNo'] = req.body.IDNo;
+	}
+	if (req.body.height != null){
+		upObj['height'] = req.body.height;
+	}
+	if (req.body.occupation != null){
+		upObj['occupation'] = req.body.occupation;
+	}
+	if (req.body.bloodType != null){
+		upObj['bloodType'] = req.body.bloodType;
+	}
+	if (req.body.nation != null){
+		upObj['address.nation'] = req.body.nation;
+	}
+	if (req.body.province != null){
+		upObj['address.province'] = req.body.province;
+	}
+	if (req.body.city != null){
+		upObj['address.city'] = req.body.city;
+	}
+	if (req.body.class != null){
+		upObj['class'] = req.body.class;
+	}
+	if (req.body.class_info != null){
+		upObj['class_info'] = req.body.class_info;
+	}
+	if (req.body.operationTime != null){
+		upObj['operationTime'] = req.body.operationTime;
+	}
+	if (req.body.hypertension != null){
+		upObj['hypertension'] = req.body.hypertension;
+	}
 	//return res.json({query: query, upObj: upObj});
 	Patient.updateOne(query, upObj, function(err, upPatient) {
 		if (err){
 			return res.status(422).send(err.message);
 		}
-
-		res.json({results: upPatient});
+		if (upPatient == null) {
+			return res.json({result:'修改失败，不存在的患者ID！'})
+		}
+		res.json({result: '修改成功', newResults: upPatient});
 	}, {new: true});
 }
 

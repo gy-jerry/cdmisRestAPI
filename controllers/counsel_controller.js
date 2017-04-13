@@ -44,6 +44,9 @@ exports.getCounsels = function(req, res) {
 
 //获取患者ID对象(用于咨询问卷方法) 2017-04-05 GY
 exports.getPatientObject = function (req, res, next) {
+	if (req.body.patientId == null || req.body.patientId == '') {
+		return res.json({result:'请填写patientId!'});
+	}
     var query = { 
         userId: req.body.patientId
     };
@@ -61,6 +64,9 @@ exports.getPatientObject = function (req, res, next) {
 };
 //获取医生ID对象(用于咨询问卷方法) 2017-04-05 GY
 exports.getDoctorObject = function (req, res, next) {
+	if (req.body.doctorId == null || req.body.doctorId == '') {
+		return res.json({result:'请填写doctorId!'});
+	}
     var query = { 
         userId: req.body.doctorId
     };
@@ -77,7 +83,9 @@ exports.getDoctorObject = function (req, res, next) {
     });
 };
 //提交咨询问卷 2017-04-05 GY
+//增加选填字段 2017-04-13 GY
 exports.saveQuestionaire = function(req, res) {
+
 	var counselData = {
 		counselId: req.body.counselId, 						//counselpost01
 		patientId: req.body.patientObject._id, 				//p01
@@ -105,12 +113,24 @@ exports.saveQuestionaire = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
-	
+	if(req.body.hospital != null && req.body.hospital != ''){
+		counselData['hospital'] = req.body.hospital; 
+	}
+	if(req.body.visitDate != null && req.body.visitDate != ''){
+		counselData['visitDate'] = new Date(req.body.visitDate); 
+	}
+	if(req.body.diagnosis != null && req.body.diagnosis != ''){
+		counselData['diagnosis'] = req.body.diagnosis; 
+	}
+	if(req.body.diagnosisPhotoUrl != null && req.body.diagnosisPhotoUrl != ''){
+		counselData['diagnosisPhotoUrl'] = req.body.diagnosisPhotoUrl; 
+	}
+ 
 	var newCounsel = new Counsel(counselData);
 	newCounsel.save(function(err, counselInfo) {
 		if (err) {
       return res.status(500).send(err.errmsg);
     }
-    res.json({results: counselInfo});
+    res.json({result: '新建成功', newResults: counselInfo});
 	});
 }

@@ -20,6 +20,9 @@ exports.getDoctor = function(req, res) {
 
 //新建医生基本信息 2017-04-01 GY
 exports.insertDocBasic = function(req, res) {
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result:'请填写userId!'});
+	}
 	var doctorData = {
 		revisionInfo:{
 			operationTime:new Date(),
@@ -28,7 +31,9 @@ exports.insertDocBasic = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
-	var doctorData = {};
+	if (req.body.userId != null){
+		doctorData['userId'] = req.body.userId;
+	}
 	if (req.body.name != null){
 		doctorData['name'] = req.body.name;
 	}
@@ -36,7 +41,7 @@ exports.insertDocBasic = function(req, res) {
 		doctorData['photoUrl'] = req.body.photoUrl;
 	}
 	if (req.body.birthday != null){
-		doctorData['birthday'] = req.body.birthday;
+		doctorData['birthday'] = new Date(req.body.birthday);
 	}
 	if (req.body.gender != null){
 		doctorData['gender'] = req.body.gender;
@@ -80,7 +85,7 @@ exports.insertDocBasic = function(req, res) {
 		if (err) {
       return res.status(500).send(err.errmsg);
     }
-    res.json({results: doctorInfo});
+    res.json({result:'新建成功', newResults: doctorInfo});
 	});
 }
 
@@ -239,7 +244,7 @@ exports.getComments = function(req, res, next) {
       		return res.status(500).send(err.errmsg);
     	}
     	if (items.length === 0) {
-    		req.body.comments = {result:'暂无评论！'};
+    		req.body.comments = '暂无评论！';
     	}
     	else {
     		req.body.comments = items;
@@ -290,7 +295,7 @@ exports.editDoctorDetail = function(req, res) {
 		upObj['photoUrl'] = req.body.photoUrl;
 	}
 	if (req.body.birthday != null){
-		upObj['birthday'] = req.body.birthday;
+		upObj['birthday'] = new Date(req.body.birthday);
 	}
 	if (req.body.gender != null){
 		upObj['gender'] = req.body.gender;
@@ -330,11 +335,15 @@ exports.editDoctorDetail = function(req, res) {
 	}
 
 	//return res.json({query: query, upObj: upObj});
-	Doctor.updateOne(query, upObj, function(err, upPatient) {
+	Doctor.updateOne(query, upObj, function(err, upDoctor) {
 		if (err){
 			return res.status(422).send(err.message);
 		}
-
-		res.json({result: 1, editResult:upPatient});
+		if (upDoctor == null) {
+			return res.json({result:'修改失败，不存在的医生ID！'})
+		}
+		res.json({result: '修改成功', editResult:upDoctor});
 	}, {new: true});
 }
+
+//获取最近交流过的医生列表 

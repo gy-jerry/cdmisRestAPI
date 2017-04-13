@@ -9,7 +9,7 @@ var patientSchema = new mongoose.Schema({
 	gender: Number, 
 	IDNo: String, 
 	height: String, 
-	weitht: String, 
+	// weight: String, 
 	occupation: String, 
 	bloodType: Number, 
 	address: {
