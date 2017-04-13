@@ -3,10 +3,10 @@ var mongoose = require('mongoose');
 
 var healthInfoSchema = new mongoose.Schema({
 	userId: String,						
-	type: Number, 
+	type: String, 
 	insertTime: Date, 
 	time: Date, 
-	url: String, 
+	url: [String], 
 	label: String, 
 	description: String, 
 	comments: String, 
@@ -58,7 +58,7 @@ HealthInfo.getSome = function(query, callback, opts, fields, populate) {
 	var fields = fields || null;
 	var populate = populate || '';
 	healthInfoModel
-		.find(query, fields, options).sort({time:-1})
+		.find(query, fields, options)
 		.populate(populate)
 		.exec(function(err, healthInfos) {
 			if(err) {
