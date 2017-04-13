@@ -3,6 +3,9 @@ var	config = require('../config'),
 
 //根据类型查询消息链接 2017-04-05 GY 
 exports.getMessages = function(req, res) {
+	if (req.query.type == null || req.query.type == '') {
+        return res.json({result:'请填写type!'});
+    }
 	//查询条件
 	//var doctorObject = req.body.doctorObject;
 	var query = {type:req.query.type};

@@ -9,8 +9,8 @@ exports.getCommentsByDoc = function(req, res) {
 
 	//设置参数
 	var opts = '';
-	var fields = {'patientId':1, 'time':1, 'content':1, '_id':0};
-	var populate = {path: 'patientId', select:{'_id':0, 'userId':1, 'name':1}};
+	var fields = {'_id':0, 'revisionInfo':0};
+	var populate = {path: 'patientId', select:{'_id':0, 'revisionInfo':0}};
 
 	Comment.getSome(query, function(err, item) {
 		if (err) {
