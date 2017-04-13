@@ -4,6 +4,9 @@ var	config = require('../config'),
 
 //查询某患者某一种体征记录 
 exports.getVitalSigns = function(req, res) {
+    if (req.query.type == null || req.query.type == '') {
+        return res.json({result:'请填写type!'});
+    }
 	//查询条件
 	var query = {
 		patientId:req.body.patientObject._id, 
@@ -24,6 +27,9 @@ exports.getVitalSigns = function(req, res) {
 
 //新建体征记录 2017-04-06 GY
 exports.getPatientObject = function (req, res, next) {
+    if (req.body.patientId == null || req.body.patientId == '') {
+        return res.json({result:'请填写patientId!'});
+    }
 	//通过patientId获取patient表中对应的_id
     var querypatient = { 
         userId: req.body.patientId
@@ -34,7 +40,7 @@ exports.getPatientObject = function (req, res, next) {
             return res.status(500).send('服务器错误, 用户查询失败!');
         }
         if (patient == null) {
-        	return res.status(404).send('不存在的患者ID！');
+        	return res.json({result:'不存在的患者ID！'});
         }
         req.body.patientObject = patient;
         next();
@@ -43,6 +49,18 @@ exports.getPatientObject = function (req, res, next) {
 
 }
 exports.getVitalSign = function (req, res, next) {
+    if (req.body.type == null || req.body.type == '') {
+        return res.json({result:'请填写type!'});
+    }
+    if (req.body.code == null || req.body.code == '') {
+        return res.json({result:'请填写code!'});
+    }
+    if (req.body.unit == null || req.body.unit == '') {
+        return res.json({result:'请填写unit!'});
+    }
+    if (req.body.date == null || req.body.date == '') {
+        return res.json({result:'请填写date!'});
+    }
 	//return res.json({result:req.body});
 	//查询vitalsign表中是否存在已有对应日期的条目
     var queryVital = {
@@ -86,6 +104,12 @@ exports.getVitalSign = function (req, res, next) {
     })
 }
 exports.insertData = function(req, res) {
+    if (req.body.datatime == null || req.body.datatime == '') {
+        return res.json({result:'请填写datatime!'});
+    }
+    if (req.body.datavalue == null || req.body.datavalue == '') {
+        return res.json({result:'请填写datavalue!'});
+    }
 	var query = {
 		patientId: req.body.patientObject._id, 
 		type: req.body.type, 
@@ -106,7 +130,12 @@ exports.insertData = function(req, res) {
 		if (err){
 			return res.status(422).send(err.message);
 		}
-
+        if (updata.nModified == 0) {
+            return res.json({result:'未成功修改！请检查输入是否符合要求！', results:updata});
+        }
+        if (updata.nModified == 1) {
+            return res.json({result:'新建或修改成功', resluts:updata});
+        }
 		res.json({results: updata});
 	}, {new: true});
 }

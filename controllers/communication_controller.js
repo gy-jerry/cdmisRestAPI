@@ -8,6 +8,9 @@ var	config = require('../config'),
 
 //根据counselId获取counsel表除messages外的信息 2017-03-31 GY 
 exports.getCounselReport = function(req, res) {
+	if (req.query.counselId == null || req.query.counselId == '') {
+        return res.json({result:'请填写counselId!'});
+    }
 	//查询条件
 	var _counselId = req.query.counselId;
 	var query = {counselId:_counselId};
@@ -27,6 +30,9 @@ exports.getCounselReport = function(req, res) {
 
 //根据teamId获取team表所有信息 2017-03-31 GY 
 exports.getTeam = function(req, res) {
+	if (req.query.teamId == null || req.query.teamId == '') {
+        return res.json({result:'请填写teamId!'});
+    }
 	//查询条件
 	var _teamId = req.query.teamId;
 	var query = {teamId:_teamId};
@@ -74,12 +80,15 @@ exports.newTeam = function(req, res) {
 		if (err) {
       return res.status(500).send(err.errmsg);
     }
-    res.json({results: teamInfo});
+    res.json({result:'新建成功', newResults: teamInfo});
 	});
 }
 
 //新建会诊 2017-04-06 GY
 exports.checkTeam = function (req, res, next) {
+	if (req.body.teamId == null || req.body.teamId == '') {
+        return res.json({result:'请填写teamId!'});
+    }
     var query = { 
         teamId: req.body.teamId
     };
@@ -96,6 +105,9 @@ exports.checkTeam = function (req, res, next) {
     });
 };
 exports.checkCounsel = function (req, res, next) {
+	if (req.body.counselId == null || req.body.counselId == '') {
+        return res.json({result:'请填写counselId!'});
+    }
     var query = { 
         counselId: req.body.counselId
     };
@@ -112,6 +124,9 @@ exports.checkCounsel = function (req, res, next) {
     });
 };
 exports.checkPatient = function (req, res, next) {
+	if (req.body.patientId == null || req.body.patientId == '') {
+        return res.json({result:'请填写patientId!'});
+    }
     var query = { 
         userId: req.body.patientId
     };
@@ -128,6 +143,9 @@ exports.checkPatient = function (req, res, next) {
     });
 };
 exports.checkDoctor = function (req, res, next) {
+	if (req.body.sponsorId == null || req.body.sponsorId == '') {
+        return res.json({result:'请填写sponsorId!'});
+    }
     var query = { 
         userId: req.body.sponsorId
     };
@@ -144,6 +162,9 @@ exports.checkDoctor = function (req, res, next) {
     });
 };
 exports.newConsultation = function(req, res) {
+	if (req.body.consultationId == null || req.body.consultationId == '') {
+        return res.json({result:'请填写consultationId!'});
+    }
 	var consultationData = {
 		consultationId: req.body.consultationId,						
 		sponsorId: req.body.sponsorObject._id, 
@@ -180,6 +201,12 @@ exports.newConsultation = function(req, res) {
 
 //根据consultationId更新conclusion 2017-04-06 GY
 exports.conclusion = function(req, res) {
+	if (req.body.consultationId == null || req.body.consultationId == '') {
+        return res.json({result:'请填写consultationId!'});
+    }
+    if (req.body.conclusion == null || req.body.conclusion == '') {
+        return res.json({result:'请填写conclusion!'});
+    }
 	var query = {
 		consultationId: req.body.consultationId
 	};
@@ -192,13 +219,18 @@ exports.conclusion = function(req, res) {
 		if (err){
 			return res.status(422).send(err.message);
 		}
-
-		res.json({results: upConclusion});
+		if (upConclusion == null) {
+			return res.json({result:'更新结论失败'});
+		}
+		res.json({result:'更新结论成功', results: upConclusion});
 	}, {new: true});
 }
 
 //给team表中members字段增加组员 2017-04-06 GY
 exports.insertMember = function(req, res) {
+	if (req.body.teamId == null || req.body.teamId == '') {
+        return res.json({result:'请填写teamId!'});
+    }
 	var query = {
 		teamId: req.body.teamId
 	};
@@ -207,7 +239,8 @@ exports.insertMember = function(req, res) {
 		$addToSet: {
 			members: {
 				userId:req.body.membersuserId, 
-				name:req.body.membersname
+				name:req.body.membersname, 
+				photoUrl:req.body.membersphotoUrl
 			}
 		}
 	};
@@ -216,13 +249,24 @@ exports.insertMember = function(req, res) {
 		if (err){
 			return res.status(422).send(err.message);
 		}
-
+		if (upmember.nModified == 0 && upmember.n == 0) {
+            return res.json({result:'未成功修改！请检查输入是否符合要求！', results:upmember});
+        }
+		if (upmember.nModified == 0 && upmember.n != 0) {
+            return res.json({result:'未成功修改！请检查是否成员已添加！', results:upmember});
+        }
+        if (upmember.nModified == 1) {
+            return res.json({result:'新建或修改成功', results:upmember});
+        }
 		res.json({results: upmember});
 	}, {new: true});
 }
 
 //删除team表中members字段指定组员 2017-04-06 GY
 exports.removeMember = function(req, res) {
+	if (req.body.teamId == null || req.body.teamId == '') {
+        return res.json({result:'请填写teamId!'});
+    }
 	var query = {
 		teamId: req.body.teamId
 	};
@@ -238,6 +282,15 @@ exports.removeMember = function(req, res) {
 	Team.update(query, upObj, function(err, upmember) {
 		if (err){
 			return res.status(422).send(err.message);
+		}
+		if (upmember.n == 0 && upmember.nModified == 0) {
+			return res.json({result:'未成功移除，请检查组是否存在！', results: upmember})
+		}
+		if (upmember.n != 0 && upmember.nModified == 0) {
+			return res.json({result:'未成功移除，请检查成员是否存在！', results: upmember})
+		}
+		if (upmember.n != 0 && upmember.nModified == 1) {
+			return res.json({result:'移除成功', results: upmember})
 		}
 
 		res.json({results: upmember});
