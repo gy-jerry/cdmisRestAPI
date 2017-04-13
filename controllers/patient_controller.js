@@ -30,7 +30,10 @@ exports.getDoctorLists = function(req, res) {
 	//查询条件
 	var _workUnit = req.query.workUnit;
 	var _name = req.query.name;
-	// return res.json({query:req.query})
+
+	var _limit = Number(req.query.limit);
+	var _skip = Number(req.query.skip);
+
 	var query;
 	//name选填
 	if ((_name == null || _name == '') && (_workUnit == null || _workUnit == '')){
@@ -46,7 +49,11 @@ exports.getDoctorLists = function(req, res) {
 		query = {workUnit:_workUnit, name:_name};
 	}
 	//输出内容
-	var fields = {'_id':0, 'revisionInfo':0};
+
+	// if(_limit==null||_limit==)
+	var option = {limit:_limit, skip:_skip,sort:-"_id"}
+	var fields = {"_id":0, 'revisionInfo':0};
+
 	var populate = '';
 
 	Doctor.getSome(query, function(err, items) {
@@ -54,7 +61,9 @@ exports.getDoctorLists = function(req, res) {
       		return res.status(500).send(err.errmsg);
     	}
     	res.json({results: items});
-	}, '', fields, populate);
+
+	}, option, fields, populate);
+
 }
 
 //通过patient表中userId返回PatientObject 2017-03-30 GY 

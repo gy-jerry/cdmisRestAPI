@@ -77,7 +77,6 @@ module.exports = function(app,webEntry) {
   app.get('/dictNumber/getNo', getNoMid.getNo(), dictNumberCtrl.getNo);
   // app.get('/user/getIp', userCtrl.getIp); 
   app.post('/upload', loadCtrl.uploadphoto(), loadCtrl.upload);
-  // app.post('/upload', upload.single('photo'), loadCtrl.upload);
   // app.get('/download',loadCtrl.download);
 
 
