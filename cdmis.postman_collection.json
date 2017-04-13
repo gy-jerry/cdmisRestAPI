@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "cdmis",
-		"_postman_id": "06191033-3854-1e90-07e5-34bc8dcecec5",
+		"_postman_id": "fce32bc6-7b09-67f5-ef3d-7a938600dcb3",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -238,17 +238,6 @@
 			"response": []
 		},
 		{
-			"name": "217 Dict-005-001 获取健康信息类别",
-			"request": {
-				"url": "121.43.107.106:4050/dict/typeOne?category=healthInfoType",
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"description": "获取健康信息类别"
-			},
-			"response": []
-		},
-		{
 			"name": "101 Doctor-002 获取患者列表",
 			"request": {
 				"url": "121.43.107.106:4050/doctor/getPatientList?userId=doc01",
@@ -296,7 +285,7 @@
 		{
 			"name": "102 Doctor-003 获取医生个人信息",
 			"request": {
-				"url": "121.43.107.106:4050/doctor/getDoctorInfo?userId=doc01",
+				"url": "localhost:4050/doctor/getDoctorInfo?userId=doc01",
 				"method": "GET",
 				"header": [
 					{
@@ -579,91 +568,18 @@
 		{
 			"name": "120 doctor-001新建医生信息",
 			"request": {
-				"url": "121.43.107.106:4050/doctor/postDocBasic",
+				"url": "localhost:4050/doctor/postDocBasic",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
+						"value": "application/json",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "userId",
-							"value": "docpost3",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "name",
-							"value": "姓名",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "birthday",
-							"value": "1956-05-22",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "gender",
-							"value": "1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "workUnit",
-							"value": "浙江省人民医院",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "department",
-							"value": "肾内科",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "title",
-							"value": "副主任医师",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "major",
-							"value": "慢性肾炎",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "description",
-							"value": "经验丰富",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "photoUrl",
-							"value": "http://photo/docpost3.jpg",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "charge1",
-							"value": "150",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "charge2",
-							"value": "50",
-							"type": "text",
-							"enabled": true
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"docpost45\",\n\t\"name\":\"修改xx\",\n\t\"photoUrl\":\"http://doc.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"workUnit\":\"浙江省人民医院\", \n\t\"title\":\"主任医师\", \n\t\"job\":\"住院医师\", \n\t\"department\":\"肾内科\", \n\t\"major\":\"肾移植\", \n\t\"description\":\"很棒棒\", \n\t\"charge1\":\"55\", \n\t\"charge2\":\"66\"\n}"
 				},
 				"description": ""
 			},
@@ -672,61 +588,18 @@
 		{
 			"name": "121 counsel-002 咨询问卷填写",
 			"request": {
-				"url": "121.43.107.106:4050/counsel/questionaire",
+				"url": "localhost:4050/counsel/questionaire",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
+						"value": "application/json",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "counselId",
-							"value": "counselpost02",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "patientId",
-							"value": "p01",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "doctorId",
-							"value": "doc01",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "sickTime",
-							"value": "3天",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "symptom",
-							"value": "腹痛",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "symptomPhotoUrl",
-							"value": "http://photo/symptom1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "help",
-							"value": "帮助",
-							"type": "text",
-							"enabled": true
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"counselId\":\"counselpost7\",\n\t\"patientId\":\"p01\",\n\t\"doctorId\":\"doc01\", \n\t\"hospital\":\"xx医院\", \n\t\"visitDate\":\"2017-04-04\",\n\t\"diagnosis\":\"感冒\", \n\t\"diagnosisPhotoUrl\":[], \n\t\"sickTime\":\"3天\", \n\t\"symptom\":\"发热\", \n\t\"symptomPhotoUrl\":[\"http://1.jpg\", \"http://2.jpg\"], \n\t\"help\":\"帮助\"\n}"
 				},
 				"description": ""
 			},
@@ -792,190 +665,18 @@
 		{
 			"name": "123 patient-005-001 新建患者",
 			"request": {
-				"url": "121.43.107.106:4050/patient/newPatientDetail",
+				"url": "localhost:4050/patient/newPatientDetail",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
+						"value": "application/json",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "userId",
-							"value": "ppost01",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "name",
-							"value": "患者xx",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "birthday",
-							"value": "1987-03-25",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "gender",
-							"value": "2",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "IDNo",
-							"value": "123456123456781234",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "height",
-							"value": "183",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "weight",
-							"value": "70",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "bloodType",
-							"value": "2",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "class",
-							"value": "class1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "class_info",
-							"value": "info_1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "operationTime",
-							"value": "2017-04-05",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "hypertension",
-							"value": "1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "photoUrl",
-							"value": "http://photo/ppost01.jpg",
-							"type": "text",
-							"enabled": true
-						}
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "124 patient-005-002 修改患者信息",
-			"request": {
-				"url": "121.43.107.106:4050/patient/editPatientDetail",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "userId",
-							"value": "ppost01",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "name",
-							"value": "新名字",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "birthday",
-							"value": "1987-03-03",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "gender",
-							"value": "1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "IDNo",
-							"value": "123456123456781234",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "height",
-							"value": "183",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "weight",
-							"value": "70",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "bloodType",
-							"value": "2",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "class",
-							"value": "class1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "class_info",
-							"value": "info3",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "hypertension",
-							"value": "1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "photoUrl",
-							"value": "http://photo/ppost01.jpg",
-							"type": "text",
-							"enabled": true
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"pdpost1\",\n\t\"name\":\"新建xx\",\n\t\"photoUrl\":\"http://pp.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"height\":\"188\", \n\t\"occupation\":\"教师\", \n\t\"bloodType\":\"2\", \n\t\"nation\":\"中国\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"class\":\"class1\", \n\t\"class_info\":[\"classInfo1\"], \n    \"operationTime\":\"2017-04-01\", \n    \"hypertension\":\"1\", \n    \"lastVisittime\":\"2017-04-12\", \n    \"lastVisithospital\":\"浙江省人民医院\", \n    \"lastVisitdiagnosis\":\"慢性肾炎\"\n}"
 				},
 				"description": ""
 			},
@@ -1011,6 +712,12 @@
 						{
 							"key": "membersname",
 							"value": "name2",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "membersphotoUrl",
+							"value": "http://photo2.jpg",
 							"type": "text",
 							"enabled": true
 						}
@@ -1352,7 +1059,10 @@
 				"url": "http://121.43.107.106:4050/user/sendSMS?mobile=18768113660&smsType=1",
 				"method": "POST",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "输入手机号及信息类型\n信息类型 注册时输入1"
 			},
 			"response": []
@@ -1363,7 +1073,10 @@
 				"url": "http://121.43.107.106:4050/user/verifySMS?mobile=18768113660&smsType=1&smsCode=921588",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "校验验证码\n输入手机号\n信息类型 注册为1\n验证码\n\nresults 0 正确；1 错误；2 无验证码或已过期"
 			},
 			"response": []
@@ -1387,7 +1100,8 @@
 						{
 							"key": "photo",
 							"type": "file",
-							"enabled": true
+							"enabled": true,
+							"value": ""
 						}
 					]
 				},
@@ -1401,7 +1115,10 @@
 				"url": "http://10.12.43.40:4050/healthInfo/getAllHealthInfo?userId=U201704010002",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获得时间倒序的用户健康信息\n输入 用户id"
 			},
 			"response": []
@@ -1412,7 +1129,10 @@
 				"url": "http://10.12.43.40:4050/healthInfo/getHealthDetail?userId=U201704010002&insertTime=2017-04-10 15:47:17.826",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "输入用户id label\n获得单条用户健康信息"
 			},
 			"response": []
@@ -1423,7 +1143,10 @@
 				"url": "http://10.12.43.40:4050/healthInfo/insertHealthInfo?userId=U201704010002&type=1&time=2014/03/22 11:03:37&url=c:/wf/img&label=a&description=wf&comments=wf1",
 				"method": "POST",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "插入健康信息"
 			},
 			"response": []
@@ -1434,7 +1157,10 @@
 				"url": "http://10.12.43.40:4050/healthInfo/modifyHealthDetail?userId=U201704010002&type=1&time=2016/02/22 11:03:37&url=c:/wf/img1&label=a&description=wf&comments=wf123456&insertTime=2017-04-10 15:47:17.826",
 				"method": "POST",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "根据用户id、label检索并修改用户健康信息\n有数据则修改并返回该条数据\n无数据则插入并返回null"
 			},
 			"response": []
@@ -1445,7 +1171,10 @@
 				"url": "http://10.12.43.40:4050/healthInfo/deleteHealthDetail?userId=U201704010002&insertTime=2017-04-10 15:46:38.390",
 				"method": "POST",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "输入用户id、label并删除一条用户健康信息\n0成功"
 			},
 			"response": []
@@ -1461,6 +1190,85 @@
 					"raw": ""
 				},
 				"description": "getNo\n系统ID生成方法，注册时自动调用\n外部一般不调用该方法"
+			},
+			"response": []
+		},
+		{
+			"name": "131 doctor 修改医生基本信息",
+			"request": {
+				"url": "localhost:4050/doctor/editDoctorDetail",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"docpost1\",\n\t\"name\":\"修改xx\",\n\t\"photoUrl\":\"http://doc.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"workUnit\":\"浙江省人民医院\", \n\t\"title\":\"主任医师\", \n\t\"job\":\"住院医师\", \n\t\"department\":\"肾内科\", \n\t\"major\":\"肾移植\", \n\t\"description\":\"很棒棒\", \n\t\"charge1\":\"55\", \n\t\"charge2\":\"66\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "132 doctor 获取最近交流过的医生列表",
+			"request": {
+				"url": "localhost:4050/doctor/getRecentDoctorList?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "133 Patient-004-003 获取全部医生列表",
+			"request": {
+				"url": "121.43.107.106:4050/patient/getDoctorLists",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "134 Patient-004-004 根据医生姓名查找医生",
+			"request": {
+				"url": "localhost:4050/patient/getDoctorLists?name=医生01",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "124 patient-005-002 修改患者信息",
+			"request": {
+				"url": "localhost:4050/patient/editPatientDetail",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"pdpost1\",\n\t\"name\":\"修改\",\n\t\"photoUrl\":\"http://pp.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"height\":\"188\", \n\t\"occupation\":\"教师\", \n\t\"bloodType\":\"2\", \n\t\"nation\":\"中国\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"class\":\"class1\", \n\t\"class_info\":[\"classInfo1\"], \n    \"operationTime\":\"2017-04-01\", \n    \"hypertension\":\"1\", \n    \"lastVisittime\":\"2017-04-12\", \n    \"lastVisithospital\":\"浙江省人民医院\", \n    \"lastVisitdiagnosis\":\"慢性肾炎\"\n}"
+				},
+				"description": ""
 			},
 			"response": []
 		}
