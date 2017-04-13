@@ -3,35 +3,7 @@ var	config = require('../config'),
 		DictNumber = require('../models/dictNumber'),
 		Numbering = require('../models/numbering');
 
-
-function getNowFormatDate() {
-    var date = new Date();
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    var currentdate = date.getFullYear()+month+strDate;
-    return currentdate;
-    // YYYYMMDD
-}
-function ConvAlphameric(Seq)
-{
-	var Ret = ""
-	var Char = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZ"; //"I","O"除外，容易与1,0混淆
-	var lenChar = Char.length
-	var idx
-	while(Seq >= 1){
-		idx = Seq%lenChar
-		Ret = Char.substr(idx, idx)+Ret
-		Seq = Seq / lenChar
-	}
-
-	return Ret;
-}
+var commonFunc = require('../middlewares/commonFunc');
 
 exports.getNo = function() {
 	return function(req,res,next){
@@ -43,7 +15,7 @@ exports.getNo = function() {
 		}
 		else{
 			if (_targetDate==null){
-				_targetDate= getNowFormatDate();
+				_targetDate= commonFunc.getNowFormatDate();
 			}
 			var query = {type:_numberingType};
 			var Data
@@ -91,7 +63,7 @@ exports.getNo = function() {
 						_TrnNumberingNo=_TrnNumberingNo+1
 						var _Seq = _TrnNumberingNo
 						if(_AlphamericFlag==1){
-							_Seq=ConvAlphameric(_Seq)
+							_Seq=commonFunc.ConvAlphameric(_Seq)
 						}
 						if(_Seq.toString().length>_SeqLength){
 							_TrnNumberingNo=1

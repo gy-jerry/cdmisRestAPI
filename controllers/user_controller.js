@@ -8,7 +8,7 @@ var	config = require('../config'),
 		https = require('https'),
         jwt = require('jsonwebtoken');
 
-
+var commonFunc = require('../middlewares/commonFunc');
 var Base64 = {  
     // 转码表  
     table : [  
@@ -175,56 +175,6 @@ var Base64 = {
         return this.UTF8ToUTF16(res.join(''));  
     }  
 };
-function stringToBytes ( str ) {  
-  var ch, st, re = [];  
-  for (var i = 0; i < str.length; i++ ) {  
-    ch = str.charCodeAt(i);  // get char   
-    st = [];                 // set up "stack"  
-    do {  
-      st.push( ch & 0xFF );  // push byte to stack  
-      ch = ch >> 8;          // shift value down by 1 byte  
-    }    
-    while ( ch );  
-    // add stack contents to result  
-    // done because chars have "wrong" endianness  
-    re = re.concat( st.reverse() );  
-  }  
-  // return an array of bytes  
-  return re;  
-}
-
-function getNowFormatDate() {
-    var date = new Date();
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    var currentdate = date.getFullYear()+month+strDate;
-    return currentdate;
-    // YYYYMMDD
-}
-function paddNum(num){
-    num += "";
-    return num.replace(/^(\d)$/,"0$1");
-}
-function ConvAlphameric(Seq)
-{
-    var Ret = ""
-    var Char = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZ"; //"I","O"除外，容易与1,0混淆
-    var lenChar = Char.length
-    var idx
-    while(Seq >= 1){
-        idx = Seq%lenChar
-        Ret = Char.substr(idx, idx)+Ret
-        Seq = Seq / lenChar
-    }
-
-    return Ret;
-}
 
 exports.getUser = function(req, res) {
     var _userId = req.query.userId
@@ -301,7 +251,7 @@ exports.register = function(req, res) {
             }
             else{
                 if (_targetDate==null){
-                    _targetDate= getNowFormatDate();
+                    _targetDate= commonFunc.getNowFormatDate();
                 }
                 var query = {type:_numberingType};
                 var Data
@@ -350,7 +300,7 @@ exports.register = function(req, res) {
                             _TrnNumberingNo=_TrnNumberingNo+1
                             var _Seq = _TrnNumberingNo
                             if(_AlphamericFlag==1){
-                                _Seq=ConvAlphameric(_Seq)
+                                _Seq=commonFunc.ConvAlphameric(_Seq)
                             }
                             if(_Seq.toString().length>_SeqLength){
                                 _TrnNumberingNo=1
@@ -444,8 +394,6 @@ exports.login = function(req, res) {
     if (username === '' || password === '') {
         return res.status(422).send('请输入用户名和密码!'); 
     }
-
-
     // var query = {phoneNo:_phoneNo};
     var query = {
         $or: [
@@ -502,7 +450,6 @@ exports.login = function(req, res) {
         }
     });
 }
-
 exports.logout = function(req, res) {
     var _userId = req.query.userId
     var query = {userId:_userId};
@@ -594,13 +541,13 @@ exports.sendSMS = function(req, res) {
                             return res.status(500).send(err.errmsg);
                         }
                         // res.json({results: Info});
-                        var timestamp=now.getFullYear()+paddNum(now.getMonth()+1)+paddNum(now.getDate())+now.getHours()+now.getMinutes()+now.getSeconds()
+                        var timestamp=now.getFullYear()+commonFunc.paddNum(now.getMonth()+1)+commonFunc.paddNum(now.getDate())+now.getHours()+now.getMinutes()+now.getSeconds()
                         var md5=crypto.createHash('md5').update(accountSid + token + timestamp).digest('hex').toUpperCase();
                         //byte[] bytedata = encode.GetBytes(accountSid + ":" + timestamp);
                         var authorization = Base64.encode(accountSid + ":" + timestamp);
                         // console.log(md5)
                         // console.log(authorization)
-                        var bytes=stringToBytes(JSONData)
+                        var bytes=commonFunc.stringToBytes(JSONData)
                         var Url = "https://api.ucpaas.com/2014-06-30/Accounts/" + accountSid + "/Messages/templateSMS?sig=" + md5;
                         var options={
                             hostname:"api.ucpaas.com",
