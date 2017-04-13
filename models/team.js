@@ -11,6 +11,7 @@ var teamSchema = new mongoose.Schema({
 	  {
 	  	userId: {type:String, unique:true}, 
 	  	name: String, 
+	  	photoUrl: String, 
 	  	_id:0
 	  }
 	], 

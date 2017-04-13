@@ -91,6 +91,7 @@ module.exports = function(app,webEntry) {
   app.get('/doctor/getMyGroupList', doctorCtrl.getTeams);
   app.get('/doctor/getGroupPatientList', doctorCtrl.getTeamObject, doctorCtrl.getGroupPatientList);
   app.post('/doctor/editDoctorDetail', doctorCtrl.editDoctorDetail);
+  app.get('/doctor/getRecentDoctorList', doctorCtrl.getDoctorObject, doctorCtrl.getRecentDoctorList);
 
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);

@@ -3,6 +3,9 @@ var	config = require('../config'),
 
 //根据doctorId查询相关评价 2017-03-30 GY 
 exports.getAccountInfo = function(req, res) {
+	if (req.query.userId == null || req.query.userId == '') {
+        return res.json({result:'请填写userId!'});
+    }
 	//查询条件
 	var _userId = req.query.userId;
 	var query = {userId:_userId};

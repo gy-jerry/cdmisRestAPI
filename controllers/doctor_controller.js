@@ -5,18 +5,18 @@ var	config = require('../config'),
 	Consultation = require('../models/consultation'), 
 	Comment = require('../models/comment');
 
-//根据userId查询医生信息 2017-03-28 GY
-exports.getDoctor = function(req, res) {
-	var _userId = req.query.userId
-	var query = {userId:_userId};
+// //根据userId查询医生信息 2017-03-28 GY
+// exports.getDoctor = function(req, res) {
+// 	var _userId = req.query.userId
+// 	var query = {userId:_userId};
 
-	Doctor.getOne(query, function(err, item) {
-		if (err) {
-      		return res.status(500).send(err.errmsg);
-    	}
-    	res.json({results: item});
-	});
-}
+// 	Doctor.getOne(query, function(err, item) {
+// 		if (err) {
+//       		return res.status(500).send(err.errmsg);
+//     	}
+//     	res.json({results: item});
+// 	});
+// }
 
 //新建医生基本信息 2017-04-01 GY
 exports.insertDocBasic = function(req, res) {
@@ -91,6 +91,9 @@ exports.insertDocBasic = function(req, res) {
 
 //根据doctorId获取所有团队 2017-03-29 GY
 exports.getTeams = function(req, res) {
+	if (req.query.userId == null || req.query.userId == '') {
+        return res.json({result:'请填写userId!'});
+    }
 	//查询条件
 	var _userId = req.query.userId
 	//userId可能出现在sponsor或者是members里
@@ -111,6 +114,9 @@ exports.getTeams = function(req, res) {
 //通过doctor表中userId查询_id 2017-03-30 GY 
 //修改：增加判断不存在ID情况 2017-04-05 GY
 exports.getDoctorObject = function (req, res, next) {
+	if (req.query.userId == null || req.query.userId == '') {
+		return res.json({result:'请填写userId!'});
+	}
     var query = { 
         userId: req.query.userId
     };
@@ -120,7 +126,7 @@ exports.getDoctorObject = function (req, res, next) {
             return res.status(500).send('服务器错误, 用户查询失败!');
         }
         if (doctor == null) {
-        	return res.status(404).send('不存在的医生ID！');
+        	return res.json({result:'不存在的医生ID！'});
         }
         req.body.doctorObject = doctor;
         next();
@@ -128,7 +134,6 @@ exports.getDoctorObject = function (req, res, next) {
 };
 
 //根据医生ID获取患者基本信息 2017-03-29 GY
-//暂时缺少头像
 exports.getPatientList = function(req, res) {
 	//查询条件
 	var doctorObject = req.body.doctorObject;
@@ -137,7 +142,7 @@ exports.getPatientList = function(req, res) {
 	var opts = '';
 	var fields = {'_id':0, 'patients.patientId':1};
 	//通过子表查询主表，定义主表查询路径及输出内容
-	var populate = {path: 'patients.patientId', select: {'_id':0, 'revisionInfo':1}};
+	var populate = {path: 'patients.patientId', select: {'_id':0, 'revisionInfo':0}};
 
 	DpRelation.getSome(query, function(err, item) {
 		if (err) {
@@ -149,6 +154,12 @@ exports.getPatientList = function(req, res) {
 
 //通过team表中teamId查询teamObject 2017-03-30 GY 
 exports.getTeamObject = function (req, res, next) {
+	if (req.query.teamId == null || req.query.teamId == '') {
+        return res.json({result:'请填写teamId!'});
+    }
+    if (req.query.status == null || req.query.status == '') {
+        return res.json({result:'请填写status!'});
+    }
 	var _status = req.query.status;
     var query = { 
         teamId: req.query.teamId
@@ -158,6 +169,9 @@ exports.getTeamObject = function (req, res, next) {
         if (err) {
             console.log(err);
             return res.status(500).send('服务器错误, 用户查询失败!');
+        }
+        if (team == null) {
+        	return res.json({result:'不存在的teamId!'})
         }
         //req.body.teamObject = team;
         req.obj = {
@@ -342,8 +356,25 @@ exports.editDoctorDetail = function(req, res) {
 		if (upDoctor == null) {
 			return res.json({result:'修改失败，不存在的医生ID！'})
 		}
-		res.json({result: '修改成功', editResult:upDoctor});
+		res.json({result: '修改成功', editResults:upDoctor});
 	}, {new: true});
 }
 
-//获取最近交流过的医生列表 
+//获取最近交流过的医生列表 2017-04-13 GY 
+exports.getRecentDoctorList = function(req, res) {
+	//查询条件
+	var doctorObject = req.body.doctorObject;
+	var query = {doctorId:doctorObject._id};
+
+	var opts = '';
+	var fields = {'_id':0, 'doctors.doctorId':1};
+	//通过子表查询主表，定义主表查询路径及输出内容
+	var populate = {path: 'doctors.doctorId', select: {'_id':0, 'revisionInfo':0}};
+
+	DpRelation.getSome(query, function(err, item) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	res.json({results: item});
+	}, opts, fields, populate);
+}

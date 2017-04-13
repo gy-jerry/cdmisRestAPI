@@ -131,6 +131,6 @@ exports.saveQuestionaire = function(req, res) {
 		if (err) {
       return res.status(500).send(err.errmsg);
     }
-    res.json({result: '新建成功', newResults: counselInfo});
+    res.json({result: '新建成功', results: counselInfo});
 	});
 }
