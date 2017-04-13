@@ -5,7 +5,8 @@ var dictNumberSchema = new mongoose.Schema({
 	initStr: String, 
 	dateFormat: String, 
 	seqLength: Number, 
-	alphamericFlag: Number
+	alphamericFlag: Number, 
+	description: String
 });
 
 
