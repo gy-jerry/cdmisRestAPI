@@ -6,6 +6,7 @@
 var config = require('../config');
 
 // middlewares
+var getNoMid = require('../middlewares/getNoMid');
 
 // controllers
 var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
@@ -73,7 +74,7 @@ module.exports = function(app,webEntry) {
   app.post('/healthInfo/insertHealthInfo', healthInfoCtrl.insertHealthInfo);
   app.post('/healthInfo/modifyHealthDetail', healthInfoCtrl.modifyHealthDetail);
   app.post('/healthInfo/deleteHealthDetail', healthInfoCtrl.deleteHealthDetail);
-  app.get('/dictNumber/getNo', dictNumberCtrl.getNo);
+  app.get('/dictNumber/getNo', getNoMid.getNo(), dictNumberCtrl.getNo);
   // app.get('/user/getIp', userCtrl.getIp); 
   app.post('/upload', loadCtrl.uploadphoto(), loadCtrl.upload);
   // app.post('/upload', upload.single('photo'), loadCtrl.upload);
