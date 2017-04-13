@@ -1,0 +1,2 @@
+[2017-04-13 09:47:27.086] [INFO] cheese - ::1 - - "GET /dictNumber/getNo?numberingType=1 HTTP/1.1" 500 146 "" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
+[2017-04-13 09:50:52.553] [INFO] cheese - ::1 - - "GET /dictNumber/getNo?numberingType=1 HTTP/1.1" 200 27 "" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
