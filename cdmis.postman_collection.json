@@ -10,14 +10,22 @@
 		{
 			"name": "201 Dict-001-001 获取疾病类型列表及其进程信息",
 			"request": {
-				"url": "http://121.43.107.106:4050/dict/typeTwo/category?category=patient_class",
+				"url": "http://121.43.107.106:4050/dict/typeTwo?category=patient_class",
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"description": "获取疾病类型列表及其进程信息"
+			},
+			"response": []
+		},
+		{
+			"name": "201-2 Dict-001-002 获取所有体征类型",
+			"request": {
+				"url": "http://121.43.107.106:4050/dict/typeTwo?category=VitalSigns",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取所有体征类型"
 			},
 			"response": []
 		},
@@ -238,6 +246,30 @@
 			"response": []
 		},
 		{
+
+			"name": "217 Dict-005-001 获取健康信息类别",
+			"request": {
+				"url": "121.43.107.106:4050/dict/typeOne?category=healthInfoType",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取健康信息类别"
+			},
+			"response": []
+		},
+		{
+			"name": "218 Dict-005-002 获取消息类别",
+			"request": {
+				"url": "121.43.107.106:4050/dict/typeOne?category=MessageType",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取消息类别"
+			},
+			"response": []
+		},
+		{
+
 			"name": "101 Doctor-002 获取患者列表",
 			"request": {
 				"url": "121.43.107.106:4050/doctor/getPatientList?userId=doc01",
@@ -524,7 +556,7 @@
 			"response": []
 		},
 		{
-			"name": "117 message-001 获取消息并按照时间降序排列",
+			"name": "117 message-001-001 获取某个用户的所有消息并按照时间降序排列",
 			"request": {
 				"url": "121.43.107.106:4050/message/getMessages?type=1",
 				"method": "GET",
@@ -533,7 +565,18 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"description": "获取某个用户的所有消息并按照时间降序排列"
+			},
+			"response": []
+		},
+		{
+			"name": "117-2 Message-001-002 获取某个用户某种类型的所有消息并按时间顺序排列",
+			"request": {
+				"url": "121.43.107.106:4050/message/getMessages?userId=U201704120001&type=1",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取某个用户某种类型的所有消息并按时间顺序排列"
 			},
 			"response": []
 		},
@@ -1112,7 +1155,7 @@
 		{
 			"name": "011 Health-001获得患者所有的健康信息",
 			"request": {
-				"url": "http://10.12.43.40:4050/healthInfo/getAllHealthInfo?userId=U201704010002",
+				"url": "http://121.43.107.106:4050/healthInfo/getAllHealthInfo?userId=U201704010002",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -1126,7 +1169,7 @@
 		{
 			"name": "012Health-002获得患者某条健康信息详情",
 			"request": {
-				"url": "http://10.12.43.40:4050/healthInfo/getHealthDetail?userId=U201704010002&insertTime=2017-04-10 15:47:17.826",
+				"url": "http://121.43.107.106:4050/healthInfo/getHealthDetail?userId=U201704010002&insertTime=2017-04-10 15:47:17.826",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -1168,7 +1211,7 @@
 		{
 			"name": "015Health-005删除患者某条健康信息",
 			"request": {
-				"url": "http://10.12.43.40:4050/healthInfo/deleteHealthDetail?userId=U201704010002&insertTime=2017-04-10 15:46:38.390",
+				"url": "http://121.43.107.106:4050/healthInfo/deleteHealthDetail?userId=U201704010002&insertTime=2017-04-10 15:46:38.390",
 				"method": "POST",
 				"header": [],
 				"body": {

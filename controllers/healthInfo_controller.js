@@ -5,13 +5,15 @@ var	config = require('../config'),
 exports.getAllHealthInfo = function(req, res) {
 	var _userId = req.query.userId
 	var query = {userId:_userId};
+	var opts = {sort:-"time"};
+	var fields = {'_id':0, 'revisionInfo':0};
 
 	HealthInfo.getSome(query, function(err, healthInfolist) {
 		if (err) {
       return res.status(500).send(err.errmsg);
     }
     res.json({results: healthInfolist});
-	});
+	},opts,fields);
 }
 
 
@@ -19,13 +21,14 @@ exports.getHealthDetail = function(req, res) {
 	var _userId = req.query.userId
 	var _insertTime = new Date(req.query.insertTime)
 	var query = {userId:_userId,insertTime:_insertTime};
-
+	var opts = '';
+	var fields = {'_id':0, 'revisionInfo':0};
 	HealthInfo.getOne(query, function(err, item) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
     	res.json({results: item});
-	});
+	},opts,fields);
 }
 
 exports.insertHealthInfo = function(req, res) {
