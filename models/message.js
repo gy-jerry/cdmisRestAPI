@@ -4,18 +4,12 @@ var mongoose = require('mongoose');
 
 var messageSchema = new mongoose.Schema({
 	messageId:String,
+	userId:String,
 	type:Number,
 	time:Date,
 	title:String,
 	description:String,
-	url:String,
-	revisionInfo:{
-		operationTime:Date,
-		userId:String,
-		userName:String,
-		terminalIP:String
-	}
-
+	url:String
 });
 
 

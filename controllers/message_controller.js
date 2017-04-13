@@ -3,24 +3,27 @@ var	config = require('../config'),
 
 //根据类型查询消息链接 2017-04-05 GY 
 exports.getMessages = function(req, res) {
-	if (req.query.type == null || req.query.type == '') {
-        return res.json({result:'请填写type!'});
+	var userId = req.query.userId;
+	var type = req.query.type;
+
+	if (userId == null || userId == '') {
+        return res.json({result:'请填写userId!'});
     }
-	//查询条件
-	//var doctorObject = req.body.doctorObject;
-	var query = {type:req.query.type};
 
-	//设置参数
-	//注意'_id'的生成算法包含时间，因此直接用'_id'进行降序排列
+	var query;
+	query = {userId:userId};
+
+	if ( type != '') {
+        query["type"] = type
+    }
+
+    // 注意'_id'的生成算法包含时间，因此直接用'_id'进行降序排列
 	var opts = {'sort':'-_id'};
-	var fields = '';
-	var populate = '';
 
-	Message.getSome(query, function(err, item) {
+	Message.getSome(query, function(err, items) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item});
-	}, opts, fields, populate);
+    	res.json({results: items});
+	}, opts);
 }
-

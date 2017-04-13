@@ -554,7 +554,7 @@
 			"response": []
 		},
 		{
-			"name": "117 message-001 获取消息并按照时间降序排列",
+			"name": "117 message-001-001 获取某个用户的所有消息并按照时间降序排列",
 			"request": {
 				"url": "121.43.107.106:4050/message/getMessages?type=1",
 				"method": "GET",
@@ -563,7 +563,18 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"description": "获取某个用户的所有消息并按照时间降序排列"
+			},
+			"response": []
+		},
+		{
+			"name": "117-2 Message-001-002 获取某个用户某种类型的所有消息并按时间顺序排列",
+			"request": {
+				"url": "121.43.107.106:4050/message/getMessages?userId=U201704120001&type=1",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取某个用户某种类型的所有消息并按时间顺序排列"
 			},
 			"response": []
 		},
