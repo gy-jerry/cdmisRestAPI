@@ -182,6 +182,11 @@ exports.getTeamObject = function (req, res, next) {
     });
 };
 
+//通过team表中teamId查询teamObject 2017-04-14 WF
+exports.getTeam = function (req, res, next) {
+	return res.json({results: req.obj.teamObject});;
+};
+
 //根据teamId和status获取团队病例列表
 exports.getGroupPatientList = function(req, res) {
 	//查询条件
