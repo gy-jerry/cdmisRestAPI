@@ -87,7 +87,7 @@ module.exports = {
     '最喜欢的宠物']
   ],
   Access_Control_Allow_Origin: ['http://localhost', 'http://10.12.43.168', 'http://127.0.0.1:8020', 'http://192.168.1.105:80', 'http://192.168.1.105',
-   'http://localhost:8100', 'http://10.12.43.26:8100', 'http://10.12.43.28:8100', 'http://10.12.43.29:8100'],
+   'http://localhost:8100', 'http://10.12.43.26:8100', 'http://10.12.43.28:8100', 'http://10.12.43.29:8100', 'http://10.12.43.61:8100', 'http://10.12.43.56:8100'],
   postAdvisor: 0,
   commentAdvisor: 0, 
   multerFieldSize: 100, 

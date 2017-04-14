@@ -48,6 +48,7 @@ module.exports = function(app,webEntry) {
 
   // csq 
   app.get('/dict/typeTwo', dictTypeTwoCtrl.getCategory);
+  app.get('/dict/typeTwo/codes', dictTypeTwoCtrl.getTypes);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   app.get('/user/one', userCtrl.getUser);
