@@ -1,5 +1,5 @@
 // configurations
-var f = require('util').format,
+var f = require('util').format;
 
 var user = "rest";
 var password = "zjubme319";
