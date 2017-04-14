@@ -48,6 +48,7 @@ module.exports = function(app,webEntry) {
 
   // csq 
   app.get('/dict/typeTwo', dictTypeTwoCtrl.getCategory);
+  app.get('/dict/typeTwo/codes', dictTypeTwoCtrl.getTypes);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   app.get('/user/one', userCtrl.getUser);
@@ -91,6 +92,7 @@ module.exports = function(app,webEntry) {
   app.get('/doctor/getMyGroupList', doctorCtrl.getTeams);
   app.get('/doctor/getGroupPatientList', doctorCtrl.getTeamObject, doctorCtrl.getGroupPatientList);
   app.post('/doctor/editDoctorDetail', doctorCtrl.editDoctorDetail);
+  app.get('/doctor/getRecentDoctorList', doctorCtrl.getDoctorObject, doctorCtrl.getRecentDoctorList);
 
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);

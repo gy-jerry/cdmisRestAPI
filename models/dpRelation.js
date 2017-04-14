@@ -11,7 +11,7 @@ var dpRelationSchema = new mongoose.Schema({
 	], 
 	doctors: [
 	  {
-	  	doctorId: String, 
+	  	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	  	lastTalkTime: Date
 	  }
 	], 

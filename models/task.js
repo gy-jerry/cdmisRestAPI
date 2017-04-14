@@ -16,12 +16,14 @@ var taskSchema = new mongoose.Schema({
 	    	content:String,
 	    	startTime : Date,
             endTime : Date,
+            times:Number,
+            timesUnits:String,
             frequencyTimes : Number,
             frequencyUnits : String,
             status:Number
 	    }]
 	  }
-	], 
+	],  
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,
