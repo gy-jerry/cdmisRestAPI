@@ -94,7 +94,9 @@ module.exports = function(app,webEntry) {
   app.get('/doctor/getTeam', doctorCtrl.getTeamObject, doctorCtrl.getTeam);
   app.post('/doctor/editDoctorDetail', doctorCtrl.editDoctorDetail);
   app.get('/doctor/getRecentDoctorList', doctorCtrl.getDoctorObject, doctorCtrl.getRecentDoctorList);
-
+  app.post('/doctor/insertSchedule', doctorCtrl.insertSchedule);
+  app.post('/doctor/deleteSchedule', doctorCtrl.deleteSchedule);
+  app.get('/doctor/getSchedules', doctorCtrl.getSchedules);
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);
   app.post('/counsel/questionaire', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(2), counselCtrl.saveQuestionaire);
