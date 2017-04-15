@@ -137,6 +137,9 @@ module.exports = function(app,webEntry) {
   //app.get('/communication/getMessages');
   //app.get('/communication/getConsultation');
 
+  //task
+  app.post('/tasks/insertTaskModel', taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
+
 
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);
