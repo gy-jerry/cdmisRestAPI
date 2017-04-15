@@ -34,7 +34,9 @@ var patientSchema = new mongoose.Schema({
 	  	_id:0, 
 	  	name: String, 
 	  	time: Date, 
+	  	hypertension: Number, 
 	  	progress: String, 
+	  	operationTime: Date, 
 	  	content: String, 
 	  	doctor: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}
 	  }

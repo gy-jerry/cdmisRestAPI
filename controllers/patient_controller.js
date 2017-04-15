@@ -15,7 +15,7 @@ exports.getPatientDetail = function(req, res) {
 	var query = {userId:_userId};
 	//输出内容
 	var fields = {'_id':0, 'revisionInfo':0, 'doctors':0};
-	var populate = {path: 'diagnosisInfo.doctor', select: {'_id':0, 'workUnit':1}};
+	var populate = {path: 'diagnosisInfo.doctor', select: {'_id':0, 'workUnit':1, 'department':1}};
 
 	Patient.getOne(query, function(err, item) {
 		if (err) {
@@ -31,6 +31,7 @@ exports.getDoctorLists = function(req, res) {
 	//查询条件
 	var _workUnit = req.query.workUnit;
 	var _name = req.query.name;
+
 
 	var _limit = Number(req.query.limit);
 	var _skip = Number(req.query.skip);
@@ -50,6 +51,7 @@ exports.getDoctorLists = function(req, res) {
 		query = {workUnit:_workUnit, name:_name};
 	}
 	//输出内容
+
 
 	// if(_limit==null||_limit==)
 	var option = {limit:_limit, skip:_skip,sort:-"_id"}
@@ -94,6 +96,7 @@ exports.getDoctorLists = function(req, res) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
+
 
     	res.json({results: items,nexturl:nexturl});
 
@@ -376,13 +379,38 @@ exports.insertDiagnosis = function(req, res) {
 		userId: req.body.patientId
 	};
 	
+	var diagname = req.body.diagname, 
+		diagprogress = req.body.diagprogress, 
+		diagcontent = req.body.diagcontent; 
+
+	if (req.body.diagtime == null || req.body.diagtime == '') {
+		var diagtime = new Date();
+	}
+	else {
+		var diagtime = new Date(req.body.diagtime); 
+	}
+	if (req.body.diagoperationTime == null || req.body.diagoperationTime == '') {
+		var diagoperationTime = new Date('1900-01-01');
+	}
+	else {
+		var diagoperationTime = new Date(req.body.diagoperationTime); 
+	}
+	if (req.body.diaghypertension == null || req.body.diaghypertension == '') {
+		var diaghypertension = 0;
+	}
+	else {
+		var diaghypertension = req.body.diaghypertension; 
+	}
+	
 	var upObj = {
 		$push: {
 			diagnosisInfo: {
-				name:req.body.diagname, 
-				time:new Date(req.body.diagtime), 
-				progress:req.body.diagprogress, 
-				content:req.body.diagcontent, 
+				name:diagname, 
+				time:diagtime, 
+				hypertension:diaghypertension, 
+				progress:diagprogress, 
+				operationTime:diagoperationTime, 
+				content:diagcontent, 
 				doctor:req.body.doctorObject._id
 			}
 		}
