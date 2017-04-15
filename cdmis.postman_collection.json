@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "cdmis",
-		"_postman_id": "fce32bc6-7b09-67f5-ef3d-7a938600dcb3",
+		"_postman_id": "4ccb7419-23ff-1666-f347-3e1d2938cfd0",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -10,7 +10,7 @@
 		{
 			"name": "201 Dict-001-001 获取疾病类型列表及其进程信息",
 			"request": {
-				"url": "http://121.43.107.106:4050/dict/typeTwo/category?category=patient_class",
+				"url": "http://121.43.107.106:4050/dict/typeTwo?category=patient_class",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -22,6 +22,55 @@
 			"response": []
 		},
 		{
+
+			"name": "201-2 Dict-001-002 获取所有体征类型",
+			"request": {
+				"url": "http://121.43.107.106:4050/dict/typeTwo?category=VitalSigns",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "获取所有体征类型"
+			},
+			"response": []
+		},
+		{
+			"name": "201-3 Dict-001-003 获取字典表中的types ",
+			"request": {
+				"url": "http://121.43.107.106:4050/dict/typeTwo?category=types",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取字典表中的types,前端不需要使用,帮助前端使用201-3下的子方法"
+			},
+			"response": []
+		},
+		{
+			"name": "201-3-1 Dict-001-004 获取常用量词单位",
+			"request": {
+				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=quantifierUnit",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取常用量词单位"
+			},
+			"response": []
+		},
+		{
+			"name": "201-3-2 Dict-001-005 获取时间单位",
+			"request": {
+				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=TimeUnits",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "获取时间单位"
+			},
+			"response": []
+		},
+		{
+
 			"name": "202 Dict-003-001 获取所有省份",
 			"request": {
 				"url": "http://121.43.107.106:4050/dict/district?level=1&province&city&district",
@@ -238,6 +287,36 @@
 			"response": []
 		},
 		{
+
+			"name": "217 Dict-005-001 获取健康信息类别",
+			"request": {
+				"url": "121.43.107.106:4050/dict/typeOne?category=healthInfoType",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "获取健康信息类别"
+			},
+			"response": []
+		},
+		{
+			"name": "218 Dict-005-002 获取消息类别",
+			"request": {
+				"url": "121.43.107.106:4050/dict/typeOne?category=MessageType",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "获取消息类别"
+			},
+			"response": []
+		},
+		{
+
 			"name": "101 Doctor-002 获取患者列表",
 			"request": {
 				"url": "121.43.107.106:4050/doctor/getPatientList?userId=doc01",
@@ -526,7 +605,7 @@
 		{
 			"name": "117 message-001 获取消息并按照时间降序排列",
 			"request": {
-				"url": "121.43.107.106:4050/message/getMessages?type=1",
+				"url": "121.43.107.106:4050/message/getMessages?userId=U201704120001&type=",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -640,6 +719,26 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"userId\":\"pdpost1\",\n\t\"name\":\"新建xx\",\n\t\"photoUrl\":\"http://pp.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"height\":\"188\", \n\t\"occupation\":\"教师\", \n\t\"bloodType\":\"2\", \n\t\"nation\":\"中国\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"class\":\"class1\", \n\t\"class_info\":[\"classInfo1\"], \n    \"operationTime\":\"2017-04-01\", \n    \"hypertension\":\"1\", \n    \"lastVisittime\":\"2017-04-12\", \n    \"lastVisithospital\":\"浙江省人民医院\", \n    \"lastVisitdiagnosis\":\"慢性肾炎\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "124 patient-005-002 修改患者信息",
+			"request": {
+				"url": "localhost:4050/patient/editPatientDetail",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"pdpost1\",\n\t\"name\":\"修改\",\n\t\"photoUrl\":\"http://pp.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"height\":\"188\", \n\t\"occupation\":\"教师\", \n\t\"bloodType\":\"2\", \n\t\"nation\":\"中国\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"class\":\"class1\", \n\t\"class_info\":[\"classInfo1\"], \n    \"operationTime\":\"2017-04-01\", \n    \"hypertension\":\"1\", \n    \"lastVisittime\":\"2017-04-12\", \n    \"lastVisithospital\":\"浙江省人民医院\", \n    \"lastVisitdiagnosis\":\"慢性肾炎\"\n}"
 				},
 				"description": ""
 			},
@@ -1095,7 +1194,10 @@
 				"url": "localhost:4050/doctor/getRecentDoctorList?userId=doc01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1123,26 +1225,6 @@
 				"body": {
 					"mode": "raw",
 					"raw": ""
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "124 patient-005-002 修改患者信息",
-			"request": {
-				"url": "localhost:4050/patient/editPatientDetail",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"userId\":\"pdpost1\",\n\t\"name\":\"修改\",\n\t\"photoUrl\":\"http://pp.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"height\":\"188\", \n\t\"occupation\":\"教师\", \n\t\"bloodType\":\"2\", \n\t\"nation\":\"中国\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"class\":\"class1\", \n\t\"class_info\":[\"classInfo1\"], \n    \"operationTime\":\"2017-04-01\", \n    \"hypertension\":\"1\", \n    \"lastVisittime\":\"2017-04-12\", \n    \"lastVisithospital\":\"浙江省人民医院\", \n    \"lastVisitdiagnosis\":\"慢性肾炎\"\n}"
 				},
 				"description": ""
 			},

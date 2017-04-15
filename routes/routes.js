@@ -48,6 +48,7 @@ module.exports = function(app,webEntry) {
 
   // csq 
   app.get('/dict/typeTwo', dictTypeTwoCtrl.getCategory);
+  app.get('/dict/typeTwo/codes', dictTypeTwoCtrl.getTypes);
   app.get('/user', userCtrl.getUserList);
   app.get('/user/insert', userCtrl.insertUser);
   app.get('/user/one', userCtrl.getUser);
@@ -77,7 +78,6 @@ module.exports = function(app,webEntry) {
   app.get('/dictNumber/getNo', getNoMid.getNo(), dictNumberCtrl.getNo);
   // app.get('/user/getIp', userCtrl.getIp); 
   app.post('/upload', loadCtrl.uploadphoto(), loadCtrl.upload);
-  // app.post('/upload', upload.single('photo'), loadCtrl.upload);
   // app.get('/download',loadCtrl.download);
 
 
@@ -91,6 +91,7 @@ module.exports = function(app,webEntry) {
   app.get('/doctor/getDoctorInfo', doctorCtrl.getDoctorObject, doctorCtrl.getComments, doctorCtrl.getDoctorInfo);
   app.get('/doctor/getMyGroupList', doctorCtrl.getTeams);
   app.get('/doctor/getGroupPatientList', doctorCtrl.getTeamObject, doctorCtrl.getGroupPatientList);
+  app.get('/doctor/getTeam', doctorCtrl.getTeamObject, doctorCtrl.getTeam);
   app.post('/doctor/editDoctorDetail', doctorCtrl.editDoctorDetail);
   app.get('/doctor/getRecentDoctorList', doctorCtrl.getDoctorObject, doctorCtrl.getRecentDoctorList);
 

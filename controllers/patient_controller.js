@@ -1,4 +1,5 @@
 var	config = require('../config'),
+	webEntry = require('../settings').webEntry,
 	Patient = require('../models/patient'), 
 	Doctor = require('../models/doctor'), 
 	DpRelation = require('../models/dpRelation'), 
@@ -30,10 +31,11 @@ exports.getDoctorLists = function(req, res) {
 	//查询条件
 	var _workUnit = req.query.workUnit;
 	var _name = req.query.name;
-	var currentPage = parseInt(req.query.currentPage, 10);
-	var pageSize = parseInt(req.query.pageSize, 10);
-	var skipNum = (currentPage - 1) * pageSize;
-	// return res.json({query:req.query})
+
+
+	var _limit = Number(req.query.limit);
+	var _skip = Number(req.query.skip);
+
 	var query;
 	//name选填
 	if ((_name == null || _name == '') && (_workUnit == null || _workUnit == '')){
@@ -49,16 +51,57 @@ exports.getDoctorLists = function(req, res) {
 		query = {workUnit:_workUnit, name:_name};
 	}
 	//输出内容
-	var opts = {'skip':skipNum, 'limit':pageSize};
-	var fields = {'_id':0, 'revisionInfo':0};
-	var populate = '';
 
+
+	// if(_limit==null||_limit==)
+	var option = {limit:_limit, skip:_skip,sort:-"_id"}
+	var fields = {"_id":0, 'revisionInfo':0};
+
+	var populate = '';
+	var _workUnitUrl=""
+	var _nameUrl=""
+	var _limitUrl=""
+	var _skipUrl=""
+	var _Url=""
+	if(_workUnit!=null&&_workUnit!=undefined){
+		_workUnitUrl="workUnit="+_workUnit
+	}
+	if(_name!=null&&_name!=undefined){
+		_nameUrl="name="+_name
+	}
+	if(_limit!=null&&_limit!=undefined){
+		_limitUrl="limit="+String(_limit)
+	}
+	if(_skip!=null&&_skip!=undefined){
+		_skipUrl="skip="+String(_skip+_limit)
+	}
+	if(_workUnitUrl!=""||_nameUrl!=""||_limitUrl!=""||_skipUrl!=""){
+		_Url=_Url+"?"
+		if(_workUnitUrl!=""){
+			_Url=_Url+_workUnitUrl+"&"
+		}
+		if(_nameUrl!=""){
+			_Url=_Url+_nameUrl+"&"
+		}
+		if(_limitUrl!=""){
+			_Url=_Url+_limitUrl+"&"
+		}
+		if(_skipUrl!=""){
+			_Url=_Url+_skipUrl+"&"
+		}
+		_Url=_Url.substr(0,_Url.length-1)
+	}
+	var nexturl=webEntry.domain+":"+webEntry.restPort+"/patient/getDoctorLists"+_Url
 	Doctor.getSome(query, function(err, items) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: items});
-	}, opts, fields, populate);
+
+
+    	res.json({results: items,nexturl:nexturl});
+
+	}, option, fields, populate);
+
 }
 
 //通过patient表中userId返回PatientObject 2017-03-30 GY 
