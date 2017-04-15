@@ -1,0 +1,5 @@
+[2017-04-15 13:24:33.069] [INFO] cheese - ::1 - - "POST /communication/insertMember HTTP/1.1" 200 103 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
+[2017-04-15 13:24:39.082] [INFO] cheese - ::1 - - "POST /communication/insertMember HTTP/1.1" 200 73 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
+[2017-04-15 13:24:46.505] [INFO] cheese - ::1 - - "POST /communication/newTeam HTTP/1.1" 200 339 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
+[2017-04-15 13:26:25.228] [INFO] cheese - ::1 - - "POST /communication/newTeam HTTP/1.1" 200 400 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
+[2017-04-15 13:27:02.840] [INFO] cheese - ::1 - - "GET /doctor/getMyGroupList?userId=doc01 HTTP/1.1" 200 776 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"

@@ -10,7 +10,7 @@ var commentSchema = new mongoose.Schema({
 	helpScore: Number, 
 	attitudeScore: Number, 
 	speedScore: Number, 
-	totalScore: {type:Number, default:0}, 
+	totalScore: {type:Number, default:10}, 
 	topic: String, 
 	expense: String, 
 	content: String, 

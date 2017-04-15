@@ -196,14 +196,12 @@ exports.getGroupPatientList = function(req, res) {
 	var query = {teamId:teamObject._id, status:_status};
 
 	var opts = '';
-	var fields = {'_id':0, 'diseaseInfo':1, 'patientId':1, 'status':1, 'time':1};
+	var fields = {'_id':0, 'revisionInfo':0};
 	//通过子表查询主表，定义主表查询路径及输出内容
 	var populate = {
 		path: 'diseaseInfo patientId', 
 		select: {
-			'_id':0, 
-			'name':1, 'gender':1, 'birthday':1, 'photoUrl':1, 
-			'topic':1, 'content':1, 'title':1, 'sickTime':1, 'symptom':1, 'symptomPhotoUrl':1, 'descirption':1, 'drugs':1, 'history':1, 'help':1
+			'_id':0, 'revisionInfo':0
 		}
 	};
 
@@ -262,9 +260,9 @@ exports.getComments = function(req, res, next) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	if (items.length === 0) {
-    		req.body.comments = '暂无评论！';
-    	}
+    	// if (items.length === 0) {
+    	// 	req.body.comments = '暂无评论！';
+    	// }
     	else {
     		req.body.comments = items;
     	}
@@ -272,22 +270,50 @@ exports.getComments = function(req, res, next) {
     	next();
 	}, opts, fields, populate);
 }
-exports.getDoctorInfo = function(req, res){
-	var query = {userId: req.query.userId};
-	var comments = req.body.comments;
+// exports.getDoctorInfo = function(req, res){
+// 	var query = {userId: req.query.userId};
+// 	var comments = req.body.comments;
 	
-	var opts = '';
-	var fields = {'_id':0, 'revisionInfo':0};
-	var populate = '';
+// 	var opts = '';
+// 	var fields = {'_id':0, 'revisionInfo':0};
+// 	var populate = '';
 
-	Doctor.getOne(query, function (err, doctor) {
-        if (err) {
-            console.log(err);
-            return res.status(500).send('服务器错误, 用户查询失败!');
-        }
-        res.json({result:doctor, comments:comments});
+// 	Doctor.getOne(query, function (err, doctor) {
+//         if (err) {
+//             console.log(err);
+//             return res.status(500).send('服务器错误, 用户查询失败!');
+//         }
+//         res.json({result:doctor, comments:comments});
 
-    }, opts, fields, populate);
+//     }, opts, fields, populate);
+// }
+exports.getDoctorInfo = function(req, res) {
+	var query = {userId:req.query.userId};
+	var comments = req.body.comments;
+
+	var newScore = 0;
+	if (comments.length != 0) {
+		var tempSum = 0;
+		for (var i = 0; i < comments.length; i ++) {
+			tempSum += comments[i].totalScore;
+		}
+		newScore = tempSum / comments.length;
+	}
+	else if (comments.length == 0) {
+		newScore = 10;
+	}
+
+	var upObj = {
+		score: newScore
+	};
+
+	Doctor.updateOne(query, upObj, function(err, upDoctor) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		
+		res.json({results:upDoctor, comments: comments});
+	}, {new: true});
 }
 
 //修改医生个人信息 2017-04-12 GY
@@ -366,20 +392,26 @@ exports.editDoctorDetail = function(req, res) {
 }
 
 //获取最近交流过的医生列表 2017-04-13 GY 
+//按时间降序排列 2017-04-14 GY
 exports.getRecentDoctorList = function(req, res) {
 	//查询条件
 	var doctorObject = req.body.doctorObject;
 	var query = {doctorId:doctorObject._id};
 
 	var opts = '';
-	var fields = {'_id':0, 'doctors.doctorId':1};
+	var fields = {'_id':0, 'doctors':1};
 	//通过子表查询主表，定义主表查询路径及输出内容
 	var populate = {path: 'doctors.doctorId', select: {'_id':0, 'revisionInfo':0}};
 
-	DpRelation.getSome(query, function(err, item) {
+	//设置排序规则函数，时间降序
+	function sortTime(a, b) {
+		return b.lastTalkTime - a.lastTalkTime;
+	}
+
+	DpRelation.getOne(query, function(err, item) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item});
+    	res.json({results: item.doctors.sort(sortTime)});
 	}, opts, fields, populate);
 }

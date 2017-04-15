@@ -5,13 +5,36 @@ var	config = require('../config'),
 
 var commonFunc = require('../middlewares/commonFunc');
 
-exports.getNo = function() {
+exports.getNo = function(setType) {
 	return function(req,res,next){
-		var _numberingType = req.query.numberingType;
-		var _targetDate = req.query.targetDate;
+		if (setType != null) {
+			var _numberingType = setType;
+		}
+		else if (setType == null) {
+			if (req.query.numberingType != null && req.query.numberingType != '') {
+				var _numberingType = req.query.numberingType;
+			}
+			else if (req.body.numberingType != null && req.body.numberingType != '') {
+				var _numberingType = req.body.numberingType;
+			}
+			else {
+				var _numberingType = null;
+			}
+		}
+		
+		if (req.query.targetDate != null && req.query.targetDate != '') {
+			var _targetDate = req.query.targetDate;
+		}
+		else if (req.body.targetDate != null && req.body.targetDate != '') {
+			var _targetDate = req.body.targetDate;
+		}
+		else {
+			var _targetDate = null;
+		}
+			
 	
 		if (_numberingType==null){
-			return res.json({results: ""});;
+			return res.json({results: '请输入numberingType!'});;
 		}
 		else{
 			if (_targetDate==null){
@@ -25,7 +48,7 @@ exports.getNo = function() {
 				}
 				Data=item;
 				if(Data==null){
-					return res.json({results: ""});;
+					return res.json({results: '请输入正确的numberingType!'});;
 				}
 				else{
 					var _Initial=Data.initStr;
