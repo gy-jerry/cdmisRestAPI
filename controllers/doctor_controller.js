@@ -415,3 +415,4 @@ exports.getRecentDoctorList = function(req, res) {
     	res.json({results: item.doctors.sort(sortTime)});
 	}, opts, fields, populate);
 }
+
