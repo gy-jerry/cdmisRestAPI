@@ -34,7 +34,7 @@ exports.getTeam = function(req, res) {
         return res.json({result:'请填写teamId!'});
     }
 	//查询条件
-	var _teamId = req.query.teamId;
+	var _teamId = req.newId;
 	var query = {teamId:_teamId};
 
 	//设置参数
@@ -53,10 +53,12 @@ exports.getTeam = function(req, res) {
 //新建组 2017-04-06 GY
 exports.newTeam = function(req, res) {
 	var teamData = {
-		teamId: req.body.teamId,						
+		teamId: req.newId,						
 		name: req.body.name, 
 		sponsorId: req.body.sponsorId, 
 		sponsorName: req.body.sponsorName, 
+		sponsorPhoto: req.body.sponsorPhoto, 
+		photoAddress: req.body.photoAddress, 
 		// members: [
 	 //  		{
 	 //  			userId: String, 
@@ -162,11 +164,8 @@ exports.checkDoctor = function (req, res, next) {
     });
 };
 exports.newConsultation = function(req, res) {
-	if (req.body.consultationId == null || req.body.consultationId == '') {
-        return res.json({result:'请填写consultationId!'});
-    }
 	var consultationData = {
-		consultationId: req.body.consultationId,						
+		consultationId: req.newId,						
 		sponsorId: req.body.sponsorObject._id, 
 		patientId: req.body.patientObject._id, 
 		time: new Date(), 
@@ -238,9 +237,7 @@ exports.insertMember = function(req, res) {
 	var upObj = {
 		$addToSet: {
 			members: {
-				userId:req.body.membersuserId, 
-				name:req.body.membersname, 
-				photoUrl:req.body.membersphotoUrl
+				$each: req.body.members
 			}
 		}
 	};
@@ -255,7 +252,7 @@ exports.insertMember = function(req, res) {
 		if (upmember.nModified == 0 && upmember.n != 0) {
             return res.json({result:'未成功修改！请检查是否成员已添加！', results:upmember});
         }
-        if (upmember.nModified == 1) {
+        if (upmember.nModified != 0) {
             return res.json({result:'新建或修改成功', results:upmember});
         }
 		res.json({results: upmember});

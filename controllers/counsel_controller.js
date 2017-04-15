@@ -38,7 +38,7 @@ exports.getCounsels = function(req, res) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item});
+    	res.json({results: item, count:item.length});
 	}, opts, fields, populate);
 }
 
@@ -87,11 +87,11 @@ exports.getDoctorObject = function (req, res, next) {
 exports.saveQuestionaire = function(req, res) {
 
 	var counselData = {
-		counselId: req.body.counselId, 						//counselpost01
+		counselId: req.newId, 						//counselpost01
 		patientId: req.body.patientObject._id, 				//p01
 		doctorId: req.body.doctorObject._id, 				//doc01
 		// type: req.body.type, 
-		// time: new Date(req.body.time), 
+		time: new Date(), 
 		// status: req.body.status, 
 		// topic: req.body.topic, 
 		// content: req.body.content, 
