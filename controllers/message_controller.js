@@ -27,3 +27,37 @@ exports.getMessages = function(req, res) {
     	res.json({results: items});
 	}, opts);
 }
+
+//根据userId修改某种类型消息的已读状态 GY 2017-04-15
+exports.changeMessageStatus = function(req, res) {
+	var query = {
+		userId: req.body.userId, 
+		type: req.body.type
+	};
+	
+	var upObj = {
+		readOrNot: req.body.readOrNot
+	};
+
+	var opts = {
+		'multi':true, 'new':true
+	}
+
+	//return res.json({query: query, upObj: upObj});
+	Message.update(query, upObj, function(err, upmessage) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		
+		if (upmessage.n != 0 && upmessage.nModified == 0) {
+			return res.json({result:'未修改！请检查修改目标是否与原来一致！', results: upmessage});
+		}
+		if (upmessage.n != 0 && upmessage.nModified != 0) {
+			if (upmessage.n == upmessage.nModified) {
+				return res.json({result:'全部更新成功', results: upmessage});
+			}
+			return res.json({result: '未全部更新！', results: upmessage});
+		}
+		
+	}, opts);
+}

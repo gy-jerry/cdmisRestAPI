@@ -11,6 +11,7 @@ var dpRelationSchema = new mongoose.Schema({
 	], 
 	doctors: [
 	  {
+	  	_id:0, 
 	  	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	  	lastTalkTime: Date
 	  }
@@ -88,7 +89,20 @@ DpRelation.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+DpRelation.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
 
+  dpRelationModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, updpRelation) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, updpRelation);
+  });
+};
 
 module.exports = DpRelation;
 

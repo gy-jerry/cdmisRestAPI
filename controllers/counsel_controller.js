@@ -134,3 +134,36 @@ exports.saveQuestionaire = function(req, res) {
     res.json({result: '新建成功', results: counselInfo});
 	});
 }
+
+exports.changeCounselStatus = function(req, res) {
+	if (req.body.counselId == null || req.body.counselId == '') {
+		return res.json({result:'请填写counselId!'});
+	}
+	var query = {
+		counselId: req.body.counselId
+	};
+	
+	var upObj = {
+		revisionInfo:{
+			operationTime:new Date(),
+			userId:'',
+			userName:'',
+			terminalIP:''
+		}
+	};
+	if (req.body.status != null){
+		upObj['status'] = req.body.status;
+	}
+
+
+	//return res.json({query: query, upObj: upObj});
+	Counsel.updateOne(query, upObj, function(err, upCounsel) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		if (upCounsel == null) {
+			return res.json({result:'修改失败，不存在的counselId！'})
+		}
+		res.json({result: '修改成功', editResults:upCounsel});
+	}, {new: true});
+}
