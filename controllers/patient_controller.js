@@ -429,3 +429,61 @@ exports.insertDiagnosis = function(req, res) {
 		res.json({results: updiag});
 	}, {new: true});
 }
+exports.bindingMyDoctor = function(req, res) {
+	var _pId=req.body.patientId
+	var _dId=req.body.doctorId
+	if (_pId == null || _pId == ''|| _pId == undefined) {
+		return res.json({result:'请填写patientId!'});
+	}
+	else if(_dId == null || _dId == ''|| _dId == undefined){
+		return res.json({result:'请填写doctorId!'});
+	}
+	else{
+		var queryD = { 
+			userId: _dId
+		};
+		Doctor.getOne(queryD, function (err, doctor) {
+			if (err) {
+				console.log(err);
+				return res.status(500).send('服务器错误, 用户查询失败!');
+			}
+			if (doctor == null) {
+				return res.json({result:'不存在的医生ID！'});
+			}
+			var doc = doctor._id;
+			var query = {
+				userId: _pId
+			};
+			Patient.getOne(query, function (err, patient) {
+				if (err) {
+					console.log(err);
+					return res.status(500).send('服务器错误, 用户查询失败!');
+				}
+				var doctorsList=patient.doctors
+				var n=doctorsList.length
+				// var flag=0
+				for(var i=0;i<n;i++){
+					doctorsList[i].invalidFlag=1
+					// if(doctor.doctorId==_dId){
+					// 	flag=1
+					// 	doctor.invalidFlag=0
+					// }
+				}
+				// if(flag==1){
+				// 	return res.json({result:1,msg:"患者已匹配该主管医生！"});
+				// }
+				// else{
+				var doctor_new={doctorId:doc,firstTime:new Date(),invalidFlag:0}
+				doctorsList.push(doctor_new)
+				// }
+				var upObj = {$set:{doctors:doctorsList}};
+				Patient.updateOne(query, upObj,function(err, patient) {
+					if (err) {
+						return res.status(500).send(err.errmsg);
+					}
+					res.json({results: 0,msg:"success!"});
+				});
+			});
+		});
+	}
+}

@@ -109,7 +109,7 @@ module.exports = function(app,webEntry) {
   app.post('/patient/newPatientDetail', patientCtrl.checkPatientId, patientCtrl.newPatientDetail);
   app.post('/patient/editPatientDetail', patientCtrl.editPatientDetail)
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
-
+  app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor)
   //comment_query
   app.get('/comment/getComments', doctorCtrl.getDoctorObject, commentCtrl.getCommentsByDoc);
 

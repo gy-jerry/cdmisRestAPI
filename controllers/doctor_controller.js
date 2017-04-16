@@ -421,10 +421,10 @@ exports.insertSchedule = function(req, res) {
 	var doctorId = req.body.userId;
 	var _day=req.body.day;
 	var _time=req.body.time;
-	if(doctorId==""||doctorId==undefined){
+	if(doctorId==""||doctorId==undefined||doctorId==null){
 		return res.json({result:2,msg:"Please input doctorId!"});
 	}
-	else if(_day==""||_day==undefined||_time==""||_time==undefined){
+	else if(_day==""||_day==undefined||_day==null||_time==""||_time==undefined||_time==null){
 		return res.json({result:1,msg:"Please input day and time!"});
 	}
 	else{
@@ -457,10 +457,10 @@ exports.deleteSchedule = function(req, res) {
 	var doctorId = req.body.userId;
 	var _day=req.body.day;
 	var _time=req.body.time;
-	if(doctorId==""||doctorId==undefined){
+	if(doctorId==""||doctorId==undefined||doctorId==null){
 		return res.json({result:2,msg:"Please input doctorId!"});
 	}
-	else if(_day==""||_day==undefined||_time==""||_time==undefined){
+	else if(_day==""||_day==undefined||_day==null||_time==""||_time==undefined||_time==null){
 		return res.json({result:1,msg:"Please input day and time!"});
 	}
 	else{
@@ -491,7 +491,7 @@ exports.deleteSchedule = function(req, res) {
 exports.getSchedules = function(req, res) {
 	//查询条件
 	var doctorId = req.query.userId;
-	if(doctorId==""||doctorId==undefined){
+	if(doctorId==""||doctorId==undefined||doctorId==null){
 		return res.json({result:2,msg:"Please input doctorId!"});
 	}
 	else{

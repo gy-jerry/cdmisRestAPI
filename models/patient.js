@@ -24,6 +24,7 @@ var patientSchema = new mongoose.Schema({
 	hypertension: Number, 
 	doctors: [
 	  {
+	  	_id:0, 
 	  	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	  	firstTime: Date, 
 	  	invalidFlag: Number
