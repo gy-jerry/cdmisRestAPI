@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "cdmis",
-		"_postman_id": "4ccb7419-23ff-1666-f347-3e1d2938cfd0",
+		"_postman_id": "fb7504c0-55cb-9216-5a13-7ab25ede638e",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -22,7 +22,6 @@
 			"response": []
 		},
 		{
-
 			"name": "201-2 Dict-001-002 获取所有体征类型",
 			"request": {
 				"url": "http://121.43.107.106:4050/dict/typeTwo?category=VitalSigns",
@@ -42,7 +41,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo?category=types",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取字典表中的types,前端不需要使用,帮助前端使用201-3下的子方法"
 			},
 			"response": []
@@ -53,7 +55,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=quantifierUnit",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取常用量词单位"
 			},
 			"response": []
@@ -64,13 +69,15 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=TimeUnits",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取时间单位"
 			},
 			"response": []
 		},
 		{
-
 			"name": "202 Dict-003-001 获取所有省份",
 			"request": {
 				"url": "http://121.43.107.106:4050/dict/district?level=1&province&city&district",
@@ -287,7 +294,6 @@
 			"response": []
 		},
 		{
-
 			"name": "217 Dict-005-001 获取健康信息类别",
 			"request": {
 				"url": "121.43.107.106:4050/dict/typeOne?category=healthInfoType",
@@ -316,7 +322,6 @@
 			"response": []
 		},
 		{
-
 			"name": "101 Doctor-002 获取患者列表",
 			"request": {
 				"url": "121.43.107.106:4050/doctor/getPatientList?userId=doc01",
@@ -1211,6 +1216,86 @@
 				"body": {
 					"mode": "raw",
 					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "135 counsel 修改counsel状态",
+			"request": {
+				"url": "localhost:4050/counsel/changeCounselStatus",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"counselId\":\"counsel01\", \n\t\"status\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "136 communication 更新医生之间最后交流时间",
+			"request": {
+				"url": "localhost:4050/communication/updateLastTalkTime",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"doctorId\":\"doc01\", \n\t\t\t\"doctorId2\":\"doc03\", \n\t\t\t\"lastTalkTime\":\"2017-04-09\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "138 task 插入任务模板",
+			"request": {
+				"url": "localhost:4050/tasks/insertTaskModel",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"p01\", \n\t\"sortNo\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "137 message 修改某一个人某种类型的已读状态",
+			"request": {
+				"url": "localhost:4050/message/changeMessageStatus",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"doc01\", \n\t\"type\":1, \n\t\"readOrNot\":0\n}"
 				},
 				"description": ""
 			},

@@ -4,7 +4,8 @@ var	config = require('../config'),
 	Team = require('../models/team'), 
 	Patient = require('../models/patient'), 
 	Doctor = require('../models/doctor'), 
-	Consultation = require('../models/consultation');
+	Consultation = require('../models/consultation'), 
+	DpRelation = require('../models/dpRelation');
 
 //根据counselId获取counsel表除messages外的信息 2017-03-31 GY 
 exports.getCounselReport = function(req, res) {
@@ -293,5 +294,104 @@ exports.removeMember = function(req, res) {
 		}
 
 		res.json({results: upmember});
+	}, {new: true});
+}
+
+//更新医生与医生的最后交流时间
+exports.getDoctor1Object = function (req, res, next) {
+	if (req.body.doctorId == null || req.body.doctorId == '') {
+		return res.json({result:'请填写doctorId!'});
+	}
+    var query = { 
+        userId: req.body.doctorId
+    };
+    Doctor.getOne(query, function (err, doctor) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send('服务器错误, 用户查询失败!');
+        }
+        if (doctor == null) {
+        	return res.json({result:'不存在的doctorId！'});
+        }
+        req.body.doctorObject = doctor;
+        next();
+    });
+};
+exports.getDoctor2Object = function (req, res, next) {
+	if (req.body.doctorId2 == null || req.body.doctorId2 == '') {
+		return res.json({result:'请填写doctorId2!'});
+	}
+    var query = { 
+        userId: req.body.doctorId2
+    };
+    Doctor.getOne(query, function (err, doctor) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send('服务器错误, 用户查询失败!');
+        }
+        if (doctor == null) {
+        	return res.json({result:'不存在的doctorId2！'});
+        }
+        req.body.doctor2Object = doctor;
+        next();
+    });
+};
+exports.removeDoctor = function(req, res, next) {
+	var query = {
+		doctorId: req.body.doctorObject._id
+	};
+	
+	var upObj = {
+		$pull: {
+			doctors: {
+				doctorId:req.body.doctor2Object._id
+			}
+		}
+	};
+	//return res.json({query: query, upObj: upObj});
+	DpRelation.update(query, upObj, function(err, updpRelation) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		if (updpRelation.n != 0 && updpRelation.nModified == 0) {
+		 	// return res.json({result:'未成功移除，请检查成员是否存在！', results: updpRelation})
+		 	next();
+		}
+		if (updpRelation.n != 0 && updpRelation.nModified == 1) {
+			// return res.json({result:'移除成功', results: updpRelation})
+			next();
+		}
+
+		
+	}, {new: true});
+}
+exports.updateLastTalkTime = function(req, res) {
+
+	var query = {
+		doctorId: req.body.doctorObject._id
+	};
+	
+	var upObj = {
+		$addToSet:{
+			doctors:{
+				doctorId:req.body.doctor2Object._id, 
+				lastTalkTime:new Date(req.body.lastTalkTime)
+			}
+		}
+	};
+
+	//return res.json({query: query, upObj: upObj});
+	DpRelation.update(query, upObj, function(err, updpRelation) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		
+		if (updpRelation.n != 0 && updpRelation.nModified == 0) {
+			return res.json({result:'', results: updpRelation})
+		}
+		if (updpRelation.n != 0 && updpRelation.nModified == 1) {
+			return res.json({result:'更新成功', results: updpRelation})
+		}
+		
 	}, {new: true});
 }

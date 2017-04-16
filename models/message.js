@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var messageSchema = new mongoose.Schema({
 	messageId:String,
 	userId:String,
+	readOrNot: Number, 
 	type:Number,
 	time:Date,
 	title:String,
@@ -77,5 +78,19 @@ Message.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+Message.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
+
+  messageModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, upmessage) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, upmessage);
+  });
+};
 
 module.exports = Message;

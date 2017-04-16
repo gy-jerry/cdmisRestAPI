@@ -416,6 +416,7 @@ exports.getRecentDoctorList = function(req, res) {
 	}, opts, fields, populate);
 }
 
+
 exports.insertSchedule = function(req, res) {
 	//查询条件
 	var doctorId = req.body.userId;
@@ -507,3 +508,4 @@ exports.getSchedules = function(req, res) {
 		}, opts, fields);
 	}
 }
+

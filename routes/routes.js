@@ -100,6 +100,7 @@ module.exports = function(app,webEntry) {
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);
   app.post('/counsel/questionaire', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(2), counselCtrl.saveQuestionaire);
+  app.post('/counsel/changeCounselStatus', counselCtrl.changeCounselStatus);
 
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
@@ -124,6 +125,7 @@ module.exports = function(app,webEntry) {
 
   //message
   app.get('/message/getMessages', messageCtrl.getMessages);
+  app.post('/message/changeMessageStatus', messageCtrl.changeMessageStatus);
 
   //communication
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
@@ -135,8 +137,12 @@ module.exports = function(app,webEntry) {
   // app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/newConsultation', communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/conclusion', communicationCtrl.conclusion);
+  app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');
   //app.get('/communication/getConsultation');
+
+  //task
+  app.post('/tasks/insertTaskModel', taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
 
 
   //app.get('/find',function(req, res){
