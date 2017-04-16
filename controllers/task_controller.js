@@ -16,7 +16,7 @@ exports.getTasks = function(req, res) {
     		query = {userId:"Admin"};
     	}
 
-    	var sortNo = req.query.sortNo;
+    var sortNo = req.query.sortNo;
 	
 		if(sortNo != "")
 		{
@@ -145,3 +145,43 @@ exports.updateStartTime = function(req, res) {
 	
 }
 
+//插入任务模板 2017-04-15 GY
+exports.getTaskModel = function(req, res, next) {
+  //var userId = 'Admin';
+  var query = {userId:'Admin', sortNo: req.body.sortNo};
+
+  Task.getOne(query, function(err, task) {
+    if (err) {
+        return res.status(500).send(err.errmsg);
+    }
+    req.body.task = task;
+    //return res.json({result:req.body.task});
+    next();
+  }); 
+}
+exports.insertTaskModel = function(req, res) {
+  if (req.body.userId == null || req.body.userId == '') {
+    return res.json({result:'请填写userId!'});
+  }
+
+  var task = req.body.task;
+
+  var taskData = {
+    userId:req.body.userId, 
+    sortNo:req.body.sortNo, 
+    name:task.name, 
+    date:task.date, 
+    description:task.description, 
+    invalidFlag:task.invalidFlag, 
+    task:task.task
+  };
+
+
+  var newTask = new Task(taskData);
+  newTask.save(function(err, taskInfo) {
+    if (err) {
+      return res.status(500).send(err.errmsg);
+    }
+    res.json({result:'插入成功', newResults: taskInfo});
+  });
+}

@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "cdmis copy",
+		"name": "cdmis",
 		"_postman_id": "fb7504c0-55cb-9216-5a13-7ab25ede638e",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
@@ -1256,6 +1256,26 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"doctorId\":\"doc01\", \n\t\t\t\"doctorId2\":\"doc03\", \n\t\t\t\"lastTalkTime\":\"2017-04-09\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "138 task 插入任务模板",
+			"request": {
+				"url": "localhost:4050/tasks/insertTaskModel",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"p01\", \n\t\"sortNo\":1\n}"
 				},
 				"description": ""
 			},
