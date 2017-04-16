@@ -129,9 +129,11 @@ module.exports = function(app,webEntry) {
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
   app.post('/communication/insertMember', communicationCtrl.insertMember);
   app.post('/communication/removeMember', communicationCtrl.removeMember);
-  app.post('/communication/newTeam', getNoMid.getNo(4), communicationCtrl.newTeam);
+  // app.post('/communication/newTeam', getNoMid.getNo(4), communicationCtrl.newTeam);
+  app.post('/communication/newTeam', communicationCtrl.newTeam);
   app.get('/communication/getTeam', communicationCtrl.getTeam);
-  app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
+  // app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
+  app.post('/communication/newConsultation', communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/conclusion', communicationCtrl.conclusion);
   //app.get('/communication/getMessages');
   //app.get('/communication/getConsultation');
