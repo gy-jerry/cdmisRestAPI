@@ -24,6 +24,7 @@ var doctorSchema = new mongoose.Schema({
 	teams: [String], 
 	schedules: [
 		{
+			_id: 0,
 			day: String, 
 			time: String
 		}
@@ -101,6 +102,20 @@ Doctor.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+Doctor.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
+
+  doctorModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, updoctor) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, updoctor);
+  });
+};
 
 
 
