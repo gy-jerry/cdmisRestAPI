@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "cdmis",
-		"_postman_id": "4ccb7419-23ff-1666-f347-3e1d2938cfd0",
+		"_postman_id": "fe6bfbac-c2fd-bb4d-574a-ab5cf073a05b",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -41,7 +41,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo?category=types",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取字典表中的types,前端不需要使用,帮助前端使用201-3下的子方法"
 			},
 			"response": []
@@ -52,7 +55,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=quantifierUnit",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取常用量词单位"
 			},
 			"response": []
@@ -63,7 +69,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=TimeUnits",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取时间单位"
 			},
 			"response": []
@@ -618,7 +627,10 @@
 				"url": "121.43.107.106:4050/message/getMessages?userId=U201704120001&type=1",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取某个用户某种类型的所有消息并按时间顺序排列"
 			},
 			"response": []
@@ -796,38 +808,13 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
+						"value": "application/json",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "teamId",
-							"value": "teampost2",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "membersuserId",
-							"value": "id1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "membersname",
-							"value": "name2",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "membersphotoUrl",
-							"value": "http://photo2.jpg",
-							"type": "text",
-							"enabled": true
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"teamId\":\"T201704140001\", \n    \"members\":[\n    \t{\n    \t\t\"userId\":\"docpost8\", \n\t\t\t\"name\":\"name\", \n\t\t\t\"photoUrl\":\"http://photo.jpg\"\n    \t}, \n    \t{\n    \t\t\"userId\":\"docpost9\", \n\t\t\t\"name\":\"name3\", \n\t\t\t\"photoUrl\":\"http://photo.jpg\"\n    \t}\n    \t]\n\n}"
 				},
 				"description": ""
 			},
@@ -1291,7 +1278,10 @@
 				"url": "localhost:4050/doctor/getTeam?teamId=team1",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "根据团队ID获取团队信息"
 			},
 			"response": []
@@ -1299,7 +1289,7 @@
 		{
 			"name": "getNo",
 			"request": {
-				"url": "http://121.43.107.106:4050/dictNumber/getNo?numberingType=1",
+				"url": "localhost:4050/dictNumber/getNo",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -1458,7 +1448,10 @@
 				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1497,6 +1490,37 @@
 							"enabled": true
 						}
 					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "139 获取用户当前任务",
+			"request": {
+				"url": "localhost:4050/tasks/getUserTask?userId=p01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "140 更新用户任务",
+			"request": {
+				"url": "localhost:4050/tasks/updateUserTask",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"p01\", \n\t\"type\":\"Measure\", \n\t\"code\":\"Weight\", \n\t\"instruction\":\"修改\", \n\t\"content\":\"修改内容\", \n\t\"startTime\":\"2017-04-17\", \n\t\"endTime\":\"2017-04-18\", \n\t\"times\":3,\n\t\"timesUnits\":\"次\", \n\t\"frequencyTimes\":3, \n\t\"frequencyUnits\":\"天\"\n}"
 				},
 				"description": ""
 			},

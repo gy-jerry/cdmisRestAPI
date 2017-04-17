@@ -142,7 +142,9 @@ module.exports = function(app,webEntry) {
   //app.get('/communication/getConsultation');
 
   //task
-  app.post('/tasks/insertTaskModel', taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
+  app.post('/tasks/insertTaskModel', taskCtrl.removeOldTask, taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
+  app.get('/tasks/getUserTask', taskCtrl.getUserTask);
+  app.post('/tasks/updateUserTask', taskCtrl.getContent, taskCtrl.removeContent, taskCtrl.updateContent);
 
 
   //app.get('/find',function(req, res){

@@ -35,7 +35,7 @@ exports.getTeam = function(req, res) {
         return res.json({result:'请填写teamId!'});
     }
 	//查询条件
-	var _teamId = req.newId;
+	var _teamId = req.query.teamId;
 	var query = {teamId:_teamId};
 
 	//设置参数
