@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "cdmis",
+		"name": "cdmis copy",
 		"_postman_id": "fe6bfbac-c2fd-bb4d-574a-ab5cf073a05b",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
@@ -248,7 +248,7 @@
 		{
 			"name": "214 Compliance-001-001 写入任务执行情况",
 			"request": {
-				"url": "http://121.43.107.106:4050/compliance",
+				"url": "localhost:4050/compliance",
 				"method": "POST",
 				"header": [
 					{
@@ -1521,6 +1521,26 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"userId\":\"p01\", \n\t\"type\":\"Measure\", \n\t\"code\":\"Weight\", \n\t\"instruction\":\"修改\", \n\t\"content\":\"修改内容\", \n\t\"startTime\":\"2017-04-17\", \n\t\"endTime\":\"2017-04-18\", \n\t\"times\":3,\n\t\"timesUnits\":\"次\", \n\t\"frequencyTimes\":3, \n\t\"frequencyUnits\":\"天\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "141 新建或更新Compliance内容",
+			"request": {
+				"url": "localhost:4050/compliance/update",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"U201704050002\",\n    \"type\": \"Measure\",\n    \"code\": \"Weight\",\n    \"date\": \"2017-04-13\",\n    \"status\": 1,\n    \"description\": \"\"\n}"
 				},
 				"description": ""
 			},
