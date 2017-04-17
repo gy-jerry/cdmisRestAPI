@@ -9,6 +9,7 @@ var taskSchema = new mongoose.Schema({
 	invalidFlag:Number,
 	task: [
 	  {
+	  	_id:0, 
 	  	type: {type:String}, 
 	    details:[{
 	    	code:String,
@@ -97,7 +98,31 @@ Task.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+Task.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
 
+  taskModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, uptask) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, uptask);
+  });
+};
 
+Task.removeOne = function(query, callback, opts) {
+	var options = opts || {};
+
+	taskModel
+		.findOneAndRemove(query, options, function(err, task) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, task);
+		});
+};
 
 module.exports = Task;
