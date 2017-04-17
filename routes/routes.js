@@ -97,6 +97,9 @@ module.exports = function(app,webEntry) {
   app.post('/doctor/insertSchedule', doctorCtrl.insertSchedule);
   app.post('/doctor/deleteSchedule', doctorCtrl.deleteSchedule);
   app.get('/doctor/getSchedules', doctorCtrl.getSchedules);
+  app.post('/doctor/insertSuspendTime', doctorCtrl.insertSuspendTime);
+  app.post('/doctor/deleteSuspendTime', doctorCtrl.deleteSuspendTime);
+  app.get('/doctor/getSuspendTime', doctorCtrl.getSuspendTime);
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);
   app.post('/counsel/questionaire', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(2), counselCtrl.saveQuestionaire);

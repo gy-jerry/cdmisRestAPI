@@ -509,3 +509,94 @@ exports.getSchedules = function(req, res) {
 	}
 }
 
+exports.insertSuspendTime = function(req, res) {
+	//查询条件
+	var doctorId = req.body.userId;
+	var _start=req.body.start;
+	var _end=req.body.end;
+	if(doctorId==""||doctorId==undefined||doctorId==null){
+		return res.json({result:2,msg:"Please input doctorId!"});
+	}
+	else if(_start==""||_start==undefined||_start==null||_end==""||_end==undefined||_end==null){
+		return res.json({result:1,msg:"Please input start and end!"});
+	}
+	else{
+		var query = {userId:doctorId};
+		var upObj = {
+			$addToSet: {
+				suspendTime: {
+					start:new Date(_start),
+					end:new Date(_end)
+				}
+			}
+		};
+		//return res.json({query: query, upObj: upObj});
+		Doctor.update(query, upObj, function(err, updoct) {
+			if (err){
+				return res.status(422).send(err.message);
+			}
+			if (updoct.nModified == 0) {
+				return res.json({msg:'未成功修改！请检查输入是否符合要求！', results: updoct});
+			}
+			if (updoct.nModified == 1) {
+				return res.json({msg:'修改成功', results: updoct});
+			}
+			res.json({results: updoct});
+		}, {new: true});
+	}
+}
+exports.deleteSuspendTime = function(req, res) {
+	//查询条件
+	var doctorId = req.body.userId;
+	var _start=req.body.start;
+	var _end=req.body.end;
+	if(doctorId==""||doctorId==undefined||doctorId==null){
+		return res.json({result:2,msg:"Please input doctorId!"});
+	}
+	else if(_start==""||_start==undefined||_start==null||_end==""||_end==undefined||_end==null){
+		return res.json({result:1,msg:"Please input start and end!"});
+	}
+	else{
+		var query = {userId:doctorId};
+		var upObj = {
+			$pull: {
+				suspendTime: {
+					start:new Date(_start),
+					end:new Date(_end)
+				}
+			}
+		};
+		//return res.json({query: query, upObj: upObj});
+		Doctor.update(query, upObj, function(err, updoct) {
+			if (err){
+				return res.status(422).send(err.message);
+			}
+			if (updoct.nModified == 0) {
+				return res.json({msg:'未成功修改！请检查输入是否符合要求！', results: updoct});
+			}
+			if (updoct.nModified == 1) {
+				return res.json({msg:'修改成功', results: updoct});
+			}
+			res.json({results: updoct});
+		}, {new: true});
+	}
+}
+exports.getSuspendTime = function(req, res) {
+	//查询条件
+	var doctorId = req.query.userId;
+	if(doctorId==""||doctorId==undefined||doctorId==null){
+		return res.json({result:2,msg:"Please input doctorId!"});
+	}
+	else{
+		var query = {userId:doctorId};
+		var opts = '';
+		var fields = {'_id':0, 'suspendTime':1};
+
+		Doctor.getOne(query, function(err, item) {
+			if (err) {
+				return res.status(500).send(err.errmsg);
+			}
+			res.json({results: item});
+		}, opts, fields);
+	}
+}
