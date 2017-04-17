@@ -59,7 +59,7 @@ module.exports = function(app,webEntry) {
   app.get('/tasks', taskCtrl.getTasks);
   app.get('/tasks/status', taskCtrl.updateStatus);
   app.get('/tasks/time', taskCtrl.updateStartTime);
-  app.post('/compliance', complianceCtrl.insertOne);
+  // app.post('/compliance', complianceCtrl.insertOne);
   app.get('/compliance', complianceCtrl.getComplianceByDay);
 
   // wf
@@ -148,6 +148,9 @@ module.exports = function(app,webEntry) {
   app.post('/tasks/insertTaskModel', taskCtrl.removeOldTask, taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
   app.get('/tasks/getUserTask', taskCtrl.getUserTask);
   app.post('/tasks/updateUserTask', taskCtrl.getContent, taskCtrl.removeContent, taskCtrl.updateContent);
+
+  //compliance
+  app.post('/compliance/update', complianceCtrl.getCompliance, complianceCtrl.updateCompliance);
 
 
   //app.get('/find',function(req, res){
