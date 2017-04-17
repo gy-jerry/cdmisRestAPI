@@ -1297,6 +1297,217 @@
 			"response": []
 		},
 		{
+			"name": "021 Patient 绑定我的主管医生",
+			"request": {
+				"url": "localhost:4050/patient/bindingMyDoctor",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "patientId",
+							"value": "p01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "doctorId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "030 Doctor 新增停诊信息",
+			"request": {
+				"url": "localhost:4050/doctor/insertSuspendTime",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "start",
+							"value": "2017-04-16",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "end",
+							"value": "2017-04-17",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "031 Doctor 删除停诊信息",
+			"request": {
+				"url": "localhost:4050/doctor/deleteSuspendTime",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "start",
+							"value": "2017-04-16",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "end",
+							"value": "2017-04-17",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "032 Doctor 获取停诊信息",
+			"request": {
+				"url": "localhost:4050/doctor/getSuspendTime?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "033 Doctor 增加排班表信息",
+			"request": {
+				"url": "localhost:4050/doctor/insertSchedule",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "day",
+							"value": "周五",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "time",
+							"value": "上午",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "034 Doctor 获取排班表信息",
+			"request": {
+				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "035 Doctor 删除排班表信息",
+			"request": {
+				"url": "localhost:4050/doctor/deleteSchedule",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "day",
+							"value": "周五",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "time",
+							"value": "上午",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "getNo",
 			"request": {
 				"url": "http://121.43.107.106:4050/dictNumber/getNo?numberingType=1",
