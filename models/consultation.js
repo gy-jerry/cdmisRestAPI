@@ -7,6 +7,7 @@ var consultationSchema = new mongoose.Schema({
 	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	time: Date, 
 	diseaseInfo: {type: mongoose.Schema.Types.ObjectId, ref:'counsel'}, 
+	status:Number,
 	messages: [
 	  {
 	  	sender: String, 

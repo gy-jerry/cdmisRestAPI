@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var log4js = require('./controllers/log_controller');
 var sio = require('socket.io');  
+var path = require('path');
 
 // import necessary self-defined modules
 
@@ -88,11 +89,10 @@ app.all('/*', function(req, res, next) {
 //  next();
 //});
 
-var server = app.listen(app.get('port'), function() { 
-  debug('Express server listening on port ' + server.address().port);
-});
-var io = sio(server)
+var server = app.listen(app.get('port'));
+var io = sio(server);
 try {
+  // console.log(path.resolve(__dirname, webEntry.path, 'routesIO', (webEntry.routeIO || 'default')));
   require(path.resolve(__dirname, webEntry.path, 'routesIO', (webEntry.routeIO || 'default')))(io, webEntry);
 }
 catch (e) {

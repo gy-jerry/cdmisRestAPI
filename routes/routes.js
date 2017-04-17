@@ -94,7 +94,9 @@ module.exports = function(app,webEntry) {
   app.get('/doctor/getTeam', doctorCtrl.getTeamObject, doctorCtrl.getTeam);
   app.post('/doctor/editDoctorDetail', doctorCtrl.editDoctorDetail);
   app.get('/doctor/getRecentDoctorList', doctorCtrl.getDoctorObject, doctorCtrl.getRecentDoctorList);
-
+  app.post('/doctor/insertSchedule', doctorCtrl.insertSchedule);
+  app.post('/doctor/deleteSchedule', doctorCtrl.deleteSchedule);
+  app.get('/doctor/getSchedules', doctorCtrl.getSchedules);
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);
   app.post('/counsel/questionaire', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(2), counselCtrl.saveQuestionaire);
@@ -108,7 +110,7 @@ module.exports = function(app,webEntry) {
   app.post('/patient/newPatientDetail', patientCtrl.checkPatientId, patientCtrl.newPatientDetail);
   app.post('/patient/editPatientDetail', patientCtrl.editPatientDetail)
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
-
+  app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor)
   //comment_query
   app.get('/comment/getComments', doctorCtrl.getDoctorObject, commentCtrl.getCommentsByDoc);
 
@@ -129,9 +131,11 @@ module.exports = function(app,webEntry) {
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
   app.post('/communication/insertMember', communicationCtrl.insertMember);
   app.post('/communication/removeMember', communicationCtrl.removeMember);
-  app.post('/communication/newTeam', getNoMid.getNo(4), communicationCtrl.newTeam);
+  // app.post('/communication/newTeam', getNoMid.getNo(4), communicationCtrl.newTeam);
+  app.post('/communication/newTeam', communicationCtrl.newTeam);
   app.get('/communication/getTeam', communicationCtrl.getTeam);
-  app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
+  // app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
+  app.post('/communication/newConsultation', communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/conclusion', communicationCtrl.conclusion);
   app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');

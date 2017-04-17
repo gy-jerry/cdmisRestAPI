@@ -54,7 +54,8 @@ exports.getTeam = function(req, res) {
 //新建组 2017-04-06 GY
 exports.newTeam = function(req, res) {
 	var teamData = {
-		teamId: req.newId,						
+		// teamId: req.newId,
+		teamId: req.body.teamId,						
 		name: req.body.name, 
 		sponsorId: req.body.sponsorId, 
 		sponsorName: req.body.sponsorName, 
@@ -166,11 +167,13 @@ exports.checkDoctor = function (req, res, next) {
 };
 exports.newConsultation = function(req, res) {
 	var consultationData = {
-		consultationId: req.newId,						
+		// consultationId: req.newId,
+		consultationId: req.body.consultationId,						
 		sponsorId: req.body.sponsorObject._id, 
 		patientId: req.body.patientObject._id, 
 		time: new Date(), 
 		diseaseInfo: req.body.diseaseInfo._id, 
+		status:req.body.status,
 		// messages: [
 	 //  	  {
 	 //  		sender: String, 

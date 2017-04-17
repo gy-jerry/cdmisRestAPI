@@ -416,3 +416,96 @@ exports.getRecentDoctorList = function(req, res) {
 	}, opts, fields, populate);
 }
 
+
+exports.insertSchedule = function(req, res) {
+	//查询条件
+	var doctorId = req.body.userId;
+	var _day=req.body.day;
+	var _time=req.body.time;
+	if(doctorId==""||doctorId==undefined||doctorId==null){
+		return res.json({result:2,msg:"Please input doctorId!"});
+	}
+	else if(_day==""||_day==undefined||_day==null||_time==""||_time==undefined||_time==null){
+		return res.json({result:1,msg:"Please input day and time!"});
+	}
+	else{
+		var query = {userId:doctorId};
+		var upObj = {
+			$addToSet: {
+				schedules: {
+					day:_day,
+					time:_time
+				}
+			}
+		};
+		//return res.json({query: query, upObj: upObj});
+		Doctor.update(query, upObj, function(err, updoct) {
+			if (err){
+				return res.status(422).send(err.message);
+			}
+			if (updoct.nModified == 0) {
+				return res.json({msg:'未成功修改！请检查输入是否符合要求！', results: updoct});
+			}
+			if (updoct.nModified == 1) {
+				return res.json({msg:'修改成功', results: updoct});
+			}
+			res.json({results: updoct});
+		}, {new: true});
+	}
+}
+exports.deleteSchedule = function(req, res) {
+	//查询条件
+	var doctorId = req.body.userId;
+	var _day=req.body.day;
+	var _time=req.body.time;
+	if(doctorId==""||doctorId==undefined||doctorId==null){
+		return res.json({result:2,msg:"Please input doctorId!"});
+	}
+	else if(_day==""||_day==undefined||_day==null||_time==""||_time==undefined||_time==null){
+		return res.json({result:1,msg:"Please input day and time!"});
+	}
+	else{
+		var query = {userId:doctorId};
+		var upObj = {
+			$pull: {
+				schedules: {
+					day:_day,
+					time:_time
+				}
+			}
+		};
+		//return res.json({query: query, upObj: upObj});
+		Doctor.update(query, upObj, function(err, updoct) {
+			if (err){
+				return res.status(422).send(err.message);
+			}
+			if (updoct.nModified == 0) {
+				return res.json({msg:'未成功修改！请检查输入是否符合要求！', results: updoct});
+			}
+			if (updoct.nModified == 1) {
+				return res.json({msg:'修改成功', results: updoct});
+			}
+			res.json({results: updoct});
+		}, {new: true});
+	}
+}
+exports.getSchedules = function(req, res) {
+	//查询条件
+	var doctorId = req.query.userId;
+	if(doctorId==""||doctorId==undefined||doctorId==null){
+		return res.json({result:2,msg:"Please input doctorId!"});
+	}
+	else{
+		var query = {userId:doctorId};
+		var opts = '';
+		var fields = {'_id':0, 'schedules':1};
+
+		Doctor.getOne(query, function(err, item) {
+			if (err) {
+				return res.status(500).send(err.errmsg);
+			}
+			res.json({results: item});
+		}, opts, fields);
+	}
+}
+
