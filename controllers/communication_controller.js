@@ -173,6 +173,7 @@ exports.newConsultation = function(req, res) {
 		patientId: req.body.patientObject._id, 
 		time: new Date(), 
 		diseaseInfo: req.body.diseaseInfo._id, 
+		status:req.body.status,
 		// messages: [
 	 //  	  {
 	 //  		sender: String, 
