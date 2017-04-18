@@ -3,10 +3,11 @@ var mongoose = require('mongoose');
 var insuranceMsgSchema = new mongoose.Schema({
 	doctorId: String,
 	patientId: String,
-	insuranceMsgId: String,
-	Time: Date, 
-	Count: Number, 
-	Description: String
+	insuranceMsg:[{
+		insuranceId: String,
+		Time: Date,
+		Description: String}],
+	Count: Number
 });
 
 
