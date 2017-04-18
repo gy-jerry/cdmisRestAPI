@@ -71,6 +71,8 @@ module.exports = function(app,webEntry) {
   app.get('/user/getUserID', userCtrl.getUserID);
   app.post('/user/sendSMS', userCtrl.sendSMS);
   app.get('/user/verifySMS', userCtrl.verifySMS);
+  app.get('/user/getUserAgreement', userCtrl.getUserAgreement);
+  app.post('/user/updateUserAgreement', userCtrl.updateUserAgreement);
   app.get('/healthInfo/getAllHealthInfo', healthInfoCtrl.getAllHealthInfo);
   app.get('/healthInfo/getHealthDetail', healthInfoCtrl.getHealthDetail);
   app.post('/healthInfo/insertHealthInfo', healthInfoCtrl.insertHealthInfo);
