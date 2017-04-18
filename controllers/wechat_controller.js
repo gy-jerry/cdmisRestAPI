@@ -10,7 +10,11 @@ var wxApis = {
   oauth_access_token: 'https://api.weixin.qq.com/sns/oauth2/access_token',
   unifiedorder: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
   baseToken: 'https://api.weixin.qq.com/cgi-bin/token',
-  getticket: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket'
+  getticket: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
+  getusercode:'https://open.weixin.qq.com/connect/oauth2/authorize',
+  refresh_token:'https://api.weixin.qq.com/sns/oauth2/refresh_token',
+  getuserinfo:'https://api.weixin.qq.com/sns/userinfo',
+  verifyaccess_token:'https://api.weixin.qq.com/sns/auth'
 };
 var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
@@ -98,6 +102,127 @@ exports.settingConfig = function(req, res) {
     jsApiList: []
   }});
 }
+
+exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_token
+    var paramObject = req.query || {};
+    console.log("ggg");
+    var code = paramObject.code;
+    // var state = paramObject.state;
+
+    var url = wxApis.oauth_access_token + '?appid=' + wxApiUserObject.appid
+            + '&secret=' + wxApiUserObject.appsecret
+            + '&code=' + code
+            + '&grant_type=authorization_code';
+
+
+
+    request.get({
+    url: url,
+    json: true
+    }, function (err, response, body) {
+        if (err) return res.status(401).send('换取网页授权access_token失败!');
+        
+        var wechatData = {
+            access_token: body.access_token, //获取用户信息的access_token
+            expires_in: body.expires_in,
+            refresh_token: body.refresh_token,
+            openid: body.openid,
+            scope: body.scope//,
+            // unionid: body.unionid,
+            // api_type: 1
+        }
+        if(wechatData.scope == 'snsapi_base')
+        {
+            return res.json({results:wechatData})
+        }
+        else if (wechatData.scope == 'snsapi_userinfo')
+        {
+            res.json(wechatData);
+                    next();
+        }
+      });
+};
+
+exports.refresh_token = function(req,res,next) {
+    var refresh_Token = req.query.refresh_token;
+
+    var api_url = wxApis.refresh_token + '?appid=' + paramData.appid + '&grant_type=refresh_token' + '&refresh_token=' + refresh_Token;
+
+    request({
+        method: 'GET',
+        url: api_url,
+        json: true
+    }, function(err, response, body) {
+        var wechatData = {
+            access_token: body.access_token, //获取用户信息的access_token
+            expires_in: body.expires_in,
+            refresh_token: body.refresh_token,
+            openid: body.openid,
+            scope: body.scope//,
+            // unionid: body.unionid,
+            // api_type: 1
+        }
+        res.json(wechatData);
+        next();
+    });
+};
+
+exports.verifyaccess_token = function(req,res,next) {//获取用户信息的access_token
+    var openid = req.query.openid;
+    var access_token = req.query.access_token;//获取用户信息的access_token
+
+    var api_url = wxApis.verifyaccess_token + '?access_token=' + access_token + '&openid=' + openid;
+
+    request({
+        method: 'GET',
+        url: api_url,
+        json: true
+    }, function(err, response, body) {
+        var wechatData = {
+            access_token: body.access_token, //获取用户信息的access_token
+            expires_in: body.expires_in,
+            refresh_token: body.refresh_token,
+            openid: body.openid,
+            scope: body.scope
+        }
+        if (body.errcode == 0) 
+        {
+            res.json(wechatData)
+            next()
+        }
+        else{
+            return res.status(401).send('验证access_token失败!');
+        }
+    });
+};
+
+exports.getuserinfo = function(req,res) {
+    var openid = req.query.openid;
+    var access_token = req.query.access_token;//获取用户信息的access_token
+
+    var api_url = wxApis.getuserinfo + '?access_token=' + access_token + '&openid=' + openid + '&lang=zh_CN';
+
+    request({
+        method: 'GET',
+        url: api_url,
+        json: true
+    }, function(err, response, body) {
+        var wechatData = {
+            openid: body.openid,
+            nickname: body.nickname,
+            sex: body.sex,
+            province: body.province,
+            city: body.city,
+            country: body.country,
+            headimgurl: body.headimgurl,
+            privilege:body.privilege,
+            unionid:body.unionid
+        }
+        res.json({results:wechatData})
+    });
+};
+
+
 
 
 

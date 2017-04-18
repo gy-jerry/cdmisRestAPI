@@ -164,8 +164,13 @@ module.exports = function(app,webEntry) {
 
   // weixin wechatCtrl
   app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
+
   app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
   
+
+  app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
+
+
 
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);
