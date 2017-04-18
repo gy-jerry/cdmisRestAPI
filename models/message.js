@@ -22,7 +22,7 @@ function Message(message) {
 
 Message.prototype.save = function(callback) {
 	var message = this.message;
-	var newmessage = new messageModel(message);
+	var newMessage = new messageModel(message);
 	newMessage.save(function(err, messageItem) {
 		if (err) {
 			return callback(err);
