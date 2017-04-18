@@ -212,6 +212,7 @@ exports.newPatientDetail = function(req, res) {
 		gender:req.body.gender, 
 		bloodType:req.body.bloodType, 
 		hypertension:req.body.hypertension, 
+		allergic:req.body.allergic, 
 		class:req.body.class, 
 		class_info:req.body.class_info, 
 		birthday:new Date(req.body.birthday), 
@@ -329,6 +330,9 @@ exports.editPatientDetail = function(req, res) {
 	}
 	if (req.body.hypertension != null){
 		upObj['hypertension'] = req.body.hypertension;
+	}
+	if (req.body.allergic != null){
+		upObj['allergic'] = req.body.allergic;
 	}
 	if (req.body.lastVisittime != null){
 		upObj['lastVisit.time'] = new Date(req.body.lastVisittime);
