@@ -164,6 +164,7 @@ module.exports = function(app,webEntry) {
 
   // weixin wechatCtrl
   app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
+  app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
   
 
   //app.get('/find',function(req, res){
