@@ -29,6 +29,10 @@ exports.getPatientDetail = function(req, res) {
 //根据医院和医生姓名（选填）获取医生信息 2017-03-29 GY
 exports.getDoctorLists = function(req, res) {
 	//查询条件
+	var _province = req.query.province;
+	var _city = req.query.city;
+	var _district = req.query.district;
+
 	var _workUnit = req.query.workUnit;
 	var _name = req.query.name;
 
@@ -36,19 +40,46 @@ exports.getDoctorLists = function(req, res) {
 	var _limit = Number(req.query.limit);
 	var _skip = Number(req.query.skip);
 
-	var query;
-	//name选填
-	if ((_name == null || _name == '') && (_workUnit == null || _workUnit == '')){
-		query = {};
+	// var query;
+	// //name选填
+	// if ((_name == null || _name == '') && (_workUnit == null || _workUnit == '')){
+	// 	query = {};
+	// }
+	// else if((_name == null || _name == '') && _workUnit != null){
+	// 	query = {workUnit:_workUnit};
+	// }
+	// else if (_name != null && (_workUnit == null || _workUnit == '')){
+	// 	query = {name:_name};
+	// }
+	// else{
+	// 	query = {workUnit:_workUnit, name:_name};
+	// }
+
+	var query = {};
+	if(_province != ""&&_province!=null)
+	{
+		query["province"] = _province
+
 	}
-	else if((_name == null || _name == '') && _workUnit != null){
-		query = {workUnit:_workUnit};
+	if(_city != ""&&_city!=null)
+	{
+		query["city"] = _city
+
 	}
-	else if (_name != null && (_workUnit == null || _workUnit == '')){
-		query = {name:_name};
+	if(_district != ""&&_district!=null)
+	{
+		query["district"] = _district
+
 	}
-	else{
-		query = {workUnit:_workUnit, name:_name};
+	if(_workUnit != ""&&_workUnit!=null)
+	{
+		query["workUnit"] = _workUnit
+
+	}
+	if(_name != ""&&_name!=null)
+	{
+		query["name"] = _name
+
 	}
 	//输出内容
 
