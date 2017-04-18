@@ -33,6 +33,7 @@ var doctorCtrl = require('../controllers/doctor_controller'),
     communicationCtrl = require('../controllers/communication_controller'), 
     messageCtrl = require('../controllers/message_controller');
 
+var wechatCtrl = require('../controllers/wechat_controller');
 
 module.exports = function(app,webEntry) {
   
@@ -152,6 +153,10 @@ module.exports = function(app,webEntry) {
   //compliance
   app.post('/compliance/update', complianceCtrl.getCompliance, complianceCtrl.updateCompliance);
 
+
+  // weixin wechatCtrl
+  app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
+  
 
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);

@@ -3,6 +3,14 @@
 // configurations
 module.exports = { 
   tokenSecret: 'zjubme319_ssgj', 
+  wxDeveloperConfig: {
+    zdyyszbzx: {
+      appid: 'wx8a6a43fb9585fb7c',
+      secret: 'b23a4696c3b0c9b506891209d2856ab2',
+      merchantid: '1',
+      merchantkey: 'a'
+    }
+  },
   cookieSecretExt: '111', 
   outerSecrets: ['111'], 
   defaultPwd: '123456', 
@@ -108,20 +116,7 @@ module.exports = {
   UEditor: { 
     Up: 'UEditor/upload'
   },
-  wxDeveloperConfig: {
-    yyb: {
-      appid: 'a',
-      appsecret: 'a',
-      merchantid: '1',
-      merchantkey: 'a'
-    },
-    ybt: {
-      appid: 'a',
-      appsecret: 'a',
-      merchantid: '1',
-      merchantkey: 'a'
-    }
-  },
+  
   credentialsType: {
     '1': '身份证',
     '2': '护照',

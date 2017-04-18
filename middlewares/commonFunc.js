@@ -1,3 +1,7 @@
+var qs = require('querystring');
+var crypto = require('crypto');
+
+var ZEROS = '0000000000000';
 
 var commonFunc = {
 	getClientIp: function (req) {
@@ -52,6 +56,110 @@ var commonFunc = {
 			Seq = Seq / lenChar
 		}
 		return Ret;
+	},
+	// wx 20170418
+	leftZeroPad: function(val, ml) {			
+		if(typeof(val) != 'string') {
+			val = String(val);
+		}
+		return ZEROS.substring(0, ml - val.length) + val;
+	},
+	apiParamFilter: function(params) {
+		var p = {};
+		for(var key in params) {
+			if ( key === 'sign' || key === 'signType' || key === 'sig' || key === 'auth' || key === 'apiObj' || params[key] === '') continue;
+			p[key]  = params[key];
+		}
+		return p;
+	},
+	apiQueryLink: function(params) {
+		var ql = '';
+		for(var key in params) {
+			ql += key + '=' + params[key] + '&';
+		}
+
+		return ql.substring(0, ql.length -1);
+
+	},
+	rightZeroPad: function(val, ml) {			
+		if(typeof(val) != 'string') {
+			val = String(val);
+		}
+		return val + ZEROS.substring(0, ml - val.length);
+	},
+	apiParamSign: function(params, signType, pKey) {
+		var paramStr = qs.stringify(params, '&', '=');
+		var ret = '';
+		
+		switch(signType.toUpperCase()) {
+			case 'MD5':
+				var md5 = crypto.createHash('md5');
+				md5.update(paramStr + pKey);
+				ret = md5.digest('hex');
+				break;
+			default:
+				ret = '';
+
+		}
+		return ret;
+	},
+	convertToMD5: function(params, isUpper) {
+		var md5 = crypto.createHash('md5');
+		var ret = md5.update(params).digest('hex');
+		if(isUpper) {
+			ret = ret.toUpperCase();
+		}
+		return ret;
+	},
+	convertToSha1: function(params, isUpper) {
+		var sha1Gen = crypto.createHash('sha1');
+		var ret = sha1Gen.update(params).digest('hex');
+		if(isUpper) {
+			ret = ret.toUpperCase();
+		}
+		return ret;
+	},
+	getRandomSn: function(number) {
+		return commonFunc.rightZeroPad(Math.ceil( Math.random()  * Math.pow(10, number)), number);
+	},
+	getRandomMobile: function() {
+		return '173' + commonFunc.getRandomSn(8);
+	},
+	randomString: function(size) {
+	  if (size === 0) {
+	    throw new Error('Zero-length randomString is useless.');
+	  }
+	  var chars = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+	               'abcdefghijklmnopqrstuvwxyz' +
+	               '0123456789');
+	  var objectId = '';
+	  var bytes = crypto.randomBytes(size);
+	  for (var i = 0; i < bytes.length; ++i) {
+	    objectId += chars[bytes.readUInt8(i) % chars.length];
+	  }
+	  return objectId;
+	},
+	rawSort: function (args) {
+	  var keys = Object.keys(args);
+	  keys = keys.sort()
+	  var newArgs = {};
+	  keys.forEach(function (key) {
+	    newArgs[key] = args[key];
+	    
+	  });
+
+	  var string = '';
+	  for (var k in newArgs) {
+	    string += '&' + k + '=' + newArgs[k];
+	  }
+	  string = string.substr(1);
+	  return string;
+	},
+	createTimestamp: function () {
+	  return parseInt(new Date().getTime() / 1000) + '';
+	},
+	createNonceStr: function () {
+	  return Math.random().toString(36).substr(2, 15);
 	}
 }
 
