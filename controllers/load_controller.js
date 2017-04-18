@@ -17,7 +17,7 @@ exports.uploadphoto = function() {
 	    }
 	});
 	var upload = multer({ storage: storage }); 
-	return upload.single('photo')
+	return upload.single('file')
 }
 
 exports.upload = function(req, res) {
