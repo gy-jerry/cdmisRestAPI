@@ -3,6 +3,14 @@ var	config = require('../config'),
 
 //根据类型查询消息链接 2017-04-05 GY 
 exports.getMessages = function(req, res) {
+
+	if (req.query.userId == null || req.query.userId == '') {
+		return res.json({result: '请填写userId'});
+	}
+	if (req.query.type == null || req.query.userId == '') {
+		return res.json({resutl: '请填写type'});
+	}
+
 	var userId = req.query.userId;
 	var type = req.query.type;
 
@@ -30,6 +38,14 @@ exports.getMessages = function(req, res) {
 
 //根据userId修改某种类型消息的已读状态 GY 2017-04-15
 exports.changeMessageStatus = function(req, res) {
+
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result: '请填写userId'});
+	}
+	if (req.body.type == null || req.body.userId == '') {
+		return res.json({resutl: '请填写type'});
+	}
+
 	var query = {
 		userId: req.body.userId, 
 		type: req.body.type
@@ -60,4 +76,58 @@ exports.changeMessageStatus = function(req, res) {
 		}
 		
 	}, opts);
+}
+
+exports.insertMessage = function(req, res) {
+
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result: '请填写userId'});
+	}
+	if (req.body.type == null || req.body.userId == '') {
+		return res.json({resutl: '请填写type'});
+	}
+	var readOrNot = 0;
+	// return res.json({messageId:req.newId})
+
+	var messageData = {
+		messageId: req.newId, 
+		userId: req.body.userId, 
+		type: req.body.type, 
+		readOrNot: readOrNot
+	};
+	if (req.body.time != null && req.body.time != ''){
+		messageData['time'] = new Date(req.body.time);
+	}
+	else {
+		messageData['time'] = new Date();
+	}
+	if (req.body.title != null){
+		messageData['title'] = req.body.title;
+	}
+	if (req.body.description != null){
+		messageData['description'] = req.body.description;
+	}
+	if (req.body.url != null){
+		messageData['url'] = req.body.url;
+	}
+	// return res.json({messageData:messageData})
+
+	var newMessage = new Message(messageData);
+	newMessage.save(function(err, messageInfo) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+
+    	if (req.body.InsMsg != null) {
+    		var newResults = {
+    			insMsg: req.body.InsMsg, 
+    			message: messageInfo
+    		};
+    	}
+    	else {
+    		var newResults = messageInfo;
+    	}
+
+    	res.json({result:'新建成功', newResults: newResults});
+	});
 }

@@ -166,6 +166,15 @@ exports.checkDoctor = function (req, res, next) {
     });
 };
 exports.newConsultation = function(req, res) {
+
+	if (req.body.status == null || req.body.status == '') {
+		//无status参数传入时，自动设置为进行中，定义为1
+		var status = 1;
+	}
+	else {
+		var status = req.body.status;
+	}
+
 	var consultationData = {
 		// consultationId: req.newId,
 		consultationId: req.body.consultationId,						
@@ -173,7 +182,7 @@ exports.newConsultation = function(req, res) {
 		patientId: req.body.patientObject._id, 
 		time: new Date(), 
 		diseaseInfo: req.body.diseaseInfo._id, 
-		status:req.body.status,
+		status:status,
 		// messages: [
 	 //  	  {
 	 //  		sender: String, 
@@ -210,12 +219,21 @@ exports.conclusion = function(req, res) {
     if (req.body.conclusion == null || req.body.conclusion == '') {
         return res.json({result:'请填写conclusion!'});
     }
+    if (req.body.status == null || req.body.status == '') {
+    	//无status参数传入时，自动设置为已完成
+    	var status = 0;
+    }
+    else {
+    	var status = req.body.status;
+    }
+
 	var query = {
 		consultationId: req.body.consultationId
 	};
 	
 	var upObj = {
-		conclusion: req.body.conclusion
+		conclusion: req.body.conclusion, 
+		status: status
 	};
 	//return res.json({query: query, upObj: upObj});
 	Consultation.updateOne(query, upObj, function(err, upConclusion) {
@@ -354,6 +372,27 @@ exports.removeDoctor = function(req, res, next) {
 		if (err){
 			return res.status(422).send(err.message);
 		}
+		if (updpRelation.n == 0) {
+			// return res.json({result: updpRelation});
+			var dpRelationData = {
+    			doctorId: req.body.doctorObject._id, 
+    			revisionInfo:{
+					operationTime:new Date(),
+					userId:"gy",
+					userName:"gy",
+					terminalIP:"10.12.43.32"
+				}
+    		};
+    		//return res.json({result:dpRelationData});
+    		var newDpRelation = new DpRelation(dpRelationData);
+			newDpRelation.save(function(err, dpRelationInfo) {
+				if (err) {
+      				return res.status(500).send(err.errmsg);
+    			}
+    			// return res.json({result: dpRelationInfo});
+    			next();
+			});
+		}
 		if (updpRelation.n != 0 && updpRelation.nModified == 0) {
 		 	// return res.json({result:'未成功移除，请检查成员是否存在！', results: updpRelation})
 		 	next();
@@ -362,7 +401,6 @@ exports.removeDoctor = function(req, res, next) {
 			// return res.json({result:'移除成功', results: updpRelation})
 			next();
 		}
-
 		
 	}, {new: true});
 }

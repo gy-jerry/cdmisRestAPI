@@ -41,6 +41,20 @@ var commonFunc = {
 		return currentdate;
 		// YYYYMMDD
 	},
+	convertToFormatDate:function(dateObj) {
+		var date = dateObj;
+		var month = date.getMonth() + 1;
+		var strDate = date.getDate();
+		if (month >= 1 && month <= 9) {
+			month = "0" + month;
+		}
+		if (strDate >= 0 && strDate <= 9) {
+			strDate = "0" + strDate;
+		}
+		var formatDate = date.getFullYear()+month+strDate;
+		return formatDate;
+		// YYYYMMDD
+	},
 	paddNum:function(num){
 		num += "";
 		return num.replace(/^(\d)$/,"0$1");
