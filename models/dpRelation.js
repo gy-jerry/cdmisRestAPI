@@ -6,7 +6,8 @@ var dpRelationSchema = new mongoose.Schema({
 	patients: [
 	  {
 	  	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
-	  	labels: [String]
+	  	labels: [String],
+	  	dpRelationTime:Date
 	  }
 	], 
 	doctors: [

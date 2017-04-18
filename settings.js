@@ -10,12 +10,12 @@ var db = "cdmis";
 module.exports = {
   webEntry: {
     domain: ip,
-    domainName: ip,
+    domainName: 'sio',
     path: '',
     dbUri: f('mongodb://%s:%s@%s:%s/%s',user,password,ip,port,db),
     restPort:4050,
     route: 'routes',
-    routeIO: 'routesIO',
+    routesSocketIO: 'routesSocketIO',
     view: '',
     config: ''
   }

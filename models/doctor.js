@@ -29,6 +29,13 @@ var doctorSchema = new mongoose.Schema({
 			time: String
 		}
 	], 
+	suspendTime: [
+		{
+			_id: 0,
+			start: Date, 
+			end: Date
+		}
+	], 
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,

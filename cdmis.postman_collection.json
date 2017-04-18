@@ -1,8 +1,8 @@
 {
 	"variables": [],
 	"info": {
-		"name": "cdmis copy",
-		"_postman_id": "fe6bfbac-c2fd-bb4d-574a-ab5cf073a05b",
+		"name": "cdmis",
+		"_postman_id": "4ccb7419-23ff-1666-f347-3e1d2938cfd0",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -41,10 +41,7 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo?category=types",
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"description": "获取字典表中的types,前端不需要使用,帮助前端使用201-3下的子方法"
 			},
 			"response": []
@@ -55,10 +52,7 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=quantifierUnit",
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"description": "获取常用量词单位"
 			},
 			"response": []
@@ -69,10 +63,7 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=TimeUnits",
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"description": "获取时间单位"
 			},
 			"response": []
@@ -248,7 +239,7 @@
 		{
 			"name": "214 Compliance-001-001 写入任务执行情况",
 			"request": {
-				"url": "localhost:4050/compliance",
+				"url": "http://121.43.107.106:4050/compliance",
 				"method": "POST",
 				"header": [
 					{
@@ -627,10 +618,7 @@
 				"url": "121.43.107.106:4050/message/getMessages?userId=U201704120001&type=1",
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"description": "获取某个用户某种类型的所有消息并按时间顺序排列"
 			},
 			"response": []
@@ -808,13 +796,38 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
+						"value": "application/x-www-form-urlencoded",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"teamId\":\"T201704140001\", \n    \"members\":[\n    \t{\n    \t\t\"userId\":\"docpost8\", \n\t\t\t\"name\":\"name\", \n\t\t\t\"photoUrl\":\"http://photo.jpg\"\n    \t}, \n    \t{\n    \t\t\"userId\":\"docpost9\", \n\t\t\t\"name\":\"name3\", \n\t\t\t\"photoUrl\":\"http://photo.jpg\"\n    \t}\n    \t]\n\n}"
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "teamId",
+							"value": "teampost2",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "membersuserId",
+							"value": "id1",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "membersname",
+							"value": "name2",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "membersphotoUrl",
+							"value": "http://photo2.jpg",
+							"type": "text",
+							"enabled": true
+						}
+					]
 				},
 				"description": ""
 			},
@@ -1278,18 +1291,226 @@
 				"url": "localhost:4050/doctor/getTeam?teamId=team1",
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"description": "根据团队ID获取团队信息"
+			},
+			"response": []
+		},
+		{
+			"name": "021 Patient 绑定我的主管医生",
+			"request": {
+				"url": "localhost:4050/patient/bindingMyDoctor",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "patientId",
+							"value": "p01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "doctorId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "030 Doctor 新增停诊信息",
+			"request": {
+				"url": "localhost:4050/doctor/insertSuspendTime",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "start",
+							"value": "2017-04-16",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "end",
+							"value": "2017-04-17",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "031 Doctor 删除停诊信息",
+			"request": {
+				"url": "localhost:4050/doctor/deleteSuspendTime",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "start",
+							"value": "2017-04-16",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "end",
+							"value": "2017-04-17",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "032 Doctor 获取停诊信息",
+			"request": {
+				"url": "localhost:4050/doctor/getSuspendTime?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "033 Doctor 增加排班表信息",
+			"request": {
+				"url": "localhost:4050/doctor/insertSchedule",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "day",
+							"value": "周五",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "time",
+							"value": "上午",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "034 Doctor 获取排班表信息",
+			"request": {
+				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "035 Doctor 删除排班表信息",
+			"request": {
+				"url": "localhost:4050/doctor/deleteSchedule",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "day",
+							"value": "周五",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "time",
+							"value": "上午",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
 			},
 			"response": []
 		},
 		{
 			"name": "getNo",
 			"request": {
-				"url": "localhost:4050/dictNumber/getNo",
+				"url": "http://121.43.107.106:4050/dictNumber/getNo?numberingType=1",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -1443,65 +1664,15 @@
 			"response": []
 		},
 		{
-			"name": "getSchedules",
+			"name": "139 获取用户当前任务",
 			"request": {
-				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
+				"url": "localhost:4050/tasks/getUserTask?userId=p01",
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "deleteSchedule",
-			"request": {
-				"url": "localhost:4050/doctor/deleteSchedule",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "userId",
-							"value": "doc01",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "day",
-							"value": "周五",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "time",
-							"value": "上午",
-							"type": "text",
-							"enabled": true
-						}
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "139 获取用户当前任务",
-			"request": {
-				"url": "localhost:4050/tasks/getUserTask?userId=p01",
-				"method": "GET",
-				"header": [],
-				"body": {},
 				"description": ""
 			},
 			"response": []
@@ -1541,6 +1712,56 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"userId\": \"U201704050002\",\n    \"type\": \"Measure\",\n    \"code\": \"Weight\",\n    \"date\": \"2017-04-13\",\n    \"status\": 1,\n    \"description\": \"\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getSchedules",
+			"request": {
+				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "deleteSchedule",
+			"request": {
+				"url": "localhost:4050/doctor/deleteSchedule",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "doc01",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "day",
+							"value": "周五",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "time",
+							"value": "上午",
+							"type": "text",
+							"enabled": true
+						}
+					]
 				},
 				"description": ""
 			},

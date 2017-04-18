@@ -18,6 +18,7 @@ var path = require('path');
 var webEntry = require('./settings').webEntry;
 
 var _config = webEntry.config || 'config',
+    domain = webEntry.domain,
     domainName = webEntry.domainName,
     route = webEntry.route || 'default';
 
@@ -33,7 +34,7 @@ if (typeof(db.db) === 'undefined') {
 }
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-  console.log(domainName + ' MongoDB connected!');
+  console.log(domain + ' MongoDB connected!');
 });
 
 // node服务
@@ -76,6 +77,10 @@ app.all('*', function (req, res, next) {
 // 路由设置
 routes(app, webEntry);
 
+app.get('/chat',function(req,res){
+    res.sendFile(__dirname+'/public/index.html');
+});
+
 // 找不到正确路由时，执行以下操作
 app.all('/*', function(req, res, next) { 
   // res.sendFile('main.html', { root: __dirname + '/public/build/www' }); 
@@ -93,7 +98,7 @@ var server = app.listen(app.get('port'));
 var io = sio(server);
 try {
   // console.log(path.resolve(__dirname, webEntry.path, 'routesIO', (webEntry.routeIO || 'default')));
-  require(path.resolve(__dirname, webEntry.path, 'routesIO', (webEntry.routeIO || 'default')))(io, webEntry);
+  require(path.resolve(__dirname, webEntry.path, 'routesSocketIO', (webEntry.routesSocketIO || 'default')))(io, webEntry);
 }
 catch (e) {
   console.log(e);
