@@ -7,6 +7,7 @@ var userSchema = new mongoose.Schema({
 	openId: String,						
 	phoneNo: String,					
 	password:String,
+	agreement:String,
 	photoUrl:String,
 	role:[String],
 	loginStatus:Number,
