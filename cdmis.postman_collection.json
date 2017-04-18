@@ -1,8 +1,8 @@
 {
 	"variables": [],
 	"info": {
-		"name": "cdmis",
-		"_postman_id": "4ccb7419-23ff-1666-f347-3e1d2938cfd0",
+		"name": "cdmis copy",
+		"_postman_id": "ebef248a-dc35-2253-ee8b-d45e63d52c1f",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -41,7 +41,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo?category=types",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取字典表中的types,前端不需要使用,帮助前端使用201-3下的子方法"
 			},
 			"response": []
@@ -52,7 +55,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=quantifierUnit",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取常用量词单位"
 			},
 			"response": []
@@ -63,7 +69,10 @@
 				"url": "http://121.43.107.106:4050/dict/typeTwo/codes?category=types&type=TimeUnits",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取时间单位"
 			},
 			"response": []
@@ -618,7 +627,10 @@
 				"url": "121.43.107.106:4050/message/getMessages?userId=U201704120001&type=1",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "获取某个用户某种类型的所有消息并按时间顺序排列"
 			},
 			"response": []
@@ -1291,7 +1303,10 @@
 				"url": "localhost:4050/doctor/getTeam?teamId=team1",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "根据团队ID获取团队信息"
 			},
 			"response": []
@@ -1413,7 +1428,10 @@
 				"url": "localhost:4050/doctor/getSuspendTime?userId=doc01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1463,7 +1481,10 @@
 				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1698,6 +1719,46 @@
 			"response": []
 		},
 		{
+			"name": "绑定医生与患者",
+			"request": {
+				"url": "localhost:4050/patient/bindingMyDoctor",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"patientId\":\"p01\", \n\t\"doctorId\":\"docpost17\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "144 插入message",
+			"request": {
+				"url": "localhost:4050/message/insertMessage",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"p02\", \n\t\"type\":1, \n\t\"time\":\"\", \n\t\"title\":\"\", \n\t\"description\":\"\", \n\t\"url\":\"\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "141 新建或更新Compliance内容",
 			"request": {
 				"url": "localhost:4050/compliance/update",
@@ -1718,12 +1779,138 @@
 			"response": []
 		},
 		{
+			"name": "139 获取用户当前任务",
+			"request": {
+				"url": "localhost:4050/tasks/getUserTask?userId=p01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "140 更新用户任务",
+			"request": {
+				"url": "localhost:4050/tasks/updateUserTask",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\":\"p01\", \n\t\"type\":\"Measure\", \n\t\"code\":\"Weight\", \n\t\"instruction\":\"修改\", \n\t\"content\":\"修改内容\", \n\t\"startTime\":\"2017-04-17\", \n\t\"endTime\":\"2017-04-18\", \n\t\"times\":3,\n\t\"timesUnits\":\"次\", \n\t\"frequencyTimes\":3, \n\t\"frequencyUnits\":\"天\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "142 获取指定日期新增的患者列表",
+			"request": {
+				"url": "localhost:4050/doctor/getPatientByDate?userId=doc01&date=2017-04-07",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "143 获取当日新增的患者列表",
+			"request": {
+				"url": "localhost:4050/doctor/getPatientByDate?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "129 communication-006 更新结论",
+			"request": {
+				"url": "localhost:4050/communication/conclusion",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "consultationId",
+							"value": "consultationPost03",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "conclusion",
+							"value": "jj",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "status",
+							"value": "",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "145 给患者发送保险推送",
+			"request": {
+				"url": "localhost:4050/insurance/updateInsuranceMsg",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"doctorId\":\"doc03\", \n\t\"patientId\":\"p02\", \n\t\"insuranceId\":\"ins01\", \n\t\"time\":\"\", \n\t\"insDescription\":\"\", \n\t\n\t\"type\":1, \n\t\"title\":\"\", \n\t\"description\":\"\", \n\t\"url\":\"\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "146 获取保险推送信息",
+			"request": {
+				"url": "localhost:4050/insurance/getInsMsg?doctorId=doc01&patientId=p01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "getSchedules",
 			"request": {
 				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []

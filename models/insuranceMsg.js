@@ -5,9 +5,9 @@ var insuranceMsgSchema = new mongoose.Schema({
 	patientId: String,
 	insuranceMsg:[{
 		insuranceId: String,
-		Time: Date,
-		Description: String}],
-	Count: Number
+		time: Date,
+		description: String}],
+	count: {type:Number, default:0}
 });
 
 
@@ -75,7 +75,20 @@ InsuranceMsg.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+InsuranceMsg.update = function (query, obj, callback, opts, populate) {
+  var options = opts || {};
+  var populate = populate || '';
 
+  insuranceMsgModel
+  	.update(query, obj, options)
+  	.populate(populate) 
+  	.exec(function (err, upinsuranceMsg) {
+    	if (err) {
+      		return callback(err);
+    	}
+    callback(null, upinsuranceMsg);
+  });
+};
 
 
 module.exports = InsuranceMsg;

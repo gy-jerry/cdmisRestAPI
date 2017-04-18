@@ -5,6 +5,7 @@ var dpRelationSchema = new mongoose.Schema({
 	doctorId: {type: mongoose.Schema.Types.ObjectId, ref:'doctor'}, 
 	patients: [
 	  {
+	  	_id:0, 
 	  	patientId: {type: mongoose.Schema.Types.ObjectId, ref:'patient'}, 
 	  	labels: [String],
 	  	dpRelationTime:Date

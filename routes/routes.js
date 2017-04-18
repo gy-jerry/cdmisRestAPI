@@ -31,7 +31,8 @@ var doctorCtrl = require('../controllers/doctor_controller'),
     vitalSignCtrl = require('../controllers/vitalSign_controller'), 
     accountCtrl = require('../controllers/account_controller'), 
     communicationCtrl = require('../controllers/communication_controller'), 
-    messageCtrl = require('../controllers/message_controller');
+    messageCtrl = require('../controllers/message_controller'), 
+    insuranceCtrl = require('../controllers/insurance_controller');
 
 var wechatCtrl = require('../controllers/wechat_controller');
 
@@ -95,6 +96,7 @@ module.exports = function(app,webEntry) {
   app.get('/doctor/getTeam', doctorCtrl.getTeamObject, doctorCtrl.getTeam);
   app.post('/doctor/editDoctorDetail', doctorCtrl.editDoctorDetail);
   app.get('/doctor/getRecentDoctorList', doctorCtrl.getDoctorObject, doctorCtrl.getRecentDoctorList);
+  app.get('/doctor/getPatientByDate', doctorCtrl.getDoctorObject, doctorCtrl.getPatientByDate);
   app.post('/doctor/insertSchedule', doctorCtrl.insertSchedule);
   app.post('/doctor/deleteSchedule', doctorCtrl.deleteSchedule);
   app.get('/doctor/getSchedules', doctorCtrl.getSchedules);
@@ -112,9 +114,9 @@ module.exports = function(app,webEntry) {
   app.post('/patient/insertDiagnosis', patientCtrl.getDoctorObject, patientCtrl.insertDiagnosis);
   app.get('/patient/getDoctorLists', patientCtrl.getDoctorLists);
   app.post('/patient/newPatientDetail', patientCtrl.checkPatientId, patientCtrl.newPatientDetail);
-  app.post('/patient/editPatientDetail', patientCtrl.editPatientDetail)
+  app.post('/patient/editPatientDetail', patientCtrl.editPatientDetail);
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
-  app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor)
+  app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
   //comment_query
   app.get('/comment/getComments', doctorCtrl.getDoctorObject, commentCtrl.getCommentsByDoc);
 
@@ -130,6 +132,7 @@ module.exports = function(app,webEntry) {
   //message
   app.get('/message/getMessages', messageCtrl.getMessages);
   app.post('/message/changeMessageStatus', messageCtrl.changeMessageStatus);
+  app.post('/message/insertMessage', getNoMid.getNo(6), messageCtrl.insertMessage);
 
   //communication
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
@@ -153,6 +156,9 @@ module.exports = function(app,webEntry) {
   //compliance
   app.post('/compliance/update', complianceCtrl.getCompliance, complianceCtrl.updateCompliance);
 
+  //insurance
+  app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
+  app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
 
   // weixin wechatCtrl
   app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);

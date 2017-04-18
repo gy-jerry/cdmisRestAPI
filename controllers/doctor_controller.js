@@ -3,7 +3,8 @@ var	config = require('../config'),
 	Team = require('../models/team'), 
 	DpRelation = require('../models/dpRelation'), 
 	Consultation = require('../models/consultation'), 
-	Comment = require('../models/comment');
+	Comment = require('../models/comment'), 
+	commonFunc = require('../middlewares/commonFunc');
 
 // //根据userId查询医生信息 2017-03-28 GY
 // exports.getDoctor = function(req, res) {
@@ -600,3 +601,49 @@ exports.getSuspendTime = function(req, res) {
 		}, opts, fields);
 	}
 }
+
+
+//根据医生ID获取医生某日新增患者列表 2017-04-18 GY
+exports.getPatientByDate = function(req, res) {
+	//查询条件
+	var doctorObject = req.body.doctorObject;
+	var query = {doctorId:doctorObject._id};
+	if (req.query.date != null && req.query.date != '') {
+		var date = new Date(req.query.date);
+		date = commonFunc.convertToFormatDate(date);
+	}
+	else {
+		var date = commonFunc.getNowFormatDate();
+	}
+	// return res.json({result:date});
+
+	var opts = '';
+	var fields = {'_id':0, 'patients':1};
+	//通过子表查询主表，定义主表查询路径及输出内容
+	var populate = {path: 'patients.patientId', select: {'_id':0, 'revisionInfo':0}};
+
+	DpRelation.getOne(query, function(err, item) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+
+    	var patientsitem = [];
+    	var dpTimeFormat = null;
+    	var j = 0;
+    	if (item.patients.length == 0) {
+    		return res.json({result:'暂无患者!'});
+    	}
+    	else if (item.patients.length != 0) {
+    		for (var i = item.patients.length - 1; i >= 0; i--) {
+    			dpTimeFormat = commonFunc.convertToFormatDate(item.patients[i].dpRelationTime);
+    			if (dpTimeFormat == date) {
+    				patientsitem[j] = item.patients[i];
+    				j++;
+    			}
+    			
+    		}
+    	}
+    	res.json({results2:patientsitem});
+	}, opts, fields, populate);
+}
+

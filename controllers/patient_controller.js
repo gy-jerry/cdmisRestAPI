@@ -429,7 +429,10 @@ exports.insertDiagnosis = function(req, res) {
 		res.json({results: updiag});
 	}, {new: true});
 }
-exports.bindingMyDoctor = function(req, res) {
+
+//绑定主管医生
+//1. patient表中修改
+exports.bindingMyDoctor = function(req, res, next) {
 	var _pId=req.body.patientId
 	var _dId=req.body.doctorId
 	if (_pId == null || _pId == ''|| _pId == undefined) {
@@ -481,9 +484,76 @@ exports.bindingMyDoctor = function(req, res) {
 					if (err) {
 						return res.status(500).send(err.errmsg);
 					}
-					res.json({results: 0,msg:"success!"});
+					// res.json({results: 0,msg:"success!"});
+					req.body.doctor_id = doc;
+					req.body.patient_id = patient._id;
+					next();
 				});
 			});
 		});
 	}
+}
+//2. DpRelation表中修改
+exports.bindingPatient = function(req, res) {
+	var doctorId = req.body.doctor_id;
+	var patientId = req.body.patient_id;
+	if (req.body.dpRelationTime == null || req.body.dpRelationTime == '') {
+		var dpRelationTime = new Date();
+	}
+	else {
+		var dpRelationTime = new Date(req.body.dpRelationTime);
+	}
+	// return res.json({doctor: doctorId, patient: patientId, dpTime: dpRelationTime});
+	var query = {doctorId: doctorId};
+	var upObj = {
+		$push: {
+			patients: {
+				patientId: patientId, 
+				dpRelationTime: dpRelationTime
+			}
+		}
+	};
+
+	DpRelation.update(query, upObj, function(err, uprelation) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		if (uprelation.n == 0) {
+			var dpRelationData = {
+    			doctorId: doctorId, 
+    			revisionInfo:{
+					operationTime:new Date(),
+					userId:"gy",
+					userName:"gy",
+					terminalIP:"10.12.43.32"
+				}
+    		};
+    		//return res.json({result:dpRelationData});
+    		var newDpRelation = new DpRelation(dpRelationData);
+			newDpRelation.save(function(err, dpRelationInfo) {
+				if (err) {
+      				return res.status(500).send(err.errmsg);
+    			}
+    			DpRelation.update(query, upObj, function(err, updpRelation) {
+					if (err) {
+						return res.status(422).send(err.message);
+					}
+					else if (updpRelation.nModified == 0) {
+						return res.json({result:'未成功修改！请检查输入是否符合要求！', results: updpRelation, flag:'0'});
+					}
+					else if (updpRelation.nModified == 1) {
+						return res.json({result:'修改成功', results: updpRelation, flag:'0'});
+					}
+					// return res.json({result:updpRelation});
+				}, {new: true});
+			});
+		}
+		else if (uprelation.nModified == 0) {
+			return res.json({result:'未成功修改！请检查输入是否符合要求！', results: uprelation, flag:'1'});
+		}
+		else if (uprelation.nModified == 1) {
+			return res.json({result:'修改成功', results: uprelation, flag:'1'});
+		}
+		// res.json({results: uprelation});
+	}, {new: true});
 }
