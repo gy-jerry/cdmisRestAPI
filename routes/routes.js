@@ -21,6 +21,7 @@ var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
     dictDistrictCtrl = require('../controllers/dictDistrict_controller'),
     dictHospitalCtrl = require('../controllers/dictHospital_controller'),
     taskCtrl = require('../controllers/task_controller'),
+    orderCtrl = require('../controllers/order_controller'),
     complianceCtrl = require('../controllers/compliance_controller');
 
 // controllers updated by GY 
@@ -149,6 +150,10 @@ module.exports = function(app,webEntry) {
 
   //task
   app.post('/tasks/insertTaskModel', taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
+
+  app.post('/order/insertOrder', getNoMid.getNo(7), orderCtrl.insertOrder);
+  app.post('/order/updateOrder', orderCtrl.updateOrder);
+  app.get('/order/getOrder',  orderCtrl.getOrder);
 
 
   //app.get('/find',function(req, res){
