@@ -167,9 +167,11 @@ module.exports = function(app,webEntry) {
 
   app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
   
-
+  // 获取用户基本信息
   app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
 
+  // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
+  app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,getPaySign);
 
 
   //app.get('/find',function(req, res){

@@ -26,7 +26,7 @@ exports.getAccessToken = function (req, res) {
         url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
         'grant_type=client_credential' +  
         '&appid=' + wxApiUserObject.appid + 
-        '&secret=' + wxApiUserObject.secret,
+        '&secret=' + wxApiUserObject.appsecret,
         json: true
     }, function (err, response, body) {
         if(err){
@@ -45,7 +45,7 @@ exports.getAccessTokenMid = function (req, res, next) {
     request.get({
         url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
         'grant_type=client_credential' +  
-        '&appid=' + wxApiUserObject.appid + 
+        '&appid=' + wxApiUserObject.appsecret + 
         '&secret=' + wxApiUserObject.secret,
         json: true
     }, function (err, response, body) {
@@ -103,9 +103,10 @@ exports.settingConfig = function(req, res) {
   }});
 }
 
+
 exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_token
     var paramObject = req.query || {};
-    console.log("ggg");
+
     var code = paramObject.code;
     // var state = paramObject.state;
 
@@ -113,8 +114,6 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
             + '&secret=' + wxApiUserObject.appsecret
             + '&code=' + code
             + '&grant_type=authorization_code';
-
-
 
     request.get({
     url: url,
@@ -137,8 +136,9 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
         }
         else if (wechatData.scope == 'snsapi_userinfo')
         {
-            res.json(wechatData);
-                    next();
+            req.wechatData = wechatData;
+
+            next();
         }
       });
 };
@@ -197,8 +197,8 @@ exports.verifyaccess_token = function(req,res,next) {//获取用户信息的acce
 };
 
 exports.getuserinfo = function(req,res) {
-    var openid = req.query.openid;
-    var access_token = req.query.access_token;//获取用户信息的access_token
+    var openid = req.wechatData.openid;
+    var access_token = req.wechatData.access_token;//获取用户信息的access_token
 
     var api_url = wxApis.getuserinfo + '?access_token=' + access_token + '&openid=' + openid + '&lang=zh_CN';
 
@@ -223,6 +223,285 @@ exports.getuserinfo = function(req,res) {
 };
 
 
+// 订单相关方法
+// 获取订单信息
+exports.getPaymentOrder = function(req, res, next) {
+  var query = {
+    _id: req.orderObject.oid,
+    orderStatus: 1
+  };
+
+  Consumption.getOne(query, function(err, consItem) {
+    if (consItem) {
+      req.orderObject['order'] = {
+        orderSn: consItem.outRecptNum,
+        payAmount: parseFloat(consItem.money || 0),
+        goods_detail: []
+      };
+
+      for(var i =0; i < consItem.items.length; i++) {
+        req.orderObject['order'].goods_detail.push({
+          goods_id: consItem.items[i].pdId,
+          wxpay_goods_id: consItem.items[i].pdSn,
+          goods_name: consItem.items[i].pdSn,
+          quantity: consItem.items[i].pdQuantity,
+          price: consItem.items[i].pdPrice
+        });
+      }    
+
+      next();
+    } else {
+      return res.status(422).send('订单不存在');
+    }
+    
+  })
+}
+
+
+// 统一下单   请求api获取prepay_id的值
+exports.addOrder = function(req, res, next) {
+  var orderObject = req.orderObject || {};
+  console.log('orderObject', orderObject);
+
+  var currentDate = new Date();
+  var ymdhms = moment(currentDate).format('YYYYMMDDhhmmss');
+  var out_trade_no = orderObject.order.orderSn;   // 怎么产生
+  var total_fee = parseInt(orderObject.order.payAmount * 100);    // 怎么产生
+  
+
+  var detail = '<![CDATA[{"goods_detail":' + JSON.stringify(orderObject.order.goods_detail) + '}]]>';
+
+  var paramData = {
+    appid: wxApiUserObject.appid,   // 公众账号ID
+    mch_id: wxApiUserObject.merchantid,   // 商户号
+    
+    nonce_str: commonFunc.randomString(32),   // 随机字符串
+    
+    
+    body: 'order-' + out_trade_no,    // 商品描述
+    attach: orderObject.oid,    // 附加数据   state
+    
+    out_trade_no: out_trade_no + '-' + commonFunc.getRandomSn(4),   // 商户订单号
+    
+    total_fee: total_fee,   // 标价金额
+    spbill_create_ip: req.ip,   // 终端IP
+    time_start: ymdhms,     // 交易起始时间
+    // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
+    notify_url: 'http://app.xiaoyangbao.net/wxmp/paynotifyurl',   // 通知地址
+    trade_type: 'JSAPI',    // 交易类型
+    openid: orderObject.openid    // 用户标识
+  };
+
+  var signStr = commonFunc.rawSort(paramData);
+  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  
+  paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
+  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  var xmlString = xmlBuilder.buildObject(paramData);
+
+  request({
+    url: wxApis.unifiedorder,
+    method: 'POST',
+    body: xmlString
+  }, function(err, response, body){
+    var prepay_id = '';
+
+    if (!err && response.statusCode == 200) {       
+      var parser = new xml2js.Parser();
+      var data = {};
+      parser.parseString(body, function(err, result) {        
+        data = result || {};
+      });
+
+      // 微信生成的预支付会话标识，用于后续接口调用中使用，该值有效期为2小时
+      prepay_id = data.xml.prepay_id;
+      req.prepay_id = prepay_id;
+      next();
+
+      // res.redirect('/zbtong/?#/shopping/wxpay/'+ orderObject.oid +'/' + data.xml.prepay_id);
+    }
+    else{
+      return res.status(500).send('Error');
+    }
+  });
+}
+
+
+exports.getPaySign = function(req, res, next) {
+  prepay_id = req.prepay_id;
+
+  var wcPayParams = {
+    "appId" : wxApiUserObject.appid,     //公众号名称，由商户传入
+    "timeStamp" : commonFunc.createTimestamp,         //时间戳，自1970年以来的秒数
+    "nonceStr" : commonFunc.createNonceStr, //随机串
+    // 通过统一下单接口获取
+    "package" : "prepay_id="+prepay_id,
+    "signType" : "MD5",         //微信签名方式：
+  };
+
+  var signStr = commonFunc.rawSort(wcPayParams);
+  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  wcPayParams.paySign = commonFunc.convertToMD5(signStr, true);  //微信支付签名
+
+  return res.json(wcPayParams);
+}
+
+
+exports.wxpayRawParams = function(req, res, next) {
+  var rawData = [];
+  var rawString = [];
+  var size = 0;
+  req.on('data', function (data) {
+    rawString.push(data.toString('utf-8'));
+    rawData.push(data);
+    size += data.length;
+  });
+
+  req.on('end', function () {
+    req.rawString = rawString.join('');
+    req.rawData = Buffer.concat(rawData, size);
+    next();
+  });
+  
+}
+
+exports.checkWxPaySign = function(req, res, next) {
+
+  var rawString = req.rawString;  
+
+  var parser = new xml2js.Parser({explicitArray: false});
+  var data = {};
+
+  parser.parseString(rawString, function(err, result) {        
+    if (err) {
+      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
+    }
+    data = (result && result.xml) || {};
+  });
+
+
+  if (data.result_code == 'SUCCESS' && data.return_code == 'SUCCESS') {
+    var sign = data.sign;
+    delete data.sign;
+    var signStr = commonFunc.rawSort(data);
+    signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+    var genSign = commonFunc.convertToMD5(signStr, true);
+
+    if ( sign == genSign) {   
+      data.sign = sign;
+      req.payDataObject = data;   
+      next();
+    } else {
+      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
+    }
+  } else {
+    return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
+  }
+
+}
+
+exports.operatorPayResult = function(req, res) {
+  var payDataObject = req.payDataObject;
+  var ordersn = payDataObject.out_trade_no.split('-')[0];
+  var currentDate = new Date();
+
+  var query = {
+    consType: 'selfshopping',
+    outRecptNum: ordersn,
+    'orderStatus': 1
+  }
+
+  var upObj = {
+    '$set': {
+      orderStatus: 2,
+    },
+    '$push': {
+      orderPayment: {
+        payType: 3,
+        payName: '微信支付-公众号支付-' + wxApiUserObject.appid,
+        payPrice: payDataObject.total_fee,
+        payNo: payDataObject.transaction_id,
+        payInceAmountType: payDataObject.trade_type,
+        payInceIdNo: payDataObject.openid,
+        payInceID: payDataObject.mch_id,
+        payInceAmountText: payDataObject.out_trade_no
+      }
+    }
+  }
+
+
+  Consumption.updateOne(query, upObj, function(err, upCons) {
+    
+    if (err || !upCons) {
+      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
+    } else {
+      return res.status(422).send('<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>');
+    }    
+  });
+
+  
+}
+
+
+exports.testResult = function(req, res) {
+  var paramData = { appid: 'wxae84ab761b5ee65b',
+     attach: 'zbtong',
+     bank_type: 'CFT',
+     cash_fee: '1',
+     fee_type: 'CNY',
+     is_subscribe: 'Y',
+     mch_id: '1389918702',
+     nonce_str: 'TfDPx84K4m0RjzlsGT1bNfSBmHbZtoA5',
+     openid: 'o71oKwnagg2PRuZGkb1SBveDXPqc',
+     out_trade_no: '201612060416501929-9756',
+     result_code: 'SUCCESS',
+     return_code: 'SUCCESS',
+     sign: '2481D6AC05E338AFDA83E8797204DF28',
+     time_end: '20161210194313',
+     total_fee: '1',
+     trade_type: 'JSAPI',
+     transaction_id: '4002832001201612102389975166' };
+
+  var sign = paramData.sign;
+  delete paramData.sign;
+
+  var signStr = commonFunc.rawSort(paramData);
+  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  
+  var genSign = commonFunc.convertToMD5(signStr, true);
+  console.log(genSign, '=', sign);
+
+  return res.status(200).send('okkkk');
+}
+
+
+exports.wxSendPayment = function(req, res) {
+  
+
+  var paramData = {
+    appId: wxApiUserObject.appid, 
+    timeStamp: commonFunc.createTimestamp(), 
+    nonceStr: commonFunc.createNonceStr(), 
+    package: 'prepay_id=' + req.body.pid, 
+    signType: 'MD5'
+  };
+
+  var paySignStr = commonFunc.rawSort(paramData);
+  
+  paySignStr = paySignStr + '&key=' + wxApiUserObject.merchantkey;
+  
+  paramData.paySign = commonFunc.convertToMD5(paySignStr, true);
+  
+  
+  res.json({ results: {
+    
+    timestamp: paramData.timeStamp,
+    nonceStr: paramData.nonceStr,
+    package: paramData.package,
+    signType: paramData.signType,
+    paySign: paramData.paySign
+  }});
+}
 
 
 

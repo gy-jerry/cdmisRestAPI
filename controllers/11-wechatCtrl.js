@@ -18,49 +18,6 @@ var wxApis = {
 
 var wxApiUserObject = config.wxDeveloperConfig.ybt;
 
-exports.getCode = function(req, res, next) {
-	var paramObject = req.query || {};
-	
-	var code = paramObject.code;
-	var state = paramObject.state;
-
-	var url = wxApis.oauth_access_token + '?appid=' + wxApiUserObject.appid
-			+ '&secret=' + wxApiUserObject.appsecret
-			+ '&code=' + code
-			+ '&grant_type=authorization_code';
-
-
-
-	request.get({
-    url: url,
-    json: true
-  }, function (err, response, body) {
-  	if (err) return res.status(401).send('换取网页授权access_token失败!');
-  	
-  	var wechatData = {
-  		access_token: body.access_token,
-  		expires_in: body.expires_in,
-  		refresh_token: body.refresh_token,
-  		openid: body.openid,
-  		scope: body.scope,
-  		unionid: body.unionid,
-  		api_type: 1
-  	}
-
-  	var wechat = new Wechat(wechatData);
-  	wechat.save(function(err, newWechat) {
-  		
-      
-      req.orderObject = {
-        openid: newWechat.openid,
-        oid: state
-      };
-      next();
-  	});
-
-  });
-}
-
 
 exports.getPaymentOrder = function(req, res, next) {
   var query = {

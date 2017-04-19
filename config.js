@@ -6,7 +6,7 @@ module.exports = {
   wxDeveloperConfig: {
     zdyyszbzx: {
       appid: 'wx8a6a43fb9585fb7c',
-      secret: 'b23a4696c3b0c9b506891209d2856ab2',
+      appsecret: 'b23a4696c3b0c9b506891209d2856ab2',
       merchantid: '1',
       merchantkey: 'a'
     }
