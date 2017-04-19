@@ -369,7 +369,7 @@
 		{
 			"name": "102 Doctor-003 获取医生个人信息",
 			"request": {
-				"url": "localhost:4050/doctor/getDoctorInfo?userId=doc01",
+				"url": "121.43.107.106:4050/doctor/getDoctorInfo?userId=doc01",
 				"method": "GET",
 				"header": [
 					{
@@ -1529,6 +1529,50 @@
 			"response": []
 		},
 		{
+			"name": "036 User 获得签署协议状态",
+			"request": {
+				"url": "localhost:4050/user/getUserAgreement?userId=U201703310032",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "037 User 修改签署协议状态",
+			"request": {
+				"url": "localhost:4050/user/updateUserAgreement?userId=U201703310032",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "U201703310032",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "agreement",
+							"value": "1",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "getNo",
 			"request": {
 				"url": "http://121.43.107.106:4050/dictNumber/getNo?numberingType=1",
@@ -1779,6 +1823,7 @@
 			"response": []
 		},
 		{
+
 			"name": "139 获取用户当前任务",
 			"request": {
 				"url": "localhost:4050/tasks/getUserTask?userId=p01",
@@ -1901,20 +1946,7 @@
 			},
 			"response": []
 		},
-		{
-			"name": "getSchedules",
-			"request": {
-				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"description": ""
-			},
-			"response": []
-		},
+		
 		{
 			"name": "deleteSchedule",
 			"request": {

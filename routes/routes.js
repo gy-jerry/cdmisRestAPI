@@ -72,6 +72,8 @@ module.exports = function(app,webEntry) {
   app.get('/user/getUserID', userCtrl.getUserID);
   app.post('/user/sendSMS', userCtrl.sendSMS);
   app.get('/user/verifySMS', userCtrl.verifySMS);
+  app.get('/user/getUserAgreement', userCtrl.getUserAgreement);
+  app.post('/user/updateUserAgreement', userCtrl.updateUserAgreement);
   app.get('/healthInfo/getAllHealthInfo', healthInfoCtrl.getAllHealthInfo);
   app.get('/healthInfo/getHealthDetail', healthInfoCtrl.getHealthDetail);
   app.post('/healthInfo/insertHealthInfo', healthInfoCtrl.insertHealthInfo);
@@ -162,7 +164,13 @@ module.exports = function(app,webEntry) {
 
   // weixin wechatCtrl
   app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
+
+  app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
   
+
+  app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
+
+
 
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);

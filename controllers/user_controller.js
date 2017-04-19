@@ -187,6 +187,29 @@ exports.getUser = function(req, res) {
         res.json({results: item});
     });
 }
+exports.getUserAgreement = function(req, res) {
+    var _userId = req.query.userId
+    var query = {userId:_userId};
+    var opts = '';
+    var fields = { 'agreement':1};
+    User.getOne(query, function(err, item) {
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        res.json({results: item});
+    }, opts, fields);
+}
+exports.updateUserAgreement = function(req, res) {
+    var _userId = req.body.userId
+    var _agreement = req.body.agreement
+    var query = {userId:_userId};
+    User.updateOne(query,{$set:{agreement: _agreement}},function(err, item1){
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        res.json({results: item1,msg:"success!"});
+    });
+}
 exports.getUserList = function(req, res) {
     var query = {};
 

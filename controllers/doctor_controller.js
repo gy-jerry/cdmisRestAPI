@@ -56,6 +56,9 @@ exports.insertDocBasic = function(req, res) {
 	if (req.body.city != null){
 		doctorData['city'] = req.body.city;
 	}
+	if (req.body.district != null){
+		doctorData['district'] = req.body.district;
+	}
 	if (req.body.workUnit != null){
 		doctorData['workUnit'] = req.body.workUnit;
 	}
@@ -354,6 +357,9 @@ exports.editDoctorDetail = function(req, res) {
 	}
 	if (req.body.city != null){
 		upObj['city'] = req.body.city;
+	}
+	if (req.body.district != null){
+		doctorData['district'] = req.body.district;
 	}
 	if (req.body.workUnit != null){
 		upObj['workUnit'] = req.body.workUnit;
