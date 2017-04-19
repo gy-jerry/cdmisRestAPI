@@ -223,6 +223,25 @@ exports.newConsultation = function(req, res) {
 	});
 }
 
+//根据ID获取consultation
+exports.getConsultation = function(req, res) {
+	if (req.query.consultationId == null || req.query.consultationId == '') {
+        return res.json({result:'请填写consultationId!'});
+    }
+    var query = {
+		consultationId: req.query.consultationId
+	};
+	Consultation.getOne(query, function(err, item) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		if (item == null) {
+			return res.json({result:'不存在的consultationId!'});
+		}
+		res.json({result: item});
+	});
+}
+
 //根据consultationId更新conclusion 2017-04-06 GY
 exports.conclusion = function(req, res) {
 	if (req.body.consultationId == null || req.body.consultationId == '') {
