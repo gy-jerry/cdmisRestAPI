@@ -95,7 +95,7 @@ module.exports = function(app,webEntry) {
   app.get('/doctor/getDoctorInfo', doctorCtrl.getDoctorObject, doctorCtrl.getComments, doctorCtrl.getDoctorInfo);
   app.get('/doctor/getMyGroupList', doctorCtrl.getTeams);
   app.get('/doctor/getGroupPatientList', doctorCtrl.getTeamObject, doctorCtrl.getGroupPatientList);
-  app.get('/doctor/getTeam', doctorCtrl.getTeamObject, doctorCtrl.getTeam);
+  // app.get('/doctor/getTeam', doctorCtrl.getTeamObject, doctorCtrl.getTeam);
   app.post('/doctor/editDoctorDetail', doctorCtrl.editDoctorDetail);
   app.get('/doctor/getRecentDoctorList', doctorCtrl.getDoctorObject, doctorCtrl.getRecentDoctorList);
   app.get('/doctor/getPatientByDate', doctorCtrl.getDoctorObject, doctorCtrl.getPatientByDate);
@@ -139,8 +139,8 @@ module.exports = function(app,webEntry) {
 
   //communication
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
-  app.post('/communication/insertMember', communicationCtrl.insertMember);
-  app.post('/communication/removeMember', communicationCtrl.removeMember);
+  app.post('/communication/insertMember', communicationCtrl.insertMember, communicationCtrl.updateNumber);
+  app.post('/communication/removeMember', communicationCtrl.removeMember, communicationCtrl.updateNumber);
   // app.post('/communication/newTeam', getNoMid.getNo(4), communicationCtrl.newTeam);
   app.post('/communication/newTeam', communicationCtrl.newTeam);
   app.post('/communication/deleteTeam', communicationCtrl.deleteTeam);
