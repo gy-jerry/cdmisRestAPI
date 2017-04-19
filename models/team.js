@@ -18,7 +18,7 @@ var teamSchema = new mongoose.Schema({
 	], 
 	time: Date, 
 	description: String, 
-	number: Number, 
+	number: {type:Number, default:1}, 
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,
