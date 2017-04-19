@@ -32,7 +32,7 @@ exports.getCounsels = function(req, res) {
 	var opts = '';
 	var fields = {"_id":0, "doctorId":0, "messages":0, "revisionInfo":0};
 	//关联主表patient获取患者信息
-	var populate = {path: 'patientId', select:{'_id':0, 'name':1, 'gender':1, 'birthday':1, 'photoUrl':1}}
+	var populate = {path: 'patientId', select:{'_id':0, 'revisionInfo':0, 'doctors':0}}
 
 	Counsel.getSome(query, function(err, item) {
 		if (err) {

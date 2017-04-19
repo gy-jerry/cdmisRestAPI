@@ -267,7 +267,7 @@ exports.conclusion = function(req, res) {
 }
 
 //给team表中members字段增加组员 2017-04-06 GY
-exports.insertMember = function(req, res) {
+exports.insertMember = function(req, res, next) {
 	if (req.body.teamId == null || req.body.teamId == '') {
         return res.json({result:'请填写teamId!'});
     }
@@ -294,14 +294,39 @@ exports.insertMember = function(req, res) {
             return res.json({result:'未成功修改！请检查是否成员已添加！', results:upmember});
         }
         if (upmember.nModified != 0) {
-            return res.json({result:'新建或修改成功', results:upmember});
+            // return res.json({result:'新建或修改成功', results:upmember});
+            next();
         }
-		res.json({results: upmember});
+		// res.json({results: upmember});
 	}, {new: true});
+}
+//更新成员数量
+exports.updateNumber = function(req, res) {
+	var query = {teamId: req.body.teamId};
+	Team.getOne(query, function (err, team) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send('服务器错误, 团队查询失败!');
+        }
+
+        number = team.members.length + 1;
+
+        var upObj = {number: number}; 
+
+        Team.updateOne(query, upObj, function(err, upteam) {
+        	if (err){
+				return res.status(422).send(err.message);
+			}
+			else {
+				return res.json({result: '更新成员成功', results: upteam});
+			}
+        });
+        // res.json({results:team});
+    });
 }
 
 //删除team表中members字段指定组员 2017-04-06 GY
-exports.removeMember = function(req, res) {
+exports.removeMember = function(req, res, next) {
 	if (req.body.teamId == null || req.body.teamId == '') {
         return res.json({result:'请填写teamId!'});
     }
@@ -327,11 +352,12 @@ exports.removeMember = function(req, res) {
 		if (upmember.n != 0 && upmember.nModified == 0) {
 			return res.json({result:'未成功移除，请检查成员是否存在！', results: upmember})
 		}
-		if (upmember.n != 0 && upmember.nModified == 1) {
-			return res.json({result:'移除成功', results: upmember})
+		if (upmember.nModified != 0) {
+			// return res.json({result:'移除成功', results: upmember});
+			next();
 		}
 
-		res.json({results: upmember});
+		// res.json({results: upmember});
 	}, {new: true});
 }
 
