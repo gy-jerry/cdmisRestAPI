@@ -466,7 +466,62 @@ exports.insertDiagnosis = function(req, res) {
 }
 
 //绑定主管医生
-//1. patient表中修改
+//1. 查询当前主管医生并在DPRelation表里解绑（删除）
+exports.debindingDoctor = function(req, res, next) {
+	if (req.body.patientId == null || req.body.patientId == '') {
+		return res.json({result:'请填写patientId!'});
+	}
+	var query = {userId: req.body.patientId};
+
+	Patient.getOne(query, function(err, item) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	if (item == null) {
+    		return res.json({result: '不存在的患者ID！'})
+    	}
+    	// return res.json({results: item});
+    	if (item.doctors.length == 0) {
+    		next();
+    	}
+    	else {
+    		for (var i = item.doctors.length - 1; i >= 0; i--) {    			
+    			if (item.doctors[i].invalidFlag == 0) {
+    				lastDocId = item.doctors[i].doctorId;
+    				break;
+    			}
+    		}
+    		var queryDoc = {doctorId:lastDocId};
+    		var upObj = {
+    			$pull: {
+    				patients: {
+    					patientId: item._id
+    				}
+    			}
+    		};
+
+    		DpRelation.update(queryDoc, upObj, function(err, upDp) {
+    			if (err) {
+    				return res.status(500).send(err.errmsg)
+    			}
+    			// return res.json({resultpull:upDp});
+    			if (upDp.n == 0) {
+    				// return res.json({result: '未与其他医生或患者建立联系！'});
+    				next();
+    			}
+    			else if (upDp.n == 1 && upDp.nModified == 0) {
+    				// return res.json({result: '已删除！请勿重新删除！'});
+    				next();
+    			}
+    			else if (upDp.n == 1 && upDp.nModified != 0) {
+    				// return res.json({result: '删除成功'});
+    				next();
+    			}
+    		}, {new: true});
+    	}
+	});
+}
+//2. patient表中修改
 exports.bindingMyDoctor = function(req, res, next) {
 	var _pId=req.body.patientId
 	var _dId=req.body.doctorId
@@ -496,6 +551,9 @@ exports.bindingMyDoctor = function(req, res, next) {
 				if (err) {
 					console.log(err);
 					return res.status(500).send('服务器错误, 用户查询失败!');
+				}
+				if (patient == null) {
+					return res.json({result:'不存在的患者ID！'});
 				}
 				var doctorsList=patient.doctors
 				var n=doctorsList.length
@@ -528,7 +586,7 @@ exports.bindingMyDoctor = function(req, res, next) {
 		});
 	}
 }
-//2. DpRelation表中修改
+//3. DpRelation表中医生绑定患者
 exports.bindingPatient = function(req, res) {
 	var doctorId = req.body.doctor_id;
 	var patientId = req.body.patient_id;
@@ -540,6 +598,7 @@ exports.bindingPatient = function(req, res) {
 	}
 	// return res.json({doctor: doctorId, patient: patientId, dpTime: dpRelationTime});
 	var query = {doctorId: doctorId};
+
 	var upObj = {
 		$push: {
 			patients: {
