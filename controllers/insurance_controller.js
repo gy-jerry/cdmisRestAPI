@@ -16,9 +16,9 @@ exports.updateInsuranceMsg = function(req, res, next) {
 
 	//为调用insertMessage方法传入参数
 	req.body.userId = req.body.patientId;
-	if (req.body.type == null || req.body.type == '') {
-		return res.json({result: '请输入保险的消息类型'})
-	}
+	//定义保险消息类型为5
+	req.body.type = 5;
+	// return res.json({result: req.body})
 
 	if (req.body.insDescription == null) {
 		var insDescription = '';

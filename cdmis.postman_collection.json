@@ -1,8 +1,8 @@
 {
 	"variables": [],
 	"info": {
-		"name": "cdmis copy",
-		"_postman_id": "ebef248a-dc35-2253-ee8b-d45e63d52c1f",
+		"name": "cdmis",
+		"_postman_id": "4ace3716-8f0f-fe5b-e8a6-9b594d942380",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -1534,7 +1534,10 @@
 				"url": "localhost:4050/user/getUserAgreement?userId=U201703310032",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1823,13 +1826,15 @@
 			"response": []
 		},
 		{
-
 			"name": "139 获取用户当前任务",
 			"request": {
 				"url": "localhost:4050/tasks/getUserTask?userId=p01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1860,7 +1865,10 @@
 				"url": "localhost:4050/doctor/getPatientByDate?userId=doc01&date=2017-04-07",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1871,7 +1879,10 @@
 				"url": "localhost:4050/doctor/getPatientByDate?userId=doc01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -1941,12 +1952,14 @@
 				"url": "localhost:4050/insurance/getInsMsg?doctorId=doc01&patientId=p01",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
 		},
-		
 		{
 			"name": "deleteSchedule",
 			"request": {
@@ -2021,6 +2034,31 @@
 						}
 					]
 				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getSchedules",
+			"request": {
+				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "147 获取consultation信息",
+			"request": {
+				"url": "localhost:4050/communication/getConsultation?consultationId=consultationPost02",
+				"method": "GET",
+				"header": [],
+				"body": {},
 				"description": ""
 			},
 			"response": []
