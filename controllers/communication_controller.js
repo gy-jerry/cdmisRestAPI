@@ -88,6 +88,18 @@ exports.newTeam = function(req, res) {
 	});
 }
 
+exports.deleteTeam = function(req, res) {
+	var _teamId=req.body.teamId
+    var query = {teamId:_teamId};
+    Team.remove(query, function(err, item){
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+    res.json({result:0,msg:'delete success', data: item});
+	});
+}
+
+
 //新建会诊 2017-04-06 GY
 exports.checkTeam = function (req, res, next) {
 	if (req.body.teamId == null || req.body.teamId == '') {
