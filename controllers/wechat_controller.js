@@ -224,7 +224,7 @@ exports.getuserinfo = function(req,res) {
 
 
 // 订单相关方法
-// 获取订单信息
+// 获取订单信息 需要修改
 exports.getPaymentOrder = function(req, res, next) {
   var query = {
     _id: req.orderObject.oid,
@@ -326,7 +326,7 @@ exports.addOrder = function(req, res, next) {
   });
 }
 
-
+// 生成微信PaySign，用于发起微信支付请求
 exports.getPaySign = function(req, res, next) {
   prepay_id = req.prepay_id;
 
@@ -343,28 +343,18 @@ exports.getPaySign = function(req, res, next) {
   signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
   wcPayParams.paySign = commonFunc.convertToMD5(signStr, true);  //微信支付签名
 
-  return res.json(wcPayParams);
+  res.json({ results: {
+    timestamp: paramData.timeStamp,
+    nonceStr: paramData.nonceStr,
+    package: paramData.package,
+    signType: paramData.signType,
+    paySign: paramData.paySign
+  }});
 }
 
 
-exports.wxpayRawParams = function(req, res, next) {
-  var rawData = [];
-  var rawString = [];
-  var size = 0;
-  req.on('data', function (data) {
-    rawString.push(data.toString('utf-8'));
-    rawData.push(data);
-    size += data.length;
-  });
 
-  req.on('end', function () {
-    req.rawString = rawString.join('');
-    req.rawData = Buffer.concat(rawData, size);
-    next();
-  });
-  
-}
-
+// 需要修改？？？
 exports.checkWxPaySign = function(req, res, next) {
 
   var rawString = req.rawString;  
@@ -400,6 +390,7 @@ exports.checkWxPaySign = function(req, res, next) {
 
 }
 
+// 需要修改
 exports.operatorPayResult = function(req, res) {
   var payDataObject = req.payDataObject;
   var ordersn = payDataObject.out_trade_no.split('-')[0];
@@ -440,67 +431,6 @@ exports.operatorPayResult = function(req, res) {
   });
 
   
-}
-
-
-exports.testResult = function(req, res) {
-  var paramData = { appid: 'wxae84ab761b5ee65b',
-     attach: 'zbtong',
-     bank_type: 'CFT',
-     cash_fee: '1',
-     fee_type: 'CNY',
-     is_subscribe: 'Y',
-     mch_id: '1389918702',
-     nonce_str: 'TfDPx84K4m0RjzlsGT1bNfSBmHbZtoA5',
-     openid: 'o71oKwnagg2PRuZGkb1SBveDXPqc',
-     out_trade_no: '201612060416501929-9756',
-     result_code: 'SUCCESS',
-     return_code: 'SUCCESS',
-     sign: '2481D6AC05E338AFDA83E8797204DF28',
-     time_end: '20161210194313',
-     total_fee: '1',
-     trade_type: 'JSAPI',
-     transaction_id: '4002832001201612102389975166' };
-
-  var sign = paramData.sign;
-  delete paramData.sign;
-
-  var signStr = commonFunc.rawSort(paramData);
-  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
-  
-  var genSign = commonFunc.convertToMD5(signStr, true);
-  console.log(genSign, '=', sign);
-
-  return res.status(200).send('okkkk');
-}
-
-
-exports.wxSendPayment = function(req, res) {
-  
-
-  var paramData = {
-    appId: wxApiUserObject.appid, 
-    timeStamp: commonFunc.createTimestamp(), 
-    nonceStr: commonFunc.createNonceStr(), 
-    package: 'prepay_id=' + req.body.pid, 
-    signType: 'MD5'
-  };
-
-  var paySignStr = commonFunc.rawSort(paramData);
-  
-  paySignStr = paySignStr + '&key=' + wxApiUserObject.merchantkey;
-  
-  paramData.paySign = commonFunc.convertToMD5(paySignStr, true);
-  
-  
-  res.json({ results: {
-    
-    timestamp: paramData.timeStamp,
-    nonceStr: paramData.nonceStr,
-    package: paramData.package,
-    signType: paramData.signType,
-    paySign: paramData.paySign
-  }});
 }
 
 
