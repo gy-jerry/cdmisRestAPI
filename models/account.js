@@ -3,9 +3,15 @@ var mongoose = require('mongoose');
 
 var accountSchema = new mongoose.Schema({
 	userId: String,						
-	freeTimes: Number, 
-	times: Number, 
-	money: Number, 
+	freeTimes: {type: Number, default: 3}, 
+	times: [
+	  {
+	  	_id:0, 
+		count: Number, 
+		doctorId: {type:String, unique:true}
+	  } 
+	], 
+	money: {type: Number, default: 0}, 
 	expenseRecords:[
 	  {
 	  	time: Date, 
@@ -95,7 +101,20 @@ Account.updateOne = function(query, obj, callback, opts, populate) {
 		});
 };
 
+Account.update = function (query, obj, callback, opts, populate) {
+  	var options = opts || {};
+  	var populate = populate || '';
 
+  	accountModel
+  		.update(query, obj, options)
+  		.populate(populate) 
+  		.exec(function (err, upaccount) {
+    		if (err) {
+      			return callback(err);
+    		}
+    		callback(null, upaccount);
+  		});
+};
 
 
 module.exports = Account;
