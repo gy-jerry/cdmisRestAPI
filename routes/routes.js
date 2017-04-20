@@ -167,13 +167,11 @@ module.exports = function(app,webEntry) {
 
   // weixin wechatCtrl
   app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
-
   app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
-  
   // 获取用户基本信息
   app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
-
   // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
+  // 输入：微信用户授权的code 商户系统生成的订单号 
   app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,getPaySign);
 
   app.post('/order/insertOrder', getNoMid.getNo(7), orderCtrl.insertOrder);

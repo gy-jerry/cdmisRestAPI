@@ -7,15 +7,26 @@ var config = require('../config'),
 // appid: wx8a6a43fb9585fb7c;secret: b23a4696c3b0c9b506891209d2856ab2
 
 var wxApis = {
+  // 获取用户信息的access_token
   oauth_access_token: 'https://api.weixin.qq.com/sns/oauth2/access_token',
+  // 统一下单
   unifiedorder: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
+  // 请求调用微信接口 需要的access_token
   baseToken: 'https://api.weixin.qq.com/cgi-bin/token',
+  // 请求调用微信接口 需要的ticket
   getticket: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
   getusercode:'https://open.weixin.qq.com/connect/oauth2/authorize',
   refresh_token:'https://api.weixin.qq.com/sns/oauth2/refresh_token',
   getuserinfo:'https://api.weixin.qq.com/sns/userinfo',
-  verifyaccess_token:'https://api.weixin.qq.com/sns/auth'
+  verifyaccess_token:'https://api.weixin.qq.com/sns/auth',
+  // 查询订单
+  orderquery:'https://api.mch.weixin.qq.com/pay/orderquery',
+  // 关闭订单
+  closeorder:'https://api.mch.weixin.qq.com/pay/closeorder',
+  // 申请退款
+  refund:'https://api.mch.weixin.qq.com/secapi/pay/refund'
 };
+
 var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
 
@@ -108,7 +119,7 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
     var paramObject = req.query || {};
 
     var code = paramObject.code;
-    // var state = paramObject.state;
+    var state = paramObject.state;
 
     var url = wxApis.oauth_access_token + '?appid=' + wxApiUserObject.appid
             + '&secret=' + wxApiUserObject.appsecret
@@ -137,6 +148,7 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
         else if (wechatData.scope == 'snsapi_userinfo')
         {
             req.wechatData = wechatData;
+            req.state = state;
 
             next();
         }
@@ -224,37 +236,30 @@ exports.getuserinfo = function(req,res) {
 
 
 // 订单相关方法
-// 获取订单信息 需要修改
+// 获取系统订单信息
 exports.getPaymentOrder = function(req, res, next) {
   var query = {
-    _id: req.orderObject.oid,
-    orderStatus: 1
+    orderNo: req.query.orderNo
   };
 
-  Consumption.getOne(query, function(err, consItem) {
-    if (consItem) {
-      req.orderObject['order'] = {
-        orderSn: consItem.outRecptNum,
-        payAmount: parseFloat(consItem.money || 0),
-        goods_detail: []
-      };
-
-      for(var i =0; i < consItem.items.length; i++) {
-        req.orderObject['order'].goods_detail.push({
-          goods_id: consItem.items[i].pdId,
-          wxpay_goods_id: consItem.items[i].pdSn,
-          goods_name: consItem.items[i].pdSn,
-          quantity: consItem.items[i].pdQuantity,
-          price: consItem.items[i].pdPrice
-        });
-      }    
-
+  Order.getOne(query, function(err, item) {
+    if (err) {
+      return res.status(500).send(err.errmsg);
+    }
+    if(item){
+      var orderObject = {};
+      orderObject['orderNo'] = orderNo;
+      orderObject['goodsInfo'] = item.goodsInfo;
+      orderObject['money'] = item.money;
+      orderObject['attach'] = req.status;
+      req.orderObject = orderObject;
       next();
-    } else {
+    }
+    else{
       return res.status(422).send('订单不存在');
     }
     
-  })
+  });
 }
 
 
@@ -265,11 +270,11 @@ exports.addOrder = function(req, res, next) {
 
   var currentDate = new Date();
   var ymdhms = moment(currentDate).format('YYYYMMDDhhmmss');
-  var out_trade_no = orderObject.order.orderSn;   // 怎么产生
-  var total_fee = parseInt(orderObject.order.payAmount * 100);    // 怎么产生
+  var out_trade_no = orderObject.orderNo; 
+  var total_fee = parseInt(orderObject.money); 
   
 
-  var detail = '<![CDATA[{"goods_detail":' + JSON.stringify(orderObject.order.goods_detail) + '}]]>';
+  var detail = '<![CDATA[{"goods_detail":' + JSON.stringify(orderObject.goodsInfo) + '}]]>';
 
   var paramData = {
     appid: wxApiUserObject.appid,   // 公众账号ID
@@ -279,7 +284,7 @@ exports.addOrder = function(req, res, next) {
     
     
     body: 'order-' + out_trade_no,    // 商品描述
-    attach: orderObject.oid,    // 附加数据   state
+    attach: orderObject.attach,    // 附加数据   state
     
     out_trade_no: out_trade_no + '-' + commonFunc.getRandomSn(4),   // 商户订单号
     
@@ -289,7 +294,7 @@ exports.addOrder = function(req, res, next) {
     // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
     notify_url: 'http://app.xiaoyangbao.net/wxmp/paynotifyurl',   // 通知地址
     trade_type: 'JSAPI',    // 交易类型
-    openid: orderObject.openid    // 用户标识
+    openid: req.wechatData.openid    // 用户标识
   };
 
   var signStr = commonFunc.rawSort(paramData);
@@ -336,7 +341,7 @@ exports.getPaySign = function(req, res, next) {
     "nonceStr" : commonFunc.createNonceStr, //随机串
     // 通过统一下单接口获取
     "package" : "prepay_id="+prepay_id,
-    "signType" : "MD5",         //微信签名方式：
+    "signType" : "MD5"        //微信签名方式
   };
 
   var signStr = commonFunc.rawSort(wcPayParams);
@@ -351,6 +356,76 @@ exports.getPaySign = function(req, res, next) {
     paySign: paramData.paySign
   }});
 }
+
+
+// 查询订单
+exports.getWechatOrder = function(req, res) {
+  
+  var paramData = {
+    appid: wxApiUserObject.appid,   // 公众账号ID
+    mch_id: wxApiUserObject.merchantid,   // 商户号
+    out_trade_no = req.orderNo,     // 商户订单号
+    nonce_str: commonFunc.randomString(32),   // 随机字符串
+    sign_type : 'MD5'
+  };
+
+  var signStr = commonFunc.rawSort(paramData);
+  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  
+  paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
+  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  var xmlString = xmlBuilder.buildObject(paramData);
+
+  request({
+    url: wxApis.orderquery,
+    method: 'POST',
+    body: xmlString
+  }, function(err, response, body){
+    if (!err && response.statusCode == 200) {       
+      res.json({results:body});
+    }
+    else{
+      return res.status(500).send('Error');
+    }
+  });
+}
+
+// 关闭订单
+exports.closeWechatOrder = function(req, res) {
+  
+  var paramData = {
+    appid: wxApiUserObject.appid,   // 公众账号ID
+    mch_id: wxApiUserObject.merchantid,   // 商户号
+    out_trade_no = req.orderNo,     // 商户订单号
+    nonce_str: commonFunc.randomString(32),   // 随机字符串
+    sign_type : 'MD5'
+  };
+
+  var signStr = commonFunc.rawSort(paramData);
+  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  
+  paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
+  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  var xmlString = xmlBuilder.buildObject(paramData);
+
+  request({
+    url: wxApis.closeorder,
+    method: 'POST',
+    body: xmlString
+  }, function(err, response, body){
+    if (!err && response.statusCode == 200) {       
+      res.json({results:body});
+    }
+    else{
+      return res.status(500).send('Error');
+    }
+  });
+}
+
+
+
+
+
 
 
 
