@@ -21,6 +21,7 @@ var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
     dictDistrictCtrl = require('../controllers/dictDistrict_controller'),
     dictHospitalCtrl = require('../controllers/dictHospital_controller'),
     taskCtrl = require('../controllers/task_controller'),
+    orderCtrl = require('../controllers/order_controller'),
     complianceCtrl = require('../controllers/compliance_controller');
 
 // controllers updated by GY 
@@ -174,6 +175,10 @@ module.exports = function(app,webEntry) {
 
   // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
   app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,getPaySign);
+
+  app.post('/order/insertOrder', getNoMid.getNo(7), orderCtrl.insertOrder);
+  app.post('/order/updateOrder', orderCtrl.updateOrder);
+  app.get('/order/getOrder',  orderCtrl.getOrder);
 
 
   //app.get('/find',function(req, res){
