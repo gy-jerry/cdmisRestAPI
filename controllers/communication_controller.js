@@ -67,7 +67,7 @@ exports.newTeam = function(req, res) {
 	 //  			name: String
 	 //  		}
 		// ], 
-		time: new Date(), 
+		// time: new Date(), 
 		description: req.body.description, 
 		// number: req.body., 
 
@@ -78,6 +78,12 @@ exports.newTeam = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
+	if (req.body.time == null || req.body.time == '') {
+		teamData['time'] = new Date();
+	}
+	else {
+		teamData['time'] = new Date(req.body.time);
+	}
 	
 	var newTeam = new Team(teamData);
 	newTeam.save(function(err, teamInfo) {

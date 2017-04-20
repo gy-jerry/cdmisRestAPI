@@ -30,7 +30,7 @@ exports.getCounsels = function(req, res) {
 	
 	
 	var opts = '';
-	var fields = {"_id":0, "doctorId":0, "messages":0, "revisionInfo":0};
+	var fields = {"_id":0, "messages":0, "revisionInfo":0};
 	//关联主表patient获取患者信息
 	var populate = {path: 'patientId', select:{'_id':0, 'revisionInfo':0, 'doctors':0}}
 
@@ -44,12 +44,18 @@ exports.getCounsels = function(req, res) {
 
 //获取患者ID对象(用于咨询问卷方法) 2017-04-05 GY
 exports.getPatientObject = function (req, res, next) {
-	if (req.body.patientId == null || req.body.patientId == '') {
-		return res.json({result:'请填写patientId!'});
+	if (req.query.patientId == null || req.query.patientId == '') {
+		if (req.body.patientId == null || req.body.patientId == '') {
+			return res.json({result: '请填写patientId!'});
+		}
+		else {
+			req.patientId = req.body.patientId;
+		}
 	}
-    var query = { 
-        userId: req.body.patientId
-    };
+	else {
+		req.patientId = req.query.patientId;
+	}
+	var query = {userId: req.patientId};
     Patient.getOne(query, function (err, patient) {
         if (err) {
             console.log(err);
@@ -64,12 +70,18 @@ exports.getPatientObject = function (req, res, next) {
 };
 //获取医生ID对象(用于咨询问卷方法) 2017-04-05 GY
 exports.getDoctorObject = function (req, res, next) {
-	if (req.body.doctorId == null || req.body.doctorId == '') {
-		return res.json({result:'请填写doctorId!'});
+	if (req.query.doctorId == null || req.query.doctorId == '') {
+		if (req.body.doctorId == null || req.body.doctorId == '') {
+			return res.json({result: '请填写doctorId!'});
+		}
+		else {
+			req.doctorId = req.body.doctorId;
+		}
 	}
-    var query = { 
-        userId: req.body.doctorId
-    };
+	else {
+		req.doctorId = req.query.doctorId;
+	}
+	var query = {userId: req.doctorId};
     Doctor.getOne(query, function (err, doctor) {
         if (err) {
             console.log(err);
@@ -166,4 +178,62 @@ exports.changeCounselStatus = function(req, res) {
 		}
 		res.json({result: '修改成功', editResults:upCounsel});
 	}, {new: true});
+}
+
+//根据医生患者获取咨询问诊状态
+exports.getStatus = function(req, res, next) {
+	if (req.query.type == null || req.query.type == '') {
+		if (req.body.type == null || req.body.type == '') {
+			return res.json({result: '请填写type!'});
+		}
+		else {
+			req.type = req.body.type;
+		}
+	}
+	else {
+		req.type = req.query.type;
+	}
+	if (req.body.status === null || req.body.status === '' || req.body.status === undefined) {
+		req.body.status = null;
+	}
+	else {
+		req.body.status = parseInt(req.body.status, 10);
+	}
+	// console.log(req.body.status)
+
+	var query = {
+		patientId: req.body.patientObject._id, 
+		doctorId:req.body.doctorObject._id, 
+		type:req.type
+	};
+
+	//设置排序规则函数，时间降序
+	function sortTime(a, b) {
+		return b.time - a.time;
+	}
+
+	var opts = '';
+	var fields = {"_id":0, "messages":0, "revisionInfo":0};
+	var populate = {path: 'patientId doctorId', select:{'_id':0, 'userId':1, 'name':1}}
+
+	Counsel.getSome(query, function(err, items) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	if (items.length == 0) {
+    		return res.json({result: '请填写咨询问卷!'});
+    	}
+    	else {
+    		var counsels = [];
+    		counsels = items.sort(sortTime);
+    		req.body.counselId = counsels[0].counselId;
+    		if (req.body.status == null) {
+    			return res.json({result: counsels[0]});
+    		}
+    		else {
+    			next();
+    		}
+    	}
+    	// res.json({});
+	}, opts, fields, populate);
 }
