@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "cdmis",
-		"_postman_id": "4ace3716-8f0f-fe5b-e8a6-9b594d942380",
+		"_postman_id": "703ee5db-87ac-4456-0320-2b49cd4cc3ea",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -795,51 +795,6 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"userId\":\"pdpost1\",\n\t\"name\":\"修改\",\n\t\"photoUrl\":\"http://pp.jpg\", \n\t\"birthday\":\"2017-04-04\",\n\t\"gender\":\"1\", \n\t\"IDNo\":\"123456123456781234\", \n\t\"height\":\"188\", \n\t\"occupation\":\"教师\", \n\t\"bloodType\":\"2\", \n\t\"nation\":\"中国\", \n\t\"province\":\"浙江\", \n\t\"city\":\"杭州\", \n\t\"class\":\"class1\", \n\t\"class_info\":[\"classInfo1\"], \n    \"operationTime\":\"2017-04-01\", \n    \"hypertension\":\"1\", \n    \"lastVisittime\":\"2017-04-12\", \n    \"lastVisithospital\":\"浙江省人民医院\", \n    \"lastVisitdiagnosis\":\"慢性肾炎\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "125 communication-002-001 插入组成员",
-			"request": {
-				"url": "121.43.107.106:4050/communication/insertMember",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "teamId",
-							"value": "teampost2",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "membersuserId",
-							"value": "id1",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "membersname",
-							"value": "name2",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "membersphotoUrl",
-							"value": "http://photo2.jpg",
-							"type": "text",
-							"enabled": true
-						}
-					]
 				},
 				"description": ""
 			},
@@ -2039,6 +1994,88 @@
 			"response": []
 		},
 		{
+			"name": "125 communication-002-001 插入组成员",
+			"request": {
+				"url": "localhost:4050/communication/insertMember",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"teamId\":\"T201704140001\", \n    \"members\":[\n    \t{\n    \t\t\"userId\":\"docpost11\", \n\t\t\t\"name\":\"name\", \n\t\t\t\"photoUrl\":\"http://photo.jpg\"\n    \t}, \n    \t{\n    \t\t\"userId\":\"docpost256\", \n\t\t\t\"name\":\"name3\", \n\t\t\t\"photoUrl\":\"http://photo.jpg\"\n    \t}\n    \t]\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "148 获取咨询次数",
+			"request": {
+				"url": "localhost:4050/account/getCounts?patientId=ppost01&doctorId=doc01",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "149 增加或减少咨询次数",
+			"request": {
+				"url": "localhost:4050/account/modifyCounts",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"patientId\":\"p01\", \n\t\"doctorId\":\"doc02\", \n\t\"modify\":\"-1\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "150 根据医患ID和类型获取咨询或问诊状态",
+			"request": {
+				"url": "localhost:4050/counsel/getStatus?doctorId=doc01&patientId=p01&type=1",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "151 根据医患ID和类型修改咨询或问诊状态",
+			"request": {
+				"url": "localhost:4050/counsel/changeStatus",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"doctorId\":\"doc01\", \n\t\"patientId\":\"p01\", \n\t\"type\":1, \n\t\"status\":0\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "getSchedules",
 			"request": {
 				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
@@ -2058,7 +2095,10 @@
 				"url": "localhost:4050/communication/getConsultation?consultationId=consultationPost02",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []

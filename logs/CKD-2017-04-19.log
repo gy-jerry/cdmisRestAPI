@@ -115,3 +115,4 @@
 [2017-04-19 21:10:56.082] [INFO] cheese - ::1 - - "GET /counsel/getCounsels?userId=doc01&status=1&type=1 HTTP/1.1" 200 24 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
 [2017-04-19 21:11:30.862] [INFO] cheese - ::1 - - "GET /counsel/getCounsels?userId=doc01&status=0&type=1 HTTP/1.1" 200 5109 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
 [2017-04-19 21:12:12.303] [INFO] cheese - ::1 - - "GET /counsel/getCounsels?userId=doc01&status=0&type=1 HTTP/1.1" 200 1867 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
+[2017-04-19 21:47:11.423] [INFO] cheese - ::1 - - "GET /doctor/getTeam?teamId=team3 HTTP/1.1" 200 13 "" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"

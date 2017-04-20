@@ -110,6 +110,8 @@ module.exports = function(app,webEntry) {
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);
   app.post('/counsel/questionaire', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(2), counselCtrl.saveQuestionaire);
   app.post('/counsel/changeCounselStatus', counselCtrl.changeCounselStatus);
+  app.get('/counsel/getStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus);
+  app.post('/counsel/changeStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselStatus)
 
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
@@ -132,6 +134,8 @@ module.exports = function(app,webEntry) {
   //需要和user表连接
   //无法输出expenseRecords数据，暂时无法解决问题
   app.get('/account/getAccountInfo', accountCtrl.getAccountInfo);
+  app.get('/account/getCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts);
+  app.post('/account/modifyCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts, accountCtrl.modifyCounts);
 
   //message
   app.get('/message/getMessages', messageCtrl.getMessages);
