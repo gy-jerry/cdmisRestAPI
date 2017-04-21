@@ -1,5 +1,6 @@
 var request = require('request'),
-    xml2js = require('xml2js');
+    xml2js = require('xml2js'),
+    https = require('https');
 
 var config = require('../config'),
     commonFunc = require('../middlewares/commonFunc')
@@ -24,7 +25,10 @@ var wxApis = {
   // 关闭订单
   closeorder:'https://api.mch.weixin.qq.com/pay/closeorder',
   // 申请退款
-  refund:'https://api.mch.weixin.qq.com/secapi/pay/refund'
+  refund:'https://api.mch.weixin.qq.com/secapi/pay/refund',
+  // 查询退款
+  refundquery:'https://api.mch.weixin.qq.com/pay/refundquery'
+
 };
 
 var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
@@ -364,7 +368,7 @@ exports.getWechatOrder = function(req, res) {
   var paramData = {
     appid: wxApiUserObject.appid,   // 公众账号ID
     mch_id: wxApiUserObject.merchantid,   // 商户号
-    out_trade_no = req.orderNo,     // 商户订单号
+    out_trade_no ： req.query.orderNo,     // 商户订单号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5'
   };
@@ -396,7 +400,7 @@ exports.closeWechatOrder = function(req, res) {
   var paramData = {
     appid: wxApiUserObject.appid,   // 公众账号ID
     mch_id: wxApiUserObject.merchantid,   // 商户号
-    out_trade_no = req.orderNo,     // 商户订单号
+    out_trade_no : req.query.orderNo,     // 商户订单号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5'
   };
@@ -422,8 +426,87 @@ exports.closeWechatOrder = function(req, res) {
   });
 }
 
+// 申请退款
+exports.refund = function(req, res) {
+  
+  // 请求参数
+  var paramData = {
+    appid: wxApiUserObject.appid,   // 公众账号ID
+    mch_id: wxApiUserObject.merchantid,   // 商户号
+    nonce_str: commonFunc.randomString(32),   // 随机字符串
+    sign_type : 'MD5',
+    out_trade_no : req.query.orderNo,     // 商户订单号
+    out_refund_no : req.query.out_refund_no,
+    total_fee: total_fee,
+    refund_fee: refund_fee,
+    op_user_id: wxApiUserObject.merchantid // 默认为商户号
+  };
+
+  var signStr = commonFunc.rawSort(paramData);
+  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  
+  paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
+  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  var xmlString = xmlBuilder.buildObject(paramData);
 
 
+  // https请求  //  refund:'/secapi/pay/refund',
+  var options = {
+    hostname: 'api.mch.weixin.qq.com',
+    port: 443,
+    path: '/secapi/pay/refund',
+    method: 'POST',
+    // key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
+    cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
+  };
+
+  var req = https.request(options, (res) => {
+    console.log('statusCode:', res.statusCode);
+    console.log('headers:', res.headers);
+
+    res.on('data', (d) => {
+      // process.stdout.write(d);
+      res.json({results:d});
+    });
+  });
+  req.on('error', (e) => {
+    console.error(e);
+  });
+  req.end();
+}
+
+
+// 查询退款
+exports.refundquery = function(req, res) {
+  
+  var paramData = {
+    appid: wxApiUserObject.appid,   // 公众账号ID
+    mch_id: wxApiUserObject.merchantid,   // 商户号
+    nonce_str: commonFunc.randomString(32),   // 随机字符串
+    sign_type : 'MD5',
+    out_trade_no = req.orderNo,     // 商户订单号
+  };
+
+  var signStr = commonFunc.rawSort(paramData);
+  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  
+  paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
+  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  var xmlString = xmlBuilder.buildObject(paramData);
+
+  request({
+    url: wxApis.refundquery,
+    method: 'POST',
+    body: xmlString
+  }, function(err, response, body){
+    if (!err && response.statusCode == 200) {       
+      res.json({results:body});
+    }
+    else{
+      return res.status(500).send('Error');
+    }
+  });
+}
 
 
 

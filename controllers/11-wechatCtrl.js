@@ -4,8 +4,7 @@ var config = require('../config'),
     moment = require('moment'),
     commonFunc = require('../middlewares/commonFunc'),
     Consumption = require('../models/consumption'),
-    Wechat = require('../models/wechat')
-;
+    Wechat = require('../models/wechat');
 
 var wxApis = {
 	oauth_access_token: 'https://api.weixin.qq.com/sns/oauth2/access_token',
