@@ -60,8 +60,8 @@ exports.getAccessTokenMid = function (req, res, next) {
     request.get({
         url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
         'grant_type=client_credential' +  
-        '&appid=' + wxApiUserObject.appsecret + 
-        '&secret=' + wxApiUserObject.secret,
+        '&appid=' + wxApiUserObject.appid + 
+        '&secret=' + wxApiUserObject.appsecret,
         json: true
     }, function (err, response, body) {
         if(err){
