@@ -104,7 +104,7 @@ exports.saveQuestionaire = function(req, res) {
 		doctorId: req.body.doctorObject._id, 				//doc01
 		// type: req.body.type, 
 		time: new Date(), 
-		// status: req.body.status, 
+		status: 1, 
 		// topic: req.body.topic, 
 		// content: req.body.content, 
 		// title: req.body.title, 
