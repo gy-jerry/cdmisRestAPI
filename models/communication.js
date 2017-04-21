@@ -7,10 +7,10 @@ var communicationSchema = new mongoose.Schema({
 	sendStatus:Number,
 	readStatus:Number,
 	sendBy:String,
-	reciever:String,
+	receiver:String,
 	sendDateTime:Date,
 	title:String,
-	content:String
+	content:mongoose.Schema.Types.Mixed
 });
 
 

@@ -154,6 +154,8 @@ module.exports = function(app,webEntry) {
   app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');
   app.get('/communication/getConsultation', communicationCtrl.getConsultation);
+  app.post('/communication/postCommunication', communicationCtrl.postCommunication);
+  app.get('/communication/getCommunication', communicationCtrl.getCommunication);
 
   //task
   app.post('/tasks/insertTaskModel', taskCtrl.removeOldTask, taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
