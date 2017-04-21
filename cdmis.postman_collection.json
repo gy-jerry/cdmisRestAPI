@@ -2076,6 +2076,68 @@
 			"response": []
 		},
 		{
+			"name": "152 根据ID及type存储交流记录（群聊）",
+			"request": {
+				"url": "localhost:4050/communication/postCommunication",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"messageType\": 2, \n\t\"sendBy\": \"sender\", \n\t\"receiver\": \"teamOrConsultation\", \n\t\n\t\"content\": {\n\t\t\"a\" : \"\",\n\t\t\"b\" : 0,\n\t\t\"_id\" : 1,\n\t\t\"content\" : {\n\t\t\t\"text\" : \"Much\",\n\t\t\t\"booleanExtras\" : {},\n\t\t\t\"contentType\" : \"text\",\n\t\t\t\"extras\" : {\n\t\t\t\t\"members\" : {\n\t\t\t\t\t\"teamId\" : {\n\t\t\t\t\t\t\"value\" : \"22864551\"\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t},\n\t\t\t\"numExtras\" : {},\n\t\t\t\"stringExtras\" : {\n\t\t\t\t\"teamId\" : \"22864551\"\n\t\t\t}\n\t\t},\n\t\t\"contentType\" : \"text\",\n\t\t\"createTimeInMillis\" : 1492758437568,\n\t\t\"createTimeInSeconds\" : 1492758437,\n\t\t\"direct\" : \"send\",\n\t\t\"fromAppkey\" : \"cf32b94444c4eaacef86903e\",\n\t\t\"fromID\" : \"U201702070041\",\n\t\t\"fromName\" : \"陈有维\",\n\t\t\"fromType\" : \"user\",\n\t\t\"from_platform\" : \"a\",\n\t\t\"msgTypeString\" : \"text\",\n\t\t\"serverMessageId\" : 304969361,\n\t\t\"status\" : \"send_success\",\n\t\t\"targetAppkey\" : \"\",\n\t\t\"targetID\" : \"22864551\",\n\t\t\"targetInfo\" : {\n\t\t\t\"a\" : [81456944, 81469294, 81635423],\n\t\t\t\"b\" : 81456944,\n\t\t\t\"_id\" : 33,\n\t\t\t\"groupDescription\" : \"经常回家哈哈哈\",\n\t\t\t\"groupFlag\" : 1,\n\t\t\t\"groupID\" : 22864551,\n\t\t\t\"groupLevel\" : 0,\n\t\t\t\"groupName\" : \"周4\",\n\t\t\t\"isGroupBlocked\" : 0,\n\t\t\t\"maxMemberCount\" : 500,\n\t\t\t\"noDisturb\" : 0\n\t\t},\n\t\t\"targetName\" : \"周4\",\n\t\t\"targetType\" : \"group\",\n\t\t\"version\" : 1\n\t}\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "154 根据ID及type存储交流记录（单聊）",
+			"request": {
+				"url": "localhost:4050/communication/postCommunication",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"messageType\": 1, \n\t\"sendBy\": \"doc\", \n\t\"receiver\": \"pat\", \n\t\n\t\"content\": {\n\t\"a\" : \"\",\n\t\"b\" : 0,\n\t\"_id\" : 13,\n\t\"content\" : {\n\t\t\"text\" : \"Hdfh\",\n\t\t\"booleanExtras\" : {},\n\t\t\"contentType\" : \"text\",\n\t\t\"extras\" : {\n\t\t\t\"members\" : {}\n\t\t},\n\t\t\"numExtras\" : {},\n\t\t\"stringExtras\" : {}\n\t},\n\t\"contentType\" : \"text\",\n\t\"createTimeInMillis\" : 1492759136581,\n\t\"createTimeInSeconds\" : 1492759136,\n\t\"direct\" : \"send\",\n\t\"fromAppkey\" : \"cf32b94444c4eaacef86903e\",\n\t\"fromID\" : \"U201702070041\",\n\t\"fromName\" : \"陈有维\",\n\t\"fromType\" : \"user\",\n\t\"from_platform\" : \"a\",\n\t\"msgTypeString\" : \"text\",\n\t\"serverMessageId\" : 304976925,\n\t\"status\" : \"send_success\",\n\t\"targetAppkey\" : \"cf32b94444c4eaacef86903e\",\n\t\"targetID\" : \"U201702070048\",\n\t\"targetInfo\" : {\n\t\t\"address\" : \"\",\n\t\t\"appkey\" : \"cf32b94444c4eaacef86903e\",\n\t\t\"birthday\" : \"\",\n\t\t\"blacklist\" : 0,\n\t\t\"gender\" : \"\",\n\t\t\"isFriend\" : 0,\n\t\t\"nickname\" : \"宋树斌\",\n\t\t\"noDisturb\" : 0,\n\t\t\"noteText\" : \"\",\n\t\t\"notename\" : \"\",\n\t\t\"region\" : \"\",\n\t\t\"signature\" : \"\",\n\t\t\"star\" : -1,\n\t\t\"userID\" : 81635423,\n\t\t\"userName\" : \"U201702070048\"\n\t},\n\t\"targetName\" : \"宋树斌\",\n\t\"targetType\" : \"single\",\n\t\"version\" : 1\n}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "155 获取交流记录（单聊）",
+			"request": {
+				"url": "localhost:4050/communication/getCommunication?messageType=1&id1=doc&id2=pat&limit=1&skip=0",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "153 获取交流记录（群聊）",
+			"request": {
+				"url": "localhost:4050/communication/getCommunication?messageType=2&id2=teamOrConsultation&limit=1&skip=0",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "getSchedules",
 			"request": {
 				"url": "localhost:4050/doctor/getSchedules?userId=doc01",
