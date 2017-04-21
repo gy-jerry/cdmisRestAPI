@@ -98,13 +98,17 @@ exports.getDoctorObject = function (req, res, next) {
 //增加选填字段 2017-04-13 GY
 exports.saveQuestionaire = function(req, res) {
 
+	if (req.body.type == null || req.body.type =='') {
+		return res.json({result:'请填写type,咨询=1,问诊=2'})
+	}
+
 	var counselData = {
 		counselId: req.newId, 						//counselpost01
 		patientId: req.body.patientObject._id, 				//p01
 		doctorId: req.body.doctorObject._id, 				//doc01
-		// type: req.body.type, 
+		type: req.body.type, 
 		time: new Date(), 
-		// status: req.body.status, 
+		status: 1, 
 		// topic: req.body.topic, 
 		// content: req.body.content, 
 		// title: req.body.title, 

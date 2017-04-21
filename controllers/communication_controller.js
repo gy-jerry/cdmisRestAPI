@@ -237,6 +237,11 @@ exports.getConsultation = function(req, res) {
     var query = {
 		consultationId: req.query.consultationId
 	};
+	var opts = '';
+	var fields = '';
+	var populate = {
+		'path': 'patientId diseaseInfo'
+	}
 	Consultation.getOne(query, function(err, item) {
 		if (err){
 			return res.status(422).send(err.message);
@@ -245,7 +250,7 @@ exports.getConsultation = function(req, res) {
 			return res.json({result:'不存在的consultationId!'});
 		}
 		res.json({result: item});
-	});
+	}, fields, opts, populate);
 }
 
 //根据consultationId更新conclusion 2017-04-06 GY
