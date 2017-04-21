@@ -368,7 +368,7 @@ exports.getWechatOrder = function(req, res) {
   var paramData = {
     appid: wxApiUserObject.appid,   // 公众账号ID
     mch_id: wxApiUserObject.merchantid,   // 商户号
-    out_trade_no ： req.query.orderNo,     // 商户订单号
+    out_trade_no : req.query.orderNo,     // 商户订单号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5'
   };
@@ -484,7 +484,7 @@ exports.refundquery = function(req, res) {
     mch_id: wxApiUserObject.merchantid,   // 商户号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5',
-    out_trade_no = req.orderNo,     // 商户订单号
+    out_trade_no : req.orderNo,     // 商户订单号
   };
 
   var signStr = commonFunc.rawSort(paramData);

@@ -77,8 +77,10 @@ app.all('*', function (req, res, next) {
 // 路由设置
 routes(app, webEntry);
 
+app.use('/public', express.static( './public')).use('/lib', express.static( '../lib'));
+
 app.get('/chat',function(req,res){
-    res.sendFile(__dirname+'/public/index.html');
+    res.sendFile(__dirname+'/public/chat.html');
 });
 
 // 找不到正确路由时，执行以下操作

@@ -1,98 +1,77 @@
 // var config = require('../config');
 
-var onlineUserCount=0; //客户端连接数量
-var onlineUsers={}; //统计客户端登录用户
 
-var getTime=function(){
-    var date = new Date();
-    return date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
-}
- 
-var getColor=function(){
-    var colors = ['aliceblue','antiquewhite','aqua','aquamarine','pink','red','green',
-                'orange','blue','blueviolet','brown','burlywood','cadetblue'];
-    return colors[Math.round(Math.random() * 10000 % colors.length)];
+var userServer = {};
+var userList = {};
+var freeList = [];
+var count = 0;
+
+
+function Arrayremove(array,name){
+    var len = array.length;
+    for(var i=0; i<len; i++){
+        if(array[i] == name){
+            array.splice(i,1)
+            break
+        }
+    }
 }
 
 // namespace chat
 exports.chat = function (io, socket) {
-   
-   socket.emit('open');  //通知客户端已连接
-     
-    //构造客户端对象
-    var client={
-        socket:socket,
-        name:false
-    }
-     
-    //监听客户端的chat message事件， 该事件由客户端触发
-    //当服务端收到消息后，再把该消息播放出去，继续触发chat message事件， 然后在客户端监听chat message事件。
-    socket.on('chat message',function(msg){
-        console.log('chat message:'+msg);
-        var obj={time:getTime()}; //构建客户端返回的对象
-         
-        //判断是不是第一次连接，以第一条消息作为昵称
-        if(!client.name){
-            onlineUserCount++;
-            // console.log(onlineUserCount);
-            client.name=msg;
-            obj['text']=client.name;
-            obj['author']='Sys';
-            obj['type']='welcome';
-            obj['onlineUserCount']=onlineUserCount;
-            socket.name=client.name; //用户登录后设置socket.name， 当退出时用该标识删除该在线用户
-            if(!onlineUsers.hasOwnProperty(client.name)){
-                onlineUsers[client.name]=client.name;
+    count += 1;
+    socket.on('newUser',function(data){
+        var nickname = data.user_name,
+            user_id = data.user_id;
+        socket.id = user_id;
+        userServer[user_id] = socket;
+        userList[user_id] = nickname
+        freeList.push(user_id)
+        io.emit('onlineCount',freeList)
+        io.emit('addCount', count)
+        if(freeList.length > 1){
+            var from = user_id;
+            Arrayremove(freeList,from)
+            if(freeList.length == 1){
+                n = 0
+            }else{
+                n = Math.floor(Math.random() * freeList.length)
             }
-            obj['onlineUsers']=onlineUsers; //当前在线用户集合
-            console.log(client.name+' login,当前在线人数:'+onlineUserCount);
- 
-            //返回欢迎语
-            socket.emit('system',obj);  //发送给自己的消息
-            //广播新用户已登录
-            socket.broadcast.emit('system',obj); //向其他用户发送消息
+            var to = freeList[n]
+            Arrayremove(freeList,to)
+            io.emit("getChat",{p1:from,p2:to},userList)
+        }
+    })
+    socket.on('disconnect',function(){ //用户注销登陆执行内容
+        count -= 1; 
+        var id = socket.id
+        Arrayremove(freeList,id)
+        delete userServer[id]
+        delete userList[id]
+        io.emit('onlineCount',freeList)
+        io.emit('offline',{id:id})
+        io.emit('addCount', count)
+    })
+    socket.on('message',function(data){
+        if(userServer.hasOwnProperty(data.to)){
+            userServer[data.to].emit('getMsg',{msg:data.msg})
         }else{
-            //如果不是第一次聊天，则返回正常的聊天消息
-            obj['text']=msg;
-            obj['author']=client.name;
-            obj['type']='message';
-            console.log(client.name+' say:'+msg);
- 
-            socket.emit('chat message',obj); //发送给自己的消息 ， 如果不想打印自己发送的消息，则注释掉该句。
-            socket.broadcast.emit('chat message',obj); //向其他用户发送消息
- 
+            socket.emit("err",{msg:"对方已经下线或者断开连接"})
         }
-        //io.emit('chat message',msg);
-    });
- 
-    socket.on('disconnect',function(){
-        onlineUserCount--;
- 
-        if(onlineUsers.hasOwnProperty(socket.name)){
-            delete onlineUsers[client.name];
+    })
+    socket.on('sendImg',function(data){
+        if(userServer.hasOwnProperty(data.to)){
+            userServer[data.to].emit('getImg',{msg:data.msg})
+        }else{
+            socket.emit("err",{msg:"对方已经下线或者断开连接"})
         }
- 
-        var obj={
-            time:getTime(),
-            author:'Sys',
-            text:client.name,
-            type:'disconnect',
-            onlineUserCount:onlineUserCount,
-            onlineUsers:onlineUsers
-        };
- 
-        //广播用户退出
-        socket.broadcast.emit('system',obj); //用户登录和退出都使用system事件播报
-        console.log(client.name+' disconnect,当前在线人数:'+onlineUserCount);
-    });  
+    })
 };
 
 // namespace counsel
 exports.counsel = function (io, socket) {
    
    socket.emit('open');  //通知客户端已连接
-     
-    
 };
 exports.otherEvent = function (io) {
 };
