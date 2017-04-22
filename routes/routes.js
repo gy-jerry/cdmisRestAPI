@@ -66,7 +66,8 @@ module.exports = function(app,webEntry) {
   app.get('/compliance', complianceCtrl.getComplianceByDay);
 
   // wf
-  app.post('/user/register', userCtrl.register);
+  app.post('/user/register',userCtrl.registerTest,getNoMid.getNo(1), userCtrl.register);
+  app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
   app.post('/user/login', userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
