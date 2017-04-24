@@ -6,6 +6,7 @@ var	config = require('../config'),
 		Sms = require('../models/sms'),
 		crypto = require('crypto'),
 		https = require('https'),
+        xml2js = require('xml2js'),
         jwt = require('jsonwebtoken');
 
 var commonFunc = require('../middlewares/commonFunc');
@@ -322,9 +323,15 @@ exports.register = function(req, res) {
     });
 }
 exports.registerWithOpenIdTest = function(req, res,next) {
-    var _openId = req.query.openId
-    // var _password = req.query.password
-    var _role = req.query.role
+    var parser = new xml2js.Parser();
+    var data = {};
+    parser.parseString(req.body,function(err,result){
+        data = result || {};
+    });
+    // var _openId = req.query.openId
+    // var _role = req.query.role
+    var _openId=data.xml.FromUserName
+    // var _openId=data.xml.FromUserName
     var query = {openId:_openId};
     // var _userNo = req.newId
     User.getOne(query, function(err, item) {
