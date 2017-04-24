@@ -5,6 +5,9 @@
 // self-defined configurations
 var config = require('../config');
 
+// models
+var Wechat = require('../models/wechat');
+
 // middlewares
 var getNoMid = require('../middlewares/getNoMid');
 
@@ -172,19 +175,32 @@ module.exports = function(app,webEntry) {
   app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
 
+  // order
+  app.post('/order/insertOrder', getNoMid.getNo(7), orderCtrl.insertOrder);
+  app.post('/order/updateOrder', orderCtrl.updateOrder);
+  app.get('/order/getOrder',  orderCtrl.getOrder);
+
+
+  // // weixin wechatCtrl
+  // app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
+  // app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
+  // // 获取用户基本信息
+  // app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
+  // // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
+  // // 输入：微信用户授权的code 商户系统生成的订单号 
+  // app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
+  // // app.post('/wechat/notif',wechatCtrl.register);
+
+
   // weixin wechatCtrl
-  app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
-  app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
+  app.get('/wechat/settingConfig', Wechat.tokenManager("access_token"), wechatCtrl.settingConfig);
+  // app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
   // 获取用户基本信息
   app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
   // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
   // 输入：微信用户授权的code 商户系统生成的订单号 
   app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
   // app.post('/wechat/notif',wechatCtrl.register);
-
-  app.post('/order/insertOrder', getNoMid.getNo(7), orderCtrl.insertOrder);
-  app.post('/order/updateOrder', orderCtrl.updateOrder);
-  app.get('/order/getOrder',  orderCtrl.getOrder);
 
 
   //app.get('/find',function(req, res){

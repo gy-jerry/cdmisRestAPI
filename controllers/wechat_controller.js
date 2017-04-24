@@ -34,67 +34,69 @@ var wxApis = {
 var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
 
-exports.getAccessToken = function (req, res) {
-    // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+// exports.getAccessToken = function (req, res) {
+//     // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
 
-    request.get({
-        url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
-        'grant_type=client_credential' +  
-        '&appid=' + wxApiUserObject.appid + 
-        '&secret=' + wxApiUserObject.appsecret,
-        json: true
-    }, function (err, response, body) {
-        if(err){
-            return res.status(403).send('获取授权失败' + err.errmsg);
-        }
-        res.json({results:body});
+//     request.get({
+//         url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
+//         'grant_type=client_credential' +  
+//         '&appid=' + wxApiUserObject.appid + 
+//         '&secret=' + wxApiUserObject.appsecret,
+//         json: true
+//     }, function (err, response, body) {
+//         if(err){
+//             return res.status(403).send('获取授权失败' + err.errmsg);
+//         }
+//         res.json({results:body});
         
-    });
-};
+//     });
+// };
 
 
 
-exports.getAccessTokenMid = function (req, res, next) {
-    // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+// exports.getAccessTokenMid = function (req, res, next) {
+//     // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
 
-    request.get({
-        url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
-        'grant_type=client_credential' +  
-        '&appid=' + wxApiUserObject.appid + 
-        '&secret=' + wxApiUserObject.appsecret,
-        json: true
-    }, function (err, response, body) {
-        if(err){
-            return res.status(403).send('获取授权失败' + err.errmsg);
-        }
-        req.wxTokenObj = body;
-        next();
-    });
-};
+//     request.get({
+//         url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
+//         'grant_type=client_credential' +  
+//         '&appid=' + wxApiUserObject.appid + 
+//         '&secret=' + wxApiUserObject.appsecret,
+//         json: true
+//     }, function (err, response, body) {
+//         if(err){
+//             return res.status(403).send('获取授权失败' + err.errmsg);
+//         }
+//         req.wxTokenObj = body;
+//         next();
+//     });
+// };
 
 
-exports.wxJsApiTicket = function(req, res, next) {
+// exports.wxJsApiTicket = function(req, res, next) {
 
-  var api_url = wxApis.getticket + '?access_token=' + req.wxTokenObj.access_token + '&type=jsapi';
+//   var api_url = wxApis.getticket + '?access_token=' + req.wxTokenObj.access_token + '&type=jsapi';
 
-  request({
-    method: 'GET',
-    url: api_url,
-    json: true
-  }, function(err, response, body) {
+//   request({
+//     method: 'GET',
+//     url: api_url,
+//     json: true
+//   }, function(err, response, body) {
 
-    req.ticketObject = {
-      errcode: body.errcode,
-      errmsg: body.errmsg,
-      jsapi_ticket: body.ticket,
-      expires_in: body.expires_in
-    };
-   next();
-  });
-}
+//     req.ticketObject = {
+//       errcode: body.errcode,
+//       errmsg: body.errmsg,
+//       jsapi_ticket: body.ticket,
+//       expires_in: body.expires_in
+//     };
+//    next();
+//   });
+// }
+
+
 
 exports.settingConfig = function(req, res) {
-  var ticketObject = req.ticketObject || {};
+  var ticketObject = req.wxToken || {};
   var request_url = req.query.url;
 
   var paramData = {
