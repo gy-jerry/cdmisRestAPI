@@ -29,7 +29,8 @@ var wechatSchema = new mongoose.Schema({
     default: Date.now,
     expires: 60 * 55 * 2  // 默认1小时50分过期, 每隔60秒删除记录(还要加上查询的时间)
   }
-});
+},{versionKey:false});
+
 // wechatSchema.index({ createAt: 1 }, { expireAfterSeconds: 7000 });
 var wechatModel = mongoose.model('wechat', wechatSchema);
 
@@ -49,7 +50,8 @@ Wechat.prototype.save = function (callback) {
   });
 };
 
-Wechat.tokenManager = function (type) {
+// base-access-token
+Wechat.baseTokenManager = function (type) {
   // console.log(type || 'access_token');
   return function (req, res, next) {
     // console.log(req.headers);

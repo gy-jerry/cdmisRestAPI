@@ -1,6 +1,7 @@
 var request = require('request'),
     xml2js = require('xml2js'),
-    https = require('https');
+    https = require('https'),
+    fs = require('fs');
 
 var config = require('../config'),
     commonFunc = require('../middlewares/commonFunc')
@@ -27,7 +28,11 @@ var wxApis = {
   // 申请退款
   refund:'https://api.mch.weixin.qq.com/secapi/pay/refund',
   // 查询退款
-  refundquery:'https://api.mch.weixin.qq.com/pay/refundquery'
+  refundquery:'https://api.mch.weixin.qq.com/pay/refundquery',
+  // 发送消息模板
+  messageTemplate:'https://api.weixin.qq.com/cgi-bin/message/template/send',
+  // download
+  download:'http://file.api.weixin.qq.com/cgi-bin/media/get'
 
 };
 
@@ -477,7 +482,6 @@ exports.refund = function(req, res) {
   req.end();
 }
 
-
 // 查询退款
 exports.refundquery = function(req, res) {
   
@@ -510,96 +514,82 @@ exports.refundquery = function(req, res) {
   });
 }
 
+// 消息模板
+exports.messageTemplate = function(req, res) {
+  var tokenObject = req.wxToken || {};
+  var token = tokenObject.token;
 
+  var jsondata = req.body || {};
 
-
-
-// 需要修改？？？
-exports.checkWxPaySign = function(req, res, next) {
-
-  var rawString = req.rawString;  
-
-  var parser = new xml2js.Parser({explicitArray: false});
-  var data = {};
-
-  parser.parseString(rawString, function(err, result) {        
-    if (err) {
-      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
+  request({
+    url: wxApis.messageTemplate + '?access_token=' + token,
+    method: 'POST',
+    body: jsondata
+  }, function(err, response, body){
+    if (!err && response.statusCode == 200) {       
+      res.json({results:body});
     }
-    data = (result && result.xml) || {};
+    else{
+      return res.status(500).send('Error');
+    }
   });
-
-
-  if (data.result_code == 'SUCCESS' && data.return_code == 'SUCCESS') {
-    var sign = data.sign;
-    delete data.sign;
-    var signStr = commonFunc.rawSort(data);
-    signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
-    var genSign = commonFunc.convertToMD5(signStr, true);
-
-    if ( sign == genSign) {   
-      data.sign = sign;
-      req.payDataObject = data;   
-      next();
-    } else {
-      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
-    }
-  } else {
-    return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
-  }
-
 }
 
-// 需要修改
-exports.operatorPayResult = function(req, res) {
-  var payDataObject = req.payDataObject;
-  var ordersn = payDataObject.out_trade_no.split('-')[0];
-  var currentDate = new Date();
-
-  var query = {
-    consType: 'selfshopping',
-    outRecptNum: ordersn,
-    'orderStatus': 1
-  }
-
-  var upObj = {
-    '$set': {
-      orderStatus: 2,
-    },
-    '$push': {
-      orderPayment: {
-        payType: 3,
-        payName: '微信支付-公众号支付-' + wxApiUserObject.appid,
-        payPrice: payDataObject.total_fee,
-        payNo: payDataObject.transaction_id,
-        payInceAmountType: payDataObject.trade_type,
-        payInceIdNo: payDataObject.openid,
-        payInceID: payDataObject.mch_id,
-        payInceAmountText: payDataObject.out_trade_no
-      }
-    }
-  }
-
-
-  Consumption.updateOne(query, upObj, function(err, upCons) {
-    
-    if (err || !upCons) {
-      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
-    } else {
-      return res.status(422).send('<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>');
-    }    
-  });
-
+// 下载
+exports.download = function(req, res) {
+  var tokenObject = req.wxToken || {};
+  var token = tokenObject.token;
+  var serverId = req.query.serverId;
+  var name = req.query.name;
   
+  var fileurl = wxApis.download + '?access_token=' + token + '&media_id=' + serverId;
+  var dir = "./uploads/photos";
+
+  request({
+    url: fileurl,
+    method: 'GET',
+    json: true
+  }, function(err, response){
+    if(!err && response.statusCode == 200) {
+      request.head(fileurl, function(err, response1, body) {
+        request(fileurl).pipe(fs.createWriteStream(dir + '/' + name));
+        
+        console.log("Done: " + fileurl);
+        res.json({results:"success"});
+      });   
+    }    
+   
+    // if(!err && response.statusCode == 200) {
+    //   download(fileurl, dir, name);
+    //   console.log("Done: " + fileurl);
+    //   res.json({results:"success"});
+    // }      
+
+    // var imgData = "";
+    // res.json(response.body);
+
+    // response.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
+    // response.on("data", function(chunk){
+    //     imgData += chunk;
+    //     console.log(chunk);
+    // });
+
+    // response.on("end", function(){
+    //   fs.writeFile("./public/upload/downImg/name.jpg", imgData, "binary", function(err){
+    //     if(err){
+    //       return res.status(500).send('Error');
+    //     }
+    //     res.json({results:"success"});
+    //   });
+    // });
+  });
 }
 
-
-
-
-
-
-
-
+var download = function(url, dir, filename) {
+  request.head(url, function(err, res, body) {
+    request(url).pipe(fs.createWriteStream(dir + '/' + filename));
+  });
+};
 
 
 
