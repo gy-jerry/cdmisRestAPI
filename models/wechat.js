@@ -1,9 +1,10 @@
 // var mongodb = require('../helpers/mongodb');
-var config = require('../config'),
-    MongoClient = require('mongodb').MongoClient;
+var config = require('../config');
+
 var crypto = require('crypto');
 var request = require('request');
 var mongoose = require('mongoose');
+
 var wechatSchema = new mongoose.Schema({
   token: {
     type: String,
