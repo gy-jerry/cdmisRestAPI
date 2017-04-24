@@ -59,7 +59,7 @@ exports.getCompliance = function (req, res, next) {
     var query = {
       type: req.body.type, 
       code: req.body.code, 
-      unit: req.body.unit, 
+      userId: req.body.userId, 
       date: new Date(req.body.date)
     };
     Compliance.getOne(query, function(err, complianceitem){
