@@ -654,3 +654,31 @@ exports.verifySMS = function(req, res) {
 //     var _ip = commonFunc.getClientIp(req)
 //     res.json({results: 0,Ip:_ip});
 // }
+
+//根据角色获取电话号码 2017-04-25 GY
+exports.getPhoneNoByRole = function(req, res) {
+    if (req.query.role == null || req.query.role == ''){
+        return res.json({result: '请输入role!'});
+    }
+    else if (req.query.role != 'doctor' && req.query.role != 'patient') {
+        return res.json({result: '不合法的role!'});
+    }
+
+    var query = {role:req.query.role};
+
+    User.getSome(query, function(err, items) {
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        if(items==null){
+            // res.json({results: 1,mesg:"User doesn't Exist!"});
+        }
+        else{
+            var phoneNos = [];
+            for (var i = items.length - 1; i >= 0; i--) {
+                phoneNos[i] = items[i].phoneNo
+            }
+            res.json({results: phoneNos});
+        }
+    });
+}
