@@ -380,7 +380,7 @@ exports.editDoctorDetail = function(req, res) {
 		upObj['city'] = req.body.city;
 	}
 	if (req.body.district != null){
-		doctorData['district'] = req.body.district;
+		upObj['district'] = req.body.district;
 	}
 	if (req.body.workUnit != null){
 		upObj['workUnit'] = req.body.workUnit;

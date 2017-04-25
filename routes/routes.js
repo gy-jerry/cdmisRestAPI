@@ -5,6 +5,9 @@
 // self-defined configurations
 var config = require('../config');
 
+// models
+var Wechat = require('../models/wechat');
+
 // middlewares
 var getNoMid = require('../middlewares/getNoMid');
 
@@ -21,6 +24,7 @@ var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
     dictDistrictCtrl = require('../controllers/dictDistrict_controller'),
     dictHospitalCtrl = require('../controllers/dictHospital_controller'),
     taskCtrl = require('../controllers/task_controller'),
+    orderCtrl = require('../controllers/order_controller'),
     complianceCtrl = require('../controllers/compliance_controller');
 
 // controllers updated by GY 
@@ -65,7 +69,8 @@ module.exports = function(app,webEntry) {
   app.get('/compliance', complianceCtrl.getComplianceByDay);
 
   // wf
-  app.post('/user/register', userCtrl.register);
+  app.post('/user/register',userCtrl.registerTest,getNoMid.getNo(1), userCtrl.register);
+  app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
   app.post('/user/login', userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
@@ -147,6 +152,7 @@ module.exports = function(app,webEntry) {
   app.post('/communication/removeMember', communicationCtrl.removeMember, communicationCtrl.updateNumber);
   // app.post('/communication/newTeam', getNoMid.getNo(4), communicationCtrl.newTeam);
   app.post('/communication/newTeam', communicationCtrl.newTeam);
+  app.post('/communication/deleteTeam', communicationCtrl.deleteTeam);
   app.get('/communication/getTeam', communicationCtrl.getTeam);
   // app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/newConsultation', communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
@@ -169,13 +175,36 @@ module.exports = function(app,webEntry) {
   app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
 
+  // order
+  app.post('/order/insertOrder', getNoMid.getNo(7), orderCtrl.insertOrder);
+  app.post('/order/updateOrder', orderCtrl.updateOrder);
+  app.get('/order/getOrder',  orderCtrl.getOrder);
+
+
+  // // weixin wechatCtrl
+  // app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
+  // app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
+  // // 获取用户基本信息
+  // app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
+  // // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
+  // // 输入：微信用户授权的code 商户系统生成的订单号 
+  // app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
+  // // app.post('/wechat/notif',wechatCtrl.register);
+
+
   // weixin wechatCtrl
-  app.get('/wechat/settingConfig', wechatCtrl.getAccessTokenMid,wechatCtrl.wxJsApiTicket, wechatCtrl.settingConfig);
+  app.get('/wechat/settingConfig', Wechat.baseTokenManager("access_token"), wechatCtrl.settingConfig);
 
-  app.get('/wechat/getAccessToken', wechatCtrl.getAccessToken);
-  
-
+  // 获取用户基本信息
   app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
+  // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
+  // 输入：微信用户授权的code 商户系统生成的订单号 
+  app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
+  // app.post('/wechat/notif',wechatCtrl.register);
+  // 消息模板
+  app.get('/wechat/messageTemplate', Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
+  // 下载
+  app.get('/wechat/download', Wechat.baseTokenManager("access_token"), wechatCtrl.download);
 
 
 

@@ -106,6 +106,14 @@ Team.update = function (query, obj, callback, opts, populate) {
     callback(null, team);
   });
 };
+Team.remove = function(query, callback) {
+	teamModel
+		.remove(query)
+		.exec(function(err) {
+			callback(err);
+		});
+
+};
 
 Team.removeOne = function(query, callback, opts) {
 	var options = opts || {};

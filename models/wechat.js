@@ -1,9 +1,11 @@
 // var mongodb = require('../helpers/mongodb');
-var config = require('../config'),
-    MongoClient = require('mongodb').MongoClient;
+var config = require('../config');
 var crypto = require('crypto');
 var request = require('request');
 var mongoose = require('mongoose');
+
+var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
+
 var wechatSchema = new mongoose.Schema({
   token: {
     type: String,
@@ -27,12 +29,15 @@ var wechatSchema = new mongoose.Schema({
     default: Date.now,
     expires: 60 * 55 * 2  // 默认1小时50分过期, 每隔60秒删除记录(还要加上查询的时间)
   }
-});
+},{versionKey:false});
+
 // wechatSchema.index({ createAt: 1 }, { expireAfterSeconds: 7000 });
-var wechatModel = mongoose.model('Wechat', wechatSchema);
+var wechatModel = mongoose.model('wechat', wechatSchema);
+
 function Wechat(token) {
   this.token = token;
 };
+
 Wechat.prototype.save = function (callback) {
   var token = this.token;
   
@@ -45,22 +50,23 @@ Wechat.prototype.save = function (callback) {
   });
 };
 
-Wechat.tokenManager = function (type) {
+// base-access-token
+Wechat.baseTokenManager = function (type) {
   // console.log(type || 'access_token');
   return function (req, res, next) {
     // console.log(req.headers);
     var query = {type: type || 'access_token'};
-    var appid = 'wx427f444432aef6cc';
-    var secret = 'dad0093ab530901daaab5e0162fef1a6';
+    var appid = wxApiUserObject.appid;
+    var secret = wxApiUserObject.appsecret;
 
     wechatModel
-    .findOne(query, function (err, token) {
+    .findOne(query, function (err, tokenObject) {
       if (err) {
         return res.status(401).send('服务器错误, 微信令牌查询失败!');
       }
 
-      if (token) {
-        req.wxToken = token;
+      if (tokenObject) {
+        req.wxToken = tokenObject;
         req.wxToken.appid = appid;
         req.wxToken.secret = secret;
         return next();
@@ -85,29 +91,19 @@ Wechat.tokenManager = function (type) {
             // console.log(body2);
             if (err2) return res.status(401).send('微信js票据获取失败!');
 
-            request.get({
-              url: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?' + 
-              'access_token=' + body1.access_token + 
-              '&type=wx_card',
-              json: true
-            }, function (err3, response3, body3) {
-              // console.log(body3);
-              if (err3) return res.status(401).send('微信卡券票据获取失败!');
-
-              // wechatModel.collection.insert({
-              wechatModel.create({
-                token: body1.access_token, 
-                expires_in: body1.expires_in, 
-                jsapi_ticket: body2.ticket,
-                api_ticket: body3.ticket,
-                type: type || 'access_token' 
-              }, function(err, token) {
-                if (err) return res.status(401).send('微信令牌保存失败!');
-                req.wxToken = token;
-                req.wxToken.appid = appid;
-                req.wxToken.secret = secret;
-                return next();
-              });
+            // wechatModel.collection.insert({
+            wechatModel.create({
+              token: body1.access_token, 
+              expires_in: body1.expires_in, 
+              jsapi_ticket: body2.ticket,
+              api_ticket: "body3.ticket",
+              type: type || 'access_token' 
+            }, function(err, tokenObject) {
+              if (err) return res.status(401).send('微信令牌保存失败!');
+              req.wxToken = tokenObject;
+              req.wxToken.appid = appid;
+              req.wxToken.secret = secret;
+              return next();
             });
           });
         });
