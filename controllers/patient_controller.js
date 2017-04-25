@@ -172,14 +172,21 @@ exports.getMyDoctor = function(req, res) {
 	var opts = '';
 	var fields = {'_id':0, 'doctors':1};
 	//通过子表查询主表，定义主表查询路径及输出内容
-	
+	var ret = {};
 	var populate = {path: 'doctors.doctorId', select: {'_id':0, 'IDNo':0, 'revisionInfo':0, 'teams':0}};
 
 	Patient.getOne(query, function(err, item) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item});
+    	// console.log(item.doctors.length)
+    	for(var i=0;i<item.doctors.length;i++){
+    		if(item.doctors[i].invalidFlag==0){
+    			ret=item.doctors[i];
+    			break;
+    		}
+    	}
+    	res.json({results: ret});
 	}, opts, fields, populate);
 }
 
