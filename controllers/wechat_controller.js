@@ -4,7 +4,8 @@ var request = require('request'),
     fs = require('fs');
 
 var config = require('../config'),
-    commonFunc = require('../middlewares/commonFunc')
+    commonFunc = require('../middlewares/commonFunc'),
+    Order = require('../models/order');
 
 // appid: wx8a6a43fb9585fb7c;secret: b23a4696c3b0c9b506891209d2856ab2
 
@@ -303,7 +304,7 @@ exports.addOrder = function(req, res, next) {
     spbill_create_ip: req.ip,   // 终端IP
     time_start: ymdhms,     // 交易起始时间
     // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
-    notify_url: 'http://app.xiaoyangbao.net/wxmp/paynotifyurl',   // 通知地址
+    notify_url: 'http://121.43.107.106:4050/wechat/payResult',   // 通知地址
     trade_type: 'JSAPI',    // 交易类型
     openid: req.wechatData.openid    // 用户标识
   };
@@ -369,6 +370,57 @@ exports.getPaySign = function(req, res, next) {
   }});
 }
 
+// 支付结果通知
+exports.payResult = function(req, res) {  
+  var payDataObject = req.payDataObject;
+  var orderNo = payDataObject.out_trade_no.split('-')[0];
+
+  var query = {
+    orderNo: orderNo
+  }
+
+  Order.getOne(query, function(err, item) {
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        // res.json({results: item});
+        if(payDataObject.result_code == 'SUCCESS'){
+          if(item.paystatus != 2){    // 非成功
+            var upObj = {
+              paystatus: 2,
+              paytime: payDataObject.time_end
+            };
+
+           updateOrder(query,upObj);   
+          }
+          else{   // 成功
+            res.json({results: "success!"});
+          }
+        }
+        else{       // payDataObject.result_code == 'FAIL'
+          if(item.paystatus != 3){    // 非失败
+            var upObj = {
+              paystatus: 3,
+              paytime: payDataObject.time_end
+            };
+
+            updateOrder(query,upObj);           
+          }
+          else{   // 失败
+            res.json({results: "success!"});
+          }
+        }
+  });
+}
+
+function updateOrder(query,upObj){
+  Order.updateOne(query,{$set:upObj},function(err, item){
+    if (err) {
+      return res.status(500).send(err.errmsg);
+    }
+    res.json({results: "success!"});
+  });
+}
 
 // 查询订单
 exports.getWechatOrder = function(req, res) {

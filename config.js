@@ -96,7 +96,7 @@ module.exports = {
   ],
   Access_Control_Allow_Origin: ['http://localhost', 'http://localhost:3000','http://10.12.43.168', 'http://127.0.0.1:8020', 'http://192.168.1.105:80', 'http://192.168.1.105',
    'http://localhost:8100', 'http://10.12.43.26:8100', 'http://10.12.43.28:8100', 'http://10.12.43.29:8100', 'http://10.12.43.61:8100', 'http://10.12.43.56:8100',
-   'http://10.13.22.149:8100','http://test.go5le.net'],
+   'http://10.13.22.149:8100','http://test.go5le.net','http://localhost:3000','http://10.13.22.148:8100'],
   postAdvisor: 0,
   commentAdvisor: 0, 
   multerFieldSize: 100, 

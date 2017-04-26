@@ -57,12 +57,35 @@ function messageSaveSend(data, url){
             /// send to sendBy
             userServer[sendBy].emit('messageRes',{msg:data.msg});
             /// send to receiver
-            if(userServer.hasOwnProperty(receiver)){         // 用户在线
-                userServer[receiver].emit('getMsg',{msg:data.msg});
+
+            if(messageType == 1){       // 单聊
+                if(userServer.hasOwnProperty(receiver)){         // 用户在线
+                    userServer[receiver].emit('getMsg',{msg:data.msg});
+                }
+                else{           // 用户不在线
+                    // socket.emit("err",{msg:"对方已经下线或者断开连接"})
+                }
             }
-            else{           // 用户不在线
-                // socket.emit("err",{msg:"对方已经下线或者断开连接"})
+            else{           // 群聊
+                request({
+                    url: '121.43.107.106:4050/communication/getTeam?teamId=' + receiver,
+                    method: 'GET',
+                    json:true
+                }, function(err, response){
+                    if(err) {
+                        // do-something
+                    }
+                    else{
+                        var members = response.body.results.members;
+                        for(var member in members){
+                            if(userServer.hasOwnProperty(member.userId)){         // 用户在线
+                                userServer[member.userId].emit('getMsg',{msg:data.msg});
+                            }
+                        }
+                    }
+                })
             }
+            
         }
     });
 
