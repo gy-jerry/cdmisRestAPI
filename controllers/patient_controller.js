@@ -15,7 +15,7 @@ exports.getPatientDetail = function(req, res) {
 	var query = {userId:_userId};
 	//输出内容
 	var fields = {'_id':0, 'revisionInfo':0, 'doctors':0};
-	var populate = {path: 'diagnosisInfo.doctor', select: {'_id':0, 'workUnit':1, 'department':1}};
+	var populate = {path: 'diagnosisInfo.doctor', select: {'_id':0, 'userId':1, 'name':1, 'workUnit':1, 'department':1}};
 
 	Patient.getOne(query, function(err, item) {
 		if (err) {
@@ -246,13 +246,13 @@ exports.newPatientDetail = function(req, res) {
 		allergic:req.body.allergic, 
 		class:req.body.class, 
 		class_info:req.body.class_info, 
-		birthday:new Date(req.body.birthday), 
-		revisionInfo:{
-			operationTime:new Date(),
-			userId:"gy",
-			userName:"gy",
-			terminalIP:"10.12.43.32"
-		}
+		birthday:new Date(req.body.birthday)//, 
+		// revisionInfo:{
+		// 	operationTime:new Date(),
+		// 	userId:"gy",
+		// 	userName:"gy",
+		// 	terminalIP:"10.12.43.32"
+		// }
 	};
 	if (req.body.photoUrl != null){
 		patientData['photoUrl'] = req.body.photoUrl;
@@ -307,12 +307,12 @@ exports.editPatientDetail = function(req, res) {
 	};
 	
 	var upObj = {
-		revisionInfo:{
-			operationTime:new Date(),
-			userId:"gy",
-			userName:"gy",
-			terminalIP:"10.12.43.32"
-		}
+		// revisionInfo:{
+		// 	operationTime:new Date(),
+		// 	userId:"gy",
+		// 	userName:"gy",
+		// 	terminalIP:"10.12.43.32"
+		// }
 	};
 	if (req.body.userId != null){
 		upObj['userId'] = req.body.userId;

@@ -16,7 +16,7 @@ var doctorSchema = new mongoose.Schema({
 	job: String, 
 	department: String, 
 	major: String, 
-	introduction: String, 
+	description: String, 
 	score: Number, 
 	charge1: {type:Number, default:0}, 
 	charge2: {type:Number, default:0}, 

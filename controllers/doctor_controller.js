@@ -74,8 +74,8 @@ exports.insertDocBasic = function(req, res) {
 	if (req.body.major != null){
 		doctorData['major'] = req.body.major;
 	}
-	if (req.body.descirption != null){
-		doctorData['descirption'] = req.body.descirption;
+	if (req.body.description != null){
+		doctorData['description'] = req.body.description;
 	}
 	if (req.body.charge1 != null){
 		doctorData['charge1'] = req.body.charge1;
@@ -397,8 +397,8 @@ exports.editDoctorDetail = function(req, res) {
 	if (req.body.major != null){
 		upObj['major'] = req.body.major;
 	}
-	if (req.body.descirption != null){
-		upObj['descirption'] = req.body.descirption;
+	if (req.body.description != null){
+		upObj['description'] = req.body.description;
 	}
 	if (req.body.charge1 != null){
 		upObj['charge1'] = req.body.charge1;
