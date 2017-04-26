@@ -405,6 +405,17 @@ exports.reset = function(req, res) {
         }
     });
 }
+exports.setOpenId = function(req, res) {
+    var _phoneNo = req.body.phoneNo
+    var _openId = req.body.openId
+    var query = {phoneNo:_phoneNo};
+    User.updateOne(query,{$set:{openId: _openId}},function(err, item){
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        res.json({results: item,msg:"success!"});
+    });
+}
 exports.openIdLoginTest = function(req, res,next) {
     var username = req.body.username;
     if (username === '' ) {
