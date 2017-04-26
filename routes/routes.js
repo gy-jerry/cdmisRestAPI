@@ -175,6 +175,9 @@ module.exports = function(app,webEntry) {
   app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
 
+    //user
+  app.get('/user/getPhoneNoByRole', userCtrl.getPhoneNoByRole);
+
   // order
   app.post('/order/insertOrder', getNoMid.getNo(7), orderCtrl.insertOrder);
   app.post('/order/updateOrder', orderCtrl.updateOrder);
