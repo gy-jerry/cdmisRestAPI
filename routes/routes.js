@@ -1,4 +1,5 @@
 
+
 // 3rd packages
 
 
@@ -70,7 +71,9 @@ module.exports = function(app,webEntry) {
 
   // wf
   app.post('/user/register',userCtrl.registerTest,getNoMid.getNo(1), userCtrl.register);
-  app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
+
+  app.post('/user/setOpenId',userCtrl.setOpenId);
+  // app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
   app.post('/user/login', userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
@@ -229,4 +232,3 @@ module.exports = function(app,webEntry) {
   //   res.send("Get User: " + req.param("userid"));
   // });
 };
-
