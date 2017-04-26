@@ -72,6 +72,7 @@ module.exports = function(app,webEntry) {
   app.post('/user/login', userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
   app.get('/user/getUserID', userCtrl.getUserID);
+  app.get('/user/getUserIDbyOpenId', userCtrl.getUserIDbyOpenId);
   app.post('/user/sendSMS', userCtrl.sendSMS);
   app.get('/user/verifySMS', userCtrl.verifySMS);
   app.get('/user/getUserAgreement', userCtrl.getUserAgreement);
