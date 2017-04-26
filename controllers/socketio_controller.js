@@ -1,5 +1,5 @@
 // var config = require('../config');
-
+var request = require('request');
 
 var userServer = {};
 var userList = {};
@@ -39,17 +39,20 @@ function messageSaveSend(data, url){
         messageType: messageType,
         sendBy:sendBy,
         receiver:receiver,
+        sendDateTime:data.msg.createTimeInMillis,
         content:data.msg
     }
     request({
         url: url,
         method: 'POST',
-        body: jsondata
+        body: jsondata,
+        json:true
     }, function(err, response){
         if(err) {
             // do-something
         }
         else{
+            // console.log('success 6');
             // send message
             /// send to sendBy
             userServer[sendBy].emit('messageRes',{msg:data.msg});

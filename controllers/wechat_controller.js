@@ -360,6 +360,7 @@ exports.getPaySign = function(req, res, next) {
   wcPayParams.paySign = commonFunc.convertToMD5(signStr, true);  //微信支付签名
 
   res.json({ results: {
+    appId:wxApiUserObject.appid, 
     timestamp: paramData.timeStamp,
     nonceStr: paramData.nonceStr,
     package: paramData.package,
