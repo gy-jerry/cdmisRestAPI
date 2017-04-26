@@ -106,7 +106,6 @@ exports.deleteTeam = function(req, res) {
 	});
 }
 
-
 //新建会诊 2017-04-06 GY
 exports.checkTeam = function (req, res, next) {
 	if (req.body.teamId == null || req.body.teamId == '') {
@@ -127,6 +126,7 @@ exports.checkTeam = function (req, res, next) {
         next();
     });
 };
+
 exports.checkCounsel = function (req, res, next) {
 	if (req.body.counselId == null || req.body.counselId == '') {
         return res.json({result:'请填写counselId!'});

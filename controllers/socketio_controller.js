@@ -20,10 +20,10 @@ function messageSaveSend(data, url){
 
     var targetType = data.msg.targetType;
     var messageType;
-    if(targetType == 'single'){
+    if(targetType == 'single'){         // 单聊
         messageType = 1;
     }
-    else{
+    else{       // 群聊
         messageType = 2;
     }
     var sendBy = data.msg.fromName;
@@ -113,7 +113,14 @@ exports.chat = function (io, socket) {
 
         if(contentType == 'image' || contentType == 'voice'){           // image voice
             var mediaId = data.msg.content.mediaId;
-            var name = toUserId + data.msg.createTimeInMillis;
+            var name;
+            if(contentType == 'image' ){
+                name = data.to + data.msg.createTimeInMillis + '.jpg';
+            }
+            else{
+                name = data.to + data.msg.createTimeInMillis + '.mp3';
+            }
+        
             // download
             request({
                 url: url + '?serverId=' + mediaId + '&name=' + name,
@@ -124,7 +131,8 @@ exports.chat = function (io, socket) {
                     // do-something
                 }
                 else{
-                    var resUrl = "./uploads/photos" + name;
+                    var resUrl = "uploads/photos/" + name;
+                    data.msg.content['src_thumb'] = resUrl;
                     messageSaveSend(data, resUrl);
                 }
             });
