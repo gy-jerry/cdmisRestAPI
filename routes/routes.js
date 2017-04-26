@@ -67,9 +67,9 @@ module.exports = function(app,webEntry) {
 
   // wf
   app.post('/user/register',userCtrl.registerTest,getNoMid.getNo(1), userCtrl.register);
-  app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
+  // app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
-  app.post('/user/login', userCtrl.login);
+  app.post('/user/login', userCtrl.openIdLoginTest,userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
   app.get('/user/getUserID', userCtrl.getUserID);
   app.get('/user/getUserIDbyOpenId', userCtrl.getUserIDbyOpenId);
