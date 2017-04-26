@@ -432,7 +432,7 @@ exports.openIdLoginTest = function(req, res,next) {
     var query = {
         openId: username
     };
-    var openIdFlag=0;
+    var openIdFlag = 0;
     User.getOne(query, function(err, item) {
         if (err) {
             return res.status(500).send(err.errmsg);
@@ -460,6 +460,7 @@ exports.login = function(req, res) {
             {openId: username}
         ]
     };
+    var openIdFlag = req.openIdFlag;
 
     User.getOne(query, function(err, item) {
         if (err) {
@@ -469,7 +470,7 @@ exports.login = function(req, res) {
             res.json({results: 1,mesg:"User doesn't Exist!"});
         }
         else{
-            if(password!=item.password){
+            if(password!=item.password&&openIdFlag==0){
                 res.json({results: 1,mesg:"User password isn't correct!"});
             }
             else if(item.role.indexOf(role) == -1)
