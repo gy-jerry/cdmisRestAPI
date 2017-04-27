@@ -232,26 +232,6 @@
 			"response": []
 		},
 		{
-			"name": "214 Compliance-001-001 写入任务执行情况",
-			"request": {
-				"url": "http://121.43.107.106:4050/compliance",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"userId\": \"U201704050002\",\n    \"type\": \"Measure\",\n    \"code\": \"Weight\",\n    \"date\": \"2017-12-13\",\n    \"status\": 0,\n    \"description\": \"\"\n}"
-				},
-				"description": "写入任务执行情况"
-			},
-			"response": []
-		},
-		{
 			"name": "215 Compliance-002-001 获取某用户的全部任务执行记录",
 			"request": {
 				"url": "http://121.43.107.106:4050/compliance?userId=U201704050002&date",
@@ -2153,6 +2133,17 @@
 					"mode": "raw",
 					"raw": ""
 				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "303 下载图片",
+			"request": {
+				"url": "http://121.43.107.106:4050/wechat/download?serverId=SPba_8uMuNwkUa6zw6RC65LBON_fipSa8Z22-MnEmPka3Bc3Z4MRopaWYd8t6jAK&name=resizedU201704130003_myAvatar.jpg",
+				"method": "GET",
+				"header": [],
+				"body": {},
 				"description": ""
 			},
 			"response": []

@@ -172,14 +172,21 @@ exports.getMyDoctor = function(req, res) {
 	var opts = '';
 	var fields = {'_id':0, 'doctors':1};
 	//通过子表查询主表，定义主表查询路径及输出内容
-	
+	var ret = {};
 	var populate = {path: 'doctors.doctorId', select: {'_id':0, 'IDNo':0, 'revisionInfo':0, 'teams':0}};
 
 	Patient.getOne(query, function(err, item) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item});
+    	// console.log(item.doctors.length)
+    	for(var i=0;i<item.doctors.length;i++){
+    		if(item.doctors[i].invalidFlag==0){
+    			ret=item.doctors[i];
+    			break;
+    		}
+    	}
+    	res.json({results: ret});
 	}, opts, fields, populate);
 }
 
@@ -366,13 +373,13 @@ exports.editPatientDetail = function(req, res) {
 		upObj['allergic'] = req.body.allergic;
 	}
 	if (req.body.lastVisittime != null){
-		upObj['lastVisit.time'] = new Date(req.body.lastVisittime);
+		upObj['lastVisit.time'] = new Date(req.body.lastVisit.time);
 	}
 	if (req.body.lastVisithospital != null){
-		upObj['lastVisit.hospital'] = req.body.lastVisithospital;
+		upObj['lastVisit.hospital'] = req.body.lastVisit.hospital;
 	}
 	if (req.body.lastVisitdiagnosis != null){
-		upObj['lastVisit.diagnosis'] = req.body.lastVisitdiagnosis;
+		upObj['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
 	}
 	//return res.json({query: query, upObj: upObj});
 	Patient.updateOne(query, upObj, function(err, upPatient) {
