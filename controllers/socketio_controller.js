@@ -52,10 +52,16 @@ function messageSaveSend(data, url){
             // do-something
         }
         else{
-            // console.log('success 6');
+            console.log('success 6');
             // send message
             /// send to sendBy
-            userServer[sendBy].emit('messageRes',{msg:data.msg});
+            if(userServer.hasOwnProperty(sendBy)){         // 用户在线
+                userServer[sendBy].emit('messageRes',{msg:data.msg});
+            }
+            else{           // 用户不在线
+                // socket.emit("err",{msg:"对方已经下线或者断开连接"})
+            }
+            // userServer[sendBy].emit('messageRes',{msg:data.msg});
             /// send to receiver
 
             if(messageType == 1){       // 单聊
@@ -67,30 +73,53 @@ function messageSaveSend(data, url){
                 }
             }
             else{           // 群聊
+                console.log(111);
+                console.log(receiver);
                 request({
-                    url: '121.43.107.106:4050/communication/getTeam?teamId=' + receiver,
+                    url: 'http://121.43.107.106:4050/communication/getTeam?teamId=' + receiver,
                     method: 'GET',
                     json:true
                 }, function(err, response){
+                    // if (!err && response.statusCode == 200) {       
+                    //     console.log(response.body);
+                    //     var members = response.body.results.members;
+                    //     for(var member in members){
+                    //         if(userServer.hasOwnProperty(member.userId)){         // 用户在线
+                    //             userServer[member.userId].emit('getMsg',{msg:data.msg});
+                    //         }
+                    //     }
+                    // }
+                    // else{
+                    //     console.log("123");
+                    //     // return res.status(500).send('Error');
+                    // }
                     if(err) {
                         // do-something
+                        console.log(err.errmsg);
                     }
                     else{
+                        console.log(response.body);
+                        var sponsorId = response.body.results.sponsorId;
                         var members = response.body.results.members;
-                        for(var member in members){
-                            if(userServer.hasOwnProperty(member.userId)){         // 用户在线
-                                userServer[member.userId].emit('getMsg',{msg:data.msg});
+                        members.push({"userId":sponsorId});
+
+                        // console.log(members);
+                        for(var idx in members){
+                            // console.log(member);
+                            if(userServer.hasOwnProperty(members[idx].userId)){         // 用户在线
+                                  // console.log(member.userId);
+                                if(members[idx].userId != sendBy){
+                                    // console.log(member.userId);
+                                    userServer[members[idx].userId].emit('getMsg',{msg:data.msg});
+                                }                            
                             }
-                        }
+                        }                      
                     }
                 })
             }
             
         }
     });
-
-
-
 
    
 }
@@ -99,6 +128,7 @@ function messageSaveSend(data, url){
 exports.chat = function (io, socket) {
     count += 1;
     socket.on('newUser',function(data){
+        console.log('newUser: ' +data.user_id);
         var nickname = data.user_name,
             user_id = data.user_id;
         socket.id = user_id;
@@ -120,6 +150,7 @@ exports.chat = function (io, socket) {
         // }
     })
     socket.on('disconnect',function(){ //用户注销登陆执行内容
+        console.log('disconnect');
         count -= 1; 
         var id = socket.id
         delete userServer[id]
