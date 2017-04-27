@@ -578,12 +578,12 @@ exports.getCommunication = function(req, res) {
 			if (err) {
 				return res.status(500).send(err.errmsg);
 			}
-			if (items.length == 0){
-				return res.json({results: '没有更多了!'});
-			}
-			else {
+			// if (items.length == 0){
+			// 	return res.json({results: '没有更多了!'});
+			// }
+			// else {
 				return res.json({results: items, nexturl: nexturl});
-			}
+			// }
 		}, opts);
 	}
 	else if (messageType === 1) {
@@ -598,12 +598,12 @@ exports.getCommunication = function(req, res) {
 			if (err) {
 				return res.status(500).send(err.errmsg);
 			}
-			if (items.length == 0){
-				return res.json({results: '没有更多了!'});
-			}
-			else {
+			// if (items.length == 0){
+			// 	return res.json({results: '没有更多了!'});
+			// }
+			// else {
 				return res.json({results: items, nexturl: nexturl});
-			}
+			// }
 		}, opts);
 	}
 }
