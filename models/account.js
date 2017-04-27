@@ -27,6 +27,13 @@ var accountSchema = new mongoose.Schema({
 	  	title: String
 	  }
 	], 
+	incomeRecords: [
+	  {
+	  	time: Date, 
+	  	money: Number, 
+	  	from: String
+	  }
+	], 
 	revisionInfo:{
 		operationTime:Date,
 		userId:String,
