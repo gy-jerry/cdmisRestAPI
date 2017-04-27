@@ -71,7 +71,6 @@ module.exports = function(app,webEntry) {
 
   // wf
   app.post('/user/register',userCtrl.registerTest,getNoMid.getNo(1), userCtrl.register);
-
   app.post('/user/setOpenId',userCtrl.setOpenId);
   // app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
@@ -144,6 +143,7 @@ module.exports = function(app,webEntry) {
   app.get('/account/getAccountInfo', accountCtrl.getAccountInfo);
   app.get('/account/getCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts);
   app.post('/account/modifyCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts, accountCtrl.modifyCounts);
+  app.post('/account/rechargeDoctor', accountCtrl.rechargeDoctor);
 
   //message
   app.get('/message/getMessages', messageCtrl.getMessages);
@@ -164,8 +164,6 @@ module.exports = function(app,webEntry) {
   app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');
   app.get('/communication/getConsultation', communicationCtrl.getConsultation);
-  app.post('/communication/postCommunication', communicationCtrl.postCommunication);
-  app.get('/communication/getCommunication', communicationCtrl.getCommunication);
 
   //task
   app.post('/tasks/insertTaskModel', taskCtrl.removeOldTask, taskCtrl.getTaskModel, taskCtrl.insertTaskModel);
@@ -179,6 +177,7 @@ module.exports = function(app,webEntry) {
   app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
 
+  
     //user
   app.get('/user/getPhoneNoByRole', userCtrl.getPhoneNoByRole);
 
@@ -232,3 +231,5 @@ module.exports = function(app,webEntry) {
   //   res.send("Get User: " + req.param("userid"));
   // });
 };
+
+

@@ -1,3 +1,4 @@
+
 var	config = require('../config'),
 	Account = require('../models/account'), 
 	Patient = require('../models/patient'), 
@@ -291,6 +292,85 @@ exports.modifyCounts = function(req, res) {
 					}
 				});
 				// return res.json({result: '修改成功', updateResult: upaccountadd});
+			}
+		});
+	}
+}
+
+exports.rechargeDoctor = function(req, res) {
+	var _chargetype=Number(req.body.type)
+	var _pid=req.body.patientId
+	var _did=req.body.doctorId
+	if(_chargetype==""||_chargetype==undefined||_pid==""||_pid==undefined||_did==""||_did==undefined){
+		return res.json({result: '请输入医生收费类型-type（咨询1/问诊2）、病人id-patientId、医生id-doctorId'});
+	}
+	else{
+		query={userId:_did};
+		Doctor.getOne(query, function(err, item) {
+			if (err) {
+				return res.status(500).send(err.errmsg);
+			}
+			if (item == null) {
+				return res.json({result: '不存在的医生ID'});
+			}
+			else {
+				var _money=0
+				if(_chargetype==1){
+					_money=item.charge1
+				}
+				else{
+					_money=item.charge2
+				}
+				// console.log(_money)
+				Account.getOne(query, function(err, item1) {
+					if (err) {
+						return res.status(500).send(err.errmsg);
+					}
+					if (item1 == null) {
+						var accountData = {
+							userId: _did, 
+							money: _money,
+							incomeRecords:{
+								time: new Date(), 
+								money: _money, 
+								from: _pid
+							}
+						};
+						var newAccount = new Account(accountData);
+						newAccount.save(function(err, accountInfo) {
+							if (err) {
+								return res.status(500).send(err.errmsg);
+							}
+							else{
+								res.json({result:"success!"});
+							}
+						});
+					}
+					else {
+						var _money1=_money+item1.money
+						var upObj = {
+							$set:{money:_money1},
+							$push: {
+								incomeRecords: {
+									time: new Date(), 
+									money: _money, 
+									from: _pid
+								}
+							}
+						};
+						Account.update(query, upObj, function(err, upaccount) {
+							if (err) {
+								return res.status(500).send(err.errmsg);
+							}
+							if (upaccount.nModified == 0) {
+								return res.json({result:'请获取账户信息确认是否修改成功'});
+							}
+							else if (upaccount.nModified != 0) {
+								return res.json({result:'修改成功', updateResult:upaccount});
+							}
+						});
+					}
+				});
 			}
 		});
 	}
