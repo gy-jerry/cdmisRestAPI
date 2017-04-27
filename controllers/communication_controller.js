@@ -1,3 +1,4 @@
+
 var	config = require('../config'),
 	webEntry = require('../settings').webEntry,
 	Communication = require('../models/communication'), 
@@ -106,6 +107,7 @@ exports.deleteTeam = function(req, res) {
 	});
 }
 
+
 //新建会诊 2017-04-06 GY
 exports.checkTeam = function (req, res, next) {
 	if (req.body.teamId == null || req.body.teamId == '') {
@@ -126,7 +128,6 @@ exports.checkTeam = function (req, res, next) {
         next();
     });
 };
-
 exports.checkCounsel = function (req, res, next) {
 	if (req.body.counselId == null || req.body.counselId == '') {
         return res.json({result:'请填写counselId!'});
@@ -578,12 +579,12 @@ exports.getCommunication = function(req, res) {
 			if (err) {
 				return res.status(500).send(err.errmsg);
 			}
-			if (items.length == 0){
-				return res.json({results: '没有更多了!'});
-			}
-			else {
+			// if (items.length == 0){
+			// 	return res.json({results: '没有更多了!'});
+			// }
+			// else {
 				return res.json({results: items, nexturl: nexturl});
-			}
+			// }
 		}, opts);
 	}
 	else if (messageType === 1) {
@@ -598,12 +599,12 @@ exports.getCommunication = function(req, res) {
 			if (err) {
 				return res.status(500).send(err.errmsg);
 			}
-			if (items.length == 0){
-				return res.json({results: '没有更多了!'});
-			}
-			else {
+			// if (items.length == 0){
+			// 	return res.json({results: '没有更多了!'});
+			// }
+			// else {
 				return res.json({results: items, nexturl: nexturl});
-			}
+			// }
 		}, opts);
 	}
 }
