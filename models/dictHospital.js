@@ -5,6 +5,9 @@ var dictHospitalSchema = new mongoose.Schema({
 	locationCode:String,
 	hospitalCode: String,
 	hospitalName:String,
+	province:String,
+	city:String,
+	district:String,
 	alias:String,
 	inputCode:String
 });
