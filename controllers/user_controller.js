@@ -1,4 +1,5 @@
 
+
 var	config = require('../config'),
 		User = require('../models/user'),
 		DictNumber = require('../models/dictNumber'),
@@ -200,6 +201,7 @@ exports.getUser = function(req, res) {
         res.json({results: item});
     });
 }
+
 exports.getUserAgreement = function(req, res) {
     var _userId = req.query.userId
     var query = {userId:_userId};
@@ -212,6 +214,7 @@ exports.getUserAgreement = function(req, res) {
         res.json({results: item});
     }, opts, fields);
 }
+
 exports.updateUserAgreement = function(req, res) {
     var _userId = req.body.userId
     var _agreement = req.body.agreement
@@ -223,6 +226,7 @@ exports.updateUserAgreement = function(req, res) {
         res.json({results: item1,msg:"success!"});
     });
 }
+
 exports.getUserList = function(req, res) {
     var query = {};
 
@@ -234,6 +238,7 @@ exports.getUserList = function(req, res) {
     res.json({results: userlist});
     });
 }
+
 exports.insertUser = function(req, res) {
     var userData = {
         userId: "whoareyou",                        
@@ -266,6 +271,7 @@ exports.insertUser = function(req, res) {
     res.json({results: userInfo});
     });
 }
+
 exports.registerTest = function(req, res,next) {
     var _phoneNo = req.query.phoneNo
     // var _password = req.query.password
@@ -405,6 +411,7 @@ exports.reset = function(req, res) {
         }
     });
 }
+
 exports.setOpenId = function(req, res) {
     var _phoneNo = req.body.phoneNo
     var _openId = req.body.openId
@@ -425,7 +432,7 @@ exports.openIdLoginTest = function(req, res,next) {
     var query = {
         openId: username
     };
-    var openIdFlag=0;
+    var openIdFlag = 0;
     User.getOne(query, function(err, item) {
         if (err) {
             return res.status(500).send(err.errmsg);
@@ -437,6 +444,7 @@ exports.openIdLoginTest = function(req, res,next) {
         next();
     });
 }
+
 exports.login = function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -452,7 +460,8 @@ exports.login = function(req, res) {
             {openId: username}
         ]
     };
-    var openIdFlag=req.openIdFlag;
+    var openIdFlag = req.openIdFlag;
+
     User.getOne(query, function(err, item) {
         if (err) {
             return res.status(500).send(err.errmsg);
@@ -461,7 +470,6 @@ exports.login = function(req, res) {
             res.json({results: 1,mesg:"User doesn't Exist!"});
         }
         else{
-
             if(password!=item.password&&openIdFlag==0){
                 res.json({results: 1,mesg:"User password isn't correct!"});
             }
@@ -702,3 +710,31 @@ exports.verifySMS = function(req, res) {
 //     var _ip = commonFunc.getClientIp(req)
 //     res.json({results: 0,Ip:_ip});
 // }
+
+//根据角色获取电话号码 2017-04-25 GY
+exports.getPhoneNoByRole = function(req, res) {
+    if (req.query.role == null || req.query.role == ''){
+        return res.json({result: '请输入role!'});
+    }
+    else if (req.query.role != 'doctor' && req.query.role != 'patient') {
+        return res.json({result: '不合法的role!'});
+    }
+
+    var query = {role:req.query.role};
+
+    User.getSome(query, function(err, items) {
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        if(items==null){
+            // res.json({results: 1,mesg:"User doesn't Exist!"});
+        }
+        else{
+            var phoneNos = [];
+            for (var i = items.length - 1; i >= 0; i--) {
+                phoneNos[i] = items[i].phoneNo
+            }
+            res.json({results: phoneNos});
+        }
+    });
+}
