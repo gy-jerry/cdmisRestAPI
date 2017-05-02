@@ -1,3 +1,4 @@
+
 var	config = require('../config'),
 	Account = require('../models/account'), 
 	Patient = require('../models/patient'), 
@@ -373,5 +374,4 @@ exports.rechargeDoctor = function(req, res) {
 			}
 		});
 	}
-
 }

@@ -1,9 +1,11 @@
 var request = require('request'),
     xml2js = require('xml2js'),
-    https = require('https');
+    https = require('https'),
+    fs = require('fs');
 
 var config = require('../config'),
-    commonFunc = require('../middlewares/commonFunc')
+    commonFunc = require('../middlewares/commonFunc'),
+    Order = require('../models/order');
 
 // appid: wx8a6a43fb9585fb7c;secret: b23a4696c3b0c9b506891209d2856ab2
 
@@ -27,74 +29,80 @@ var wxApis = {
   // 申请退款
   refund:'https://api.mch.weixin.qq.com/secapi/pay/refund',
   // 查询退款
-  refundquery:'https://api.mch.weixin.qq.com/pay/refundquery'
+  refundquery:'https://api.mch.weixin.qq.com/pay/refundquery',
+  // 发送消息模板
+  messageTemplate:'https://api.weixin.qq.com/cgi-bin/message/template/send',
+  // download
+  download:'http://file.api.weixin.qq.com/cgi-bin/media/get'
 
 };
 
 var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
 
-exports.getAccessToken = function (req, res) {
-    // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+// exports.getAccessToken = function (req, res) {
+//     // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
 
-    request.get({
-        url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
-        'grant_type=client_credential' +  
-        '&appid=' + wxApiUserObject.appid + 
-        '&secret=' + wxApiUserObject.appsecret,
-        json: true
-    }, function (err, response, body) {
-        if(err){
-            return res.status(403).send('获取授权失败' + err.errmsg);
-        }
-        res.json({results:body});
+//     request.get({
+//         url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
+//         'grant_type=client_credential' +  
+//         '&appid=' + wxApiUserObject.appid + 
+//         '&secret=' + wxApiUserObject.appsecret,
+//         json: true
+//     }, function (err, response, body) {
+//         if(err){
+//             return res.status(403).send('获取授权失败' + err.errmsg);
+//         }
+//         res.json({results:body});
         
-    });
-};
+//     });
+// };
 
 
 
-exports.getAccessTokenMid = function (req, res, next) {
-    // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+// exports.getAccessTokenMid = function (req, res, next) {
+//     // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
 
-    request.get({
-        url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
-        'grant_type=client_credential' +  
-        '&appid=' + wxApiUserObject.appid + 
-        '&secret=' + wxApiUserObject.appsecret,
-        json: true
-    }, function (err, response, body) {
-        if(err){
-            return res.status(403).send('获取授权失败' + err.errmsg);
-        }
-        req.wxTokenObj = body;
-        next();
-    });
-};
+//     request.get({
+//         url: 'https://api.weixin.qq.com/cgi-bin/token?' + 
+//         'grant_type=client_credential' +  
+//         '&appid=' + wxApiUserObject.appid + 
+//         '&secret=' + wxApiUserObject.appsecret,
+//         json: true
+//     }, function (err, response, body) {
+//         if(err){
+//             return res.status(403).send('获取授权失败' + err.errmsg);
+//         }
+//         req.wxTokenObj = body;
+//         next();
+//     });
+// };
 
 
-exports.wxJsApiTicket = function(req, res, next) {
+// exports.wxJsApiTicket = function(req, res, next) {
 
-  var api_url = wxApis.getticket + '?access_token=' + req.wxTokenObj.access_token + '&type=jsapi';
+//   var api_url = wxApis.getticket + '?access_token=' + req.wxTokenObj.access_token + '&type=jsapi';
 
-  request({
-    method: 'GET',
-    url: api_url,
-    json: true
-  }, function(err, response, body) {
+//   request({
+//     method: 'GET',
+//     url: api_url,
+//     json: true
+//   }, function(err, response, body) {
 
-    req.ticketObject = {
-      errcode: body.errcode,
-      errmsg: body.errmsg,
-      jsapi_ticket: body.ticket,
-      expires_in: body.expires_in
-    };
-   next();
-  });
-}
+//     req.ticketObject = {
+//       errcode: body.errcode,
+//       errmsg: body.errmsg,
+//       jsapi_ticket: body.ticket,
+//       expires_in: body.expires_in
+//     };
+//    next();
+//   });
+// }
+
+
 
 exports.settingConfig = function(req, res) {
-  var ticketObject = req.ticketObject || {};
+  var ticketObject = req.wxToken || {};
   var request_url = req.query.url;
 
   var paramData = {
@@ -296,7 +304,7 @@ exports.addOrder = function(req, res, next) {
     spbill_create_ip: req.ip,   // 终端IP
     time_start: ymdhms,     // 交易起始时间
     // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
-    notify_url: 'http://app.xiaoyangbao.net/wxmp/paynotifyurl',   // 通知地址
+    notify_url: 'http://121.43.107.106:4050/wechat/payResult',   // 通知地址
     trade_type: 'JSAPI',    // 交易类型
     openid: req.wechatData.openid    // 用户标识
   };
@@ -353,6 +361,7 @@ exports.getPaySign = function(req, res, next) {
   wcPayParams.paySign = commonFunc.convertToMD5(signStr, true);  //微信支付签名
 
   res.json({ results: {
+    appId:wxApiUserObject.appid, 
     timestamp: paramData.timeStamp,
     nonceStr: paramData.nonceStr,
     package: paramData.package,
@@ -361,6 +370,57 @@ exports.getPaySign = function(req, res, next) {
   }});
 }
 
+// 支付结果通知
+exports.payResult = function(req, res) {  
+  var payDataObject = req.payDataObject;
+  var orderNo = payDataObject.out_trade_no.split('-')[0];
+
+  var query = {
+    orderNo: orderNo
+  }
+
+  Order.getOne(query, function(err, item) {
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        // res.json({results: item});
+        if(payDataObject.result_code == 'SUCCESS'){
+          if(item.paystatus != 2){    // 非成功
+            var upObj = {
+              paystatus: 2,
+              paytime: payDataObject.time_end
+            };
+
+           updateOrder(query,upObj);   
+          }
+          else{   // 成功
+            res.json({results: "success!"});
+          }
+        }
+        else{       // payDataObject.result_code == 'FAIL'
+          if(item.paystatus != 3){    // 非失败
+            var upObj = {
+              paystatus: 3,
+              paytime: payDataObject.time_end
+            };
+
+            updateOrder(query,upObj);           
+          }
+          else{   // 失败
+            res.json({results: "success!"});
+          }
+        }
+  });
+}
+
+function updateOrder(query,upObj){
+  Order.updateOne(query,{$set:upObj},function(err, item){
+    if (err) {
+      return res.status(500).send(err.errmsg);
+    }
+    res.json({results: "success!"});
+  });
+}
 
 // 查询订单
 exports.getWechatOrder = function(req, res) {
@@ -475,7 +535,6 @@ exports.refund = function(req, res) {
   req.end();
 }
 
-
 // 查询退款
 exports.refundquery = function(req, res) {
   
@@ -508,96 +567,82 @@ exports.refundquery = function(req, res) {
   });
 }
 
+// 消息模板
+exports.messageTemplate = function(req, res) {
+  var tokenObject = req.wxToken || {};
+  var token = tokenObject.token;
 
+  var jsondata = req.body || {};
 
-
-
-// 需要修改？？？
-exports.checkWxPaySign = function(req, res, next) {
-
-  var rawString = req.rawString;  
-
-  var parser = new xml2js.Parser({explicitArray: false});
-  var data = {};
-
-  parser.parseString(rawString, function(err, result) {        
-    if (err) {
-      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
+  request({
+    url: wxApis.messageTemplate + '?access_token=' + token,
+    method: 'POST',
+    body: jsondata
+  }, function(err, response, body){
+    if (!err && response.statusCode == 200) {       
+      res.json({results:body});
     }
-    data = (result && result.xml) || {};
+    else{
+      return res.status(500).send('Error');
+    }
   });
-
-
-  if (data.result_code == 'SUCCESS' && data.return_code == 'SUCCESS') {
-    var sign = data.sign;
-    delete data.sign;
-    var signStr = commonFunc.rawSort(data);
-    signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
-    var genSign = commonFunc.convertToMD5(signStr, true);
-
-    if ( sign == genSign) {   
-      data.sign = sign;
-      req.payDataObject = data;   
-      next();
-    } else {
-      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
-    }
-  } else {
-    return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
-  }
-
 }
 
-// 需要修改
-exports.operatorPayResult = function(req, res) {
-  var payDataObject = req.payDataObject;
-  var ordersn = payDataObject.out_trade_no.split('-')[0];
-  var currentDate = new Date();
-
-  var query = {
-    consType: 'selfshopping',
-    outRecptNum: ordersn,
-    'orderStatus': 1
-  }
-
-  var upObj = {
-    '$set': {
-      orderStatus: 2,
-    },
-    '$push': {
-      orderPayment: {
-        payType: 3,
-        payName: '微信支付-公众号支付-' + wxApiUserObject.appid,
-        payPrice: payDataObject.total_fee,
-        payNo: payDataObject.transaction_id,
-        payInceAmountType: payDataObject.trade_type,
-        payInceIdNo: payDataObject.openid,
-        payInceID: payDataObject.mch_id,
-        payInceAmountText: payDataObject.out_trade_no
-      }
-    }
-  }
-
-
-  Consumption.updateOne(query, upObj, function(err, upCons) {
-    
-    if (err || !upCons) {
-      return res.status(422).send('<xml><return_code><![CDATA[error]]></return_code><return_msg><![CDATA[error]]></return_msg></xml>');
-    } else {
-      return res.status(422).send('<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>');
-    }    
-  });
-
+// 下载
+exports.download = function(req, res) {
+  var tokenObject = req.wxToken || {};
+  var token = tokenObject.token;
+  var serverId = req.query.serverId;
+  var name = req.query.name;
   
+  var fileurl = wxApis.download + '?access_token=' + token + '&media_id=' + serverId;
+  var dir = "./uploads/photos";
+
+  request({
+    url: fileurl,
+    method: 'GET',
+    json: true
+  }, function(err, response){
+    if(!err && response.statusCode == 200) {
+      request.head(fileurl, function(err, response1, body) {
+        request(fileurl).pipe(fs.createWriteStream(dir + '/' + name));
+        
+        console.log("Done: " + fileurl);
+        res.json({results:"success"});
+      });   
+    }    
+   
+    // if(!err && response.statusCode == 200) {
+    //   download(fileurl, dir, name);
+    //   console.log("Done: " + fileurl);
+    //   res.json({results:"success"});
+    // }      
+
+    // var imgData = "";
+    // res.json(response.body);
+
+    // response.setEncoding("binary"); //一定要设置response的编码为binary否则会下载下来的图片打不开
+    // response.on("data", function(chunk){
+    //     imgData += chunk;
+    //     console.log(chunk);
+    // });
+
+    // response.on("end", function(){
+    //   fs.writeFile("./public/upload/downImg/name.jpg", imgData, "binary", function(err){
+    //     if(err){
+    //       return res.status(500).send('Error');
+    //     }
+    //     res.json({results:"success"});
+    //   });
+    // });
+  });
 }
 
-
-
-
-
-
-
-
+var download = function(url, dir, filename) {
+  request.head(url, function(err, res, body) {
+    request(url).pipe(fs.createWriteStream(dir + '/' + filename));
+  });
+};
 
 
 

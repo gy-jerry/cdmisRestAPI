@@ -1,4 +1,6 @@
+
 var	config = require('../config'),
+	webEntry = require('../settings').webEntry,
 	Communication = require('../models/communication'), 
 	Counsel = require('../models/counsel'), 
 	Team = require('../models/team'), 
@@ -501,4 +503,108 @@ exports.updateLastTalkTime = function(req, res) {
 		}
 		
 	}, {new: true});
+}
+
+//根据ID及type存储交流记录 2017-04-21 GY 
+exports.postCommunication = function(req, res) {
+	
+	var commmunicationData = {
+		messageType: req.body.messageType, 
+		sendBy: req.body.sendBy, 
+		receiver: req.body.receiver, 
+		sendDateTime: req.body.content.createTimeInMillis, 
+		content: req.body.content
+	};
+	
+
+	var newCommunication = new Communication(commmunicationData);
+	newCommunication.save(function(err, communicationInfo) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	res.json({result:'新建成功', newResults: communicationInfo});
+	});
+}
+
+//根据ID及type获取交流记录 2017-04-21 GY 
+exports.getCommunication = function(req, res) {
+
+	var messageType = Number(req.query.messageType);
+	var id1 = req.query.id1;
+	var id2 = req.query.id2;
+
+	var limit = Number(req.query.limit);
+	var skip = Number(req.query.skip);
+
+	var opts = {limit: limit, skip:skip, sort:'-_id'};
+
+	var _Url = '';
+	var messageTypeUrl = 'messageType=' + String(messageType);
+	var id1Url = 'id1=' + id1;
+	var id2Url = 'id2=' + id2;
+	var limitUrl = '';
+	var skipUrl = '';
+
+	if (limit != null && limit != undefined) {
+		limitUrl = 'limit=' + String(limit);
+	}
+	if (skip != null && skip != undefined) {
+		skipUrl = 'skip=' + String(skip + limit);
+	}
+	if (messageTypeUrl != '' || id1Url != '' || id2Url != '' || limitUrl != '' || skipUrl != '') {
+		_Url = _Url + '?'
+		if (messageTypeUrl != '') {
+			_Url = _Url + messageTypeUrl + '&';
+		}
+		if (id1Url != '') {
+			_Url = _Url + id1Url + '&';
+		}
+		if (id2Url != '') {
+			_Url = _Url + id2Url + '&';
+		}
+		if (limitUrl != '') {
+			_Url = _Url + limitUrl + '&';
+		}
+		if (skipUrl != '') {
+			_Url = _Url + skipUrl + '&';
+		}
+		_Url = _Url.substr(0, _Url.length - 1)
+	}
+	var nexturl = webEntry.domain + ':' + webEntry.restPort + '/communication/getCommunication' + _Url
+
+	if (messageType === 2) {
+		var query = {receiver: id2};
+
+		Communication.getSome(query, function(err, items) {
+			if (err) {
+				return res.status(500).send(err.errmsg);
+			}
+			// if (items.length == 0){
+			// 	return res.json({results: '没有更多了!'});
+			// }
+			// else {
+				return res.json({results: items, nexturl: nexturl});
+			// }
+		}, opts);
+	}
+	else if (messageType === 1) {
+		var query = {
+			$or: [
+				{sendBy: id1, receiver: id2}, 
+				{sendBy: id2, receiver: id1}
+			]
+		};
+
+		Communication.getSome(query, function(err, items) {
+			if (err) {
+				return res.status(500).send(err.errmsg);
+			}
+			// if (items.length == 0){
+			// 	return res.json({results: '没有更多了!'});
+			// }
+			// else {
+				return res.json({results: items, nexturl: nexturl});
+			// }
+		}, opts);
+	}
 }
