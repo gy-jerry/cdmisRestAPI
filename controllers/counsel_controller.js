@@ -1,3 +1,4 @@
+
 var	config = require('../config'),
 	Counsel = require('../models/counsel'), 
 	Doctor = require('../models/doctor'), 
@@ -265,4 +266,35 @@ exports.changeCounselType = function(req, res) {
 		}
 		res.json({result: '修改成功', editResults:upCounsel});
 	}, {new: true});
+}
+
+exports.insertCommentScore = function(req, res) {
+	var commentData = {
+		commentId: req.newId, 						//counselpost01
+		patientId: req.body.patientObject._id, 				//p01
+		doctorId: req.body.doctorObject._id, 				//doc01
+		time: new Date(),
+		totalScore:req.body.totalScore,
+		content:req.body.content
+	};
+
+	var newComment = new Comment(commentData);
+	newComment.save(function(err, commentInfo) {
+		if (err) {
+			return res.status(500).send(err.errmsg);
+		}
+		var query = {counselId: req.body.counselId};
+		var upObj = {comment:req.newId};
+
+		Counsel.updateOne(query, upObj, function(err, upCounsel) {
+			if (err){
+				return res.status(422).send(err.message);
+			}
+			if (upCounsel == null) {
+				return res.json({result:'修改失败，不存在的counselId！'})
+			}
+			res.json({result: '成功', commentresults: commentInfo,CounselResults:upCounsel});
+		}, {new: true});
+	});
+
 }

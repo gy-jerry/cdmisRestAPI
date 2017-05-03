@@ -1,3 +1,4 @@
+
 var config = require('../config');
 var Compliance = require('../models/compliance');
 
@@ -25,13 +26,26 @@ var Compliance = require('../models/compliance');
 exports.getComplianceByDay = function(req, res) {
   userId = req.query.userId;
   date = req.query.date;
+  type = req.query.type;
+  code = req.query.code;
 
-  query = {userId:userId};
-  if(date != "")
+  query = {};
+  if(userId != ""&&userId != undefined)
+  {
+    query["userId"] = userId
+  }
+  if(date != ""&&date != undefined)
   {
     query["date"] = date
   }
-
+  if(type != ""&&type != undefined)
+  {
+    query["type"] = type
+  }
+  if(code != ""&&code != undefined)
+  {
+    query["code"] = code
+  }
   Compliance.getSome(query, function(err, items) {
     if (err) {
           return res.status(500).send(err.errmsg);
@@ -94,6 +108,8 @@ exports.getCompliance = function (req, res, next) {
       
     })
 }
+
+//写入任务执行情况 2017-04-17 GY
 exports.updateCompliance = function(req, res) {
 
   var query = {
@@ -120,4 +136,5 @@ exports.updateCompliance = function(req, res) {
     }
     res.json({result: '修改成功', results:upCompliance});
   }, {new: true});
+
 }
