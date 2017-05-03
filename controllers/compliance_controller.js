@@ -25,13 +25,26 @@ var Compliance = require('../models/compliance');
 exports.getComplianceByDay = function(req, res) {
   userId = req.query.userId;
   date = req.query.date;
+  type = req.query.type;
+  code = req.query.code;
 
-  query = {userId:userId};
-  if(date != "")
+  query = {};
+  if(userId != ""&&userId != undefined)
+  {
+    query["userId"] = userId
+  }
+  if(date != ""&&date != undefined)
   {
     query["date"] = date
   }
-
+  if(type != ""&&type != undefined)
+  {
+    query["type"] = type
+  }
+  if(code != ""&&code != undefined)
+  {
+    query["code"] = code
+  }
   Compliance.getSome(query, function(err, items) {
     if (err) {
           return res.status(500).send(err.errmsg);

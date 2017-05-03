@@ -115,6 +115,7 @@ module.exports = function(app,webEntry) {
   app.post('/counsel/changeCounselStatus', counselCtrl.changeCounselStatus);
   app.get('/counsel/getStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus);
   app.post('/counsel/changeStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselStatus)
+  app.post('/counsel/insertCommentScore', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(3), counselCtrl.insertCommentScore);
 
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
