@@ -3,6 +3,7 @@ var	config = require('../config'),
 	Team = require('../models/team'), 
 	DpRelation = require('../models/dpRelation'), 
 	Consultation = require('../models/consultation'), 
+	Counsel = require('../models/counsel'), 
 	Comment = require('../models/comment'), 
 	commonFunc = require('../middlewares/commonFunc');
 
@@ -295,6 +296,30 @@ exports.getComments = function(req, res, next) {
     	next();
 	}, opts, fields, populate);
 }
+exports.getCount1AndCount2 = function(req, res, next) {
+	var _doctorId = req.body.doctorObject._id;
+	var query = {doctorId:_doctorId};
+
+	Counsel.getSome(query, function(err, items) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	var count1 = 0;
+    	var count2 = 0;
+    	for (var i = items.length - 1; i >= 0; i--) {
+    		if (items[i].type == 1 || items[i].type == 3) {
+    			count1 += 1;
+    		}
+    		if (items[i].type == 2 || items[i].type == 3) {
+    			count2 += 1;
+    		}
+    	}
+    	req.count1 = count1;
+    	req.count2 = count2;
+    	next();
+    	// res.json({results: items, count:items.length});
+	});
+}
 // exports.getDoctorInfo = function(req, res){
 // 	var query = {userId: req.query.userId};
 // 	var comments = req.body.comments;
@@ -329,7 +354,9 @@ exports.getDoctorInfo = function(req, res) {
 	}
 
 	var upObj = {
-		score: newScore
+		score: newScore, 
+		count1: req.count1, 
+		count2: req.count2
 	};
 
 	Doctor.updateOne(query, upObj, function(err, upDoctor) {

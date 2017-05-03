@@ -243,7 +243,6 @@ exports.getStatus = function(req, res, next) {
 }
 
 exports.changeCounselType = function(req, res) {
-
 	if (req.body.type == 1 && req.body.changeType === 'true') {
 		var query = {
 			counselId: req.body.counselId
@@ -255,7 +254,6 @@ exports.changeCounselType = function(req, res) {
 	else {
 		return res.json({result:'不可更改的类型!'});
 	}
-
 
 	//return res.json({query: query, upObj: upObj});
 	Counsel.updateOne(query, upObj, function(err, upCounsel) {
