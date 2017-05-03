@@ -249,7 +249,7 @@ exports.changeCounselType = function(req, res) {
 			counselId: req.body.counselId
 		};
 		var upObj = {
-			type: 2
+			type: 3
 		};
 	}
 	else {
