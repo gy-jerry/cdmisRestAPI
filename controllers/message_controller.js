@@ -7,9 +7,9 @@ exports.getMessages = function(req, res) {
 	if (req.query.userId == null || req.query.userId == '') {
 		return res.json({result: '请填写userId'});
 	}
-	if (req.query.type == null || req.query.userId == '') {
-		return res.json({resutl: '请填写type'});
-	}
+	// if (req.query.type == null || req.query.type == '') {
+	// 	return res.json({resutl: '请填写type'});
+	// }
 
 	var userId = req.query.userId;
 	var type = req.query.type;
@@ -21,7 +21,7 @@ exports.getMessages = function(req, res) {
 	var query;
 	query = {userId:userId};
 
-	if ( type != '') {
+	if (type != '' && type != undefined) {
         query["type"] = type
     }
 
@@ -42,7 +42,7 @@ exports.changeMessageStatus = function(req, res) {
 	if (req.body.userId == null || req.body.userId == '') {
 		return res.json({result: '请填写userId'});
 	}
-	if (req.body.type == null || req.body.userId == '') {
+	if (req.body.type == null || req.body.type == '') {
 		return res.json({resutl: '请填写type'});
 	}
 
@@ -83,7 +83,7 @@ exports.insertMessage = function(req, res) {
 	if (req.body.userId == null || req.body.userId == '') {
 		return res.json({result: '请填写userId'});
 	}
-	if (req.body.type == null || req.body.userId == '') {
+	if (req.body.type == null || req.body.type == '') {
 		return res.json({resutl: '请填写type'});
 	}
 	var readOrNot = 0;
