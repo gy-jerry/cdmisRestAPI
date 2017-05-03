@@ -57,27 +57,78 @@ exports.checkPatient = function(req, res, next) {
 exports.checkDoctor = function(req, res, next) {
 	if (req.query.doctorId == null || req.query.doctorId == '') {
 		if (req.body.doctorId == null || req.body.doctorId == '') {
-			return res.json({result: '请填写doctorId!'});
+			// return res.json({result: '请填写doctorId!'});
+			var queryPatient = {userId: req.patientId};
+			Account.getOne(queryPatient, function(err, accountitem) {
+				if (err) {
+					return res.status(500).send(err.errmsg);
+				}
+				if (accountitem == null) {
+					var accountData = {
+						userId: req.patientId, 
+						freeTimes: 3, 
+						money: 0
+					};
+					var newAccount = new Account(accountData);
+					newAccount.save(function(err, accountInfo) {
+						if (err) {
+   						return res.status(500).send(err.errmsg);
+   					}
+					});
+					return res.json({result:{freeTimes:3, totalPaidTimes:0}});
+				}
+				else {
+					var count = 0;
+					for (var i = accountitem.times.length - 1; i >= 0; i--) {
+						count += accountitem.times[i].count;
+					}
+					return res.json({result:{freeTimes:accountitem.freeTimes, totalPaidTimes:count}});
+				}
+			});
 		}
 		else {
 			req.doctorId = req.body.doctorId;
+			var query = {userId: req.doctorId};
+			Doctor.getOne(query, function(err, item) {
+				if (err) {
+					return res.status(500).send(err.errmsg);
+				}
+				else if (item == null) {
+					return res.json({result: '不存在的医生ID'});
+				}
+				else {
+					next();
+				}
+			});
 		}
 	}
 	else {
 		req.doctorId = req.query.doctorId;
+		var query = {userId: req.doctorId};
+			Doctor.getOne(query, function(err, item) {
+				if (err) {
+					return res.status(500).send(err.errmsg);
+				}
+				else if (item == null) {
+					return res.json({result: '不存在的医生ID'});
+				}
+				else {
+					next();
+				}
+			});
 	}
-	var query = {userId: req.doctorId};
-	Doctor.getOne(query, function(err, item) {
-		if (err) {
-			return res.status(500).send(err.errmsg);
-		}
-		if (item == null) {
-			return res.json({result: '不存在的医生ID'});
-		}
-		else {
-			next();
-		}
-	});
+	// var query = {userId: req.doctorId};
+	// Doctor.getOne(query, function(err, item) {
+	// 	if (err) {
+	// 		return res.status(500).send(err.errmsg);
+	// 	}
+	// 	else if (item == null) {
+	// 		return res.json({result: '不存在的医生ID'});
+	// 	}
+	// 	else {
+	// 		next();
+	// 	}
+	// });
 }
 
 //获取咨询计数 2017-04-20 GY

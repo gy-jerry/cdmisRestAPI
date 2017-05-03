@@ -438,7 +438,8 @@ exports.insertDiagnosis = function(req, res) {
 		var diagoperationTime = new Date(req.body.diagoperationTime); 
 	}
 	if (req.body.diaghypertension == null || req.body.diaghypertension == '') {
-		var diaghypertension = 0;
+		// 前端定义默认高血压否为2
+		var diaghypertension = 2;
 	}
 	else {
 		var diaghypertension = req.body.diaghypertension; 
@@ -621,13 +622,13 @@ exports.bindingPatient = function(req, res) {
 		}
 		if (uprelation.n == 0) {
 			var dpRelationData = {
-    			doctorId: doctorId, 
-    			revisionInfo:{
-					operationTime:new Date(),
-					userId:"gy",
-					userName:"gy",
-					terminalIP:"10.12.43.32"
-				}
+    			doctorId: doctorId//, 
+    // 			revisionInfo:{
+				// 	operationTime:new Date(),
+				// 	userId:"gy",
+				// 	userName:"gy",
+				// 	terminalIP:"10.12.43.32"
+				// }
     		};
     		//return res.json({result:dpRelationData});
     		var newDpRelation = new DpRelation(dpRelationData);

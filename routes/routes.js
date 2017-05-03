@@ -101,7 +101,7 @@ module.exports = function(app,webEntry) {
   //需要查询class字典表（待定）
   app.get('/doctor/getPatientList', doctorCtrl.getDoctorObject, doctorCtrl.getPatientList);
   // app.get('/doctor/getDoctorInfo', doctorCtrl.getDoctorObject, doctorCtrl.getDoctorInfo);
-  app.get('/doctor/getDoctorInfo', doctorCtrl.getDoctorObject, doctorCtrl.getComments, doctorCtrl.getDoctorInfo);
+  app.get('/doctor/getDoctorInfo', doctorCtrl.getDoctorObject, doctorCtrl.getCount1AndCount2, doctorCtrl.getComments, doctorCtrl.getDoctorInfo);
   app.get('/doctor/getMyGroupList', doctorCtrl.getTeams);
   app.get('/doctor/getGroupPatientList', doctorCtrl.getTeamObject, doctorCtrl.getGroupPatientList);
   // app.get('/doctor/getTeam', doctorCtrl.getTeamObject, doctorCtrl.getTeam);
@@ -114,12 +114,14 @@ module.exports = function(app,webEntry) {
   app.post('/doctor/insertSuspendTime', doctorCtrl.insertSuspendTime);
   app.post('/doctor/deleteSuspendTime', doctorCtrl.deleteSuspendTime);
   app.get('/doctor/getSuspendTime', doctorCtrl.getSuspendTime);
+
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);
   app.post('/counsel/questionaire', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(2), counselCtrl.saveQuestionaire);
   app.post('/counsel/changeCounselStatus', counselCtrl.changeCounselStatus);
   app.get('/counsel/getStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus);
-  app.post('/counsel/changeStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselStatus)
+  app.post('/counsel/changeStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselStatus);
+  app.post('/counsel/changeType', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselType);
 
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
@@ -131,6 +133,7 @@ module.exports = function(app,webEntry) {
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
   // app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
   app.post('/patient/bindingMyDoctor', patientCtrl.debindingDoctor, patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
+
   //comment_query
   app.get('/comment/getComments', doctorCtrl.getDoctorObject, commentCtrl.getCommentsByDoc);
 
@@ -180,7 +183,9 @@ module.exports = function(app,webEntry) {
   app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
 
-    //user
+
+  
+  //user
   app.get('/user/getPhoneNoByRole', userCtrl.getPhoneNoByRole);
 
   // order

@@ -1,5 +1,6 @@
 
 
+
 var	config = require('../config'),
 		User = require('../models/user'),
 		DictNumber = require('../models/dictNumber'),
@@ -323,7 +324,6 @@ exports.register = function(req, res) {
         res.json({results: 0,userNo:_userNo,mesg:"User Register Success!"});
     });
 }
-
 // exports.registerWithOpenIdTest = function(req, res,next) {
 //     var parser = new xml2js.Parser();
 //     var data = {};
@@ -386,7 +386,6 @@ exports.register = function(req, res) {
 //         res.json({results: 0,userNo:_userNo,mesg:"User Register Success!"});
 //     });
 // }
-
 exports.reset = function(req, res) {
     var _phoneNo = req.query.phoneNo
     var _password = req.query.password
@@ -408,7 +407,6 @@ exports.reset = function(req, res) {
         }
     });
 }
-
 exports.setOpenId = function(req, res) {
     var _phoneNo = req.body.phoneNo
     var _openId = req.body.openId
@@ -441,7 +439,6 @@ exports.openIdLoginTest = function(req, res,next) {
         next();
     });
 }
-
 exports.login = function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -457,7 +454,7 @@ exports.login = function(req, res) {
             {openId: username}
         ]
     };
-
+    var openIdFlag=req.openIdFlag;
     User.getOne(query, function(err, item) {
         if (err) {
             return res.status(500).send(err.errmsg);
@@ -466,7 +463,8 @@ exports.login = function(req, res) {
             res.json({results: 1,mesg:"User doesn't Exist!"});
         }
         else{
-            if(password!=item.password){
+
+            if(password!=item.password&&openIdFlag==0){
                 res.json({results: 1,mesg:"User password isn't correct!"});
             }
             else if(item.role.indexOf(role) == -1)
@@ -557,7 +555,6 @@ exports.getUserIDbyOpenId = function(req, res) {
         }
     });
 }
-
 exports.sendSMS = function(req, res) {
     var now = new Date()
     var _mobile = req.query.mobile;
@@ -681,7 +678,6 @@ exports.sendSMS = function(req, res) {
         }
     });
 }
-
 exports.verifySMS = function(req, res) {
     var now = new Date()
     var _mobile = req.query.mobile;
@@ -743,3 +739,4 @@ exports.getPhoneNoByRole = function(req, res) {
         }
     });
 }
+
