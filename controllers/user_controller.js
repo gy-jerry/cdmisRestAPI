@@ -561,11 +561,18 @@ exports.getUserIDbyOpenId = function(req, res) {
 exports.sendSMS = function(req, res) {
     var now = new Date()
     var _mobile = req.query.mobile;
-    var _smsType = req.query.smsType;
+    var _smsType = Number(req.query.smsType);
     var token = "849407bfab0cf4c1a998d3d6088d957b";
     var appId = "38b50013289b417f9ce474c8210aebcf";
     var accountSid = "b839794e66174938828d1b8ea9c58412";
     var tplId = "40860";
+    var appId1 = "14ea1d5fc41b4346ac70083c377c5dd7";
+    var tplId1 = "43987";
+    if(_smsType==2)
+    {
+        tplId=tplId1;
+        appId=appId1;
+    }
     var Jsonstring1 = "templateSMS";
     var Jsonstring2 = "appId";
     var Jsonstring3 = "param";
