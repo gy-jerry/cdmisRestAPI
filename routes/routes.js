@@ -113,12 +113,14 @@ module.exports = function(app,webEntry) {
   app.post('/doctor/insertSuspendTime', doctorCtrl.insertSuspendTime);
   app.post('/doctor/deleteSuspendTime', doctorCtrl.deleteSuspendTime);
   app.get('/doctor/getSuspendTime', doctorCtrl.getSuspendTime);
+
   //counsel
   app.get('/counsel/getCounsels', doctorCtrl.getDoctorObject, counselCtrl.getCounsels);
   app.post('/counsel/questionaire', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, getNoMid.getNo(2), counselCtrl.saveQuestionaire);
   app.post('/counsel/changeCounselStatus', counselCtrl.changeCounselStatus);
   app.get('/counsel/getStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus);
-  app.post('/counsel/changeStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselStatus)
+  app.post('/counsel/changeStatus', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselStatus);
+  app.post('/counsel/changeType', counselCtrl.getPatientObject, counselCtrl.getDoctorObject, counselCtrl.getStatus, counselCtrl.changeCounselType);
 
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
@@ -130,6 +132,7 @@ module.exports = function(app,webEntry) {
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
   // app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
   app.post('/patient/bindingMyDoctor', patientCtrl.debindingDoctor, patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
+
   //comment_query
   app.get('/comment/getComments', doctorCtrl.getDoctorObject, commentCtrl.getCommentsByDoc);
 

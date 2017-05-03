@@ -119,15 +119,15 @@ exports.saveQuestionaire = function(req, res) {
 		// description: req.body.description, 
 		// drugs: req.body.drugs, 
 		// history: req.body.history, 
-		help: req.body.help, 
+		help: req.body.help//, 
 		// comment: req.body.comment, 
 
-		revisionInfo:{
-			operationTime:new Date(),
-			userId:"gy",
-			userName:"gy",
-			terminalIP:"10.12.43.32"
-		}
+		// revisionInfo:{
+		// 	operationTime:new Date(),
+		// 	userId:"gy",
+		// 	userName:"gy",
+		// 	terminalIP:"10.12.43.32"
+		// }
 	};
 	if(req.body.hospital != null && req.body.hospital != ''){
 		counselData['hospital'] = req.body.hospital; 
@@ -160,12 +160,12 @@ exports.changeCounselStatus = function(req, res) {
 	};
 	
 	var upObj = {
-		revisionInfo:{
-			operationTime:new Date(),
-			userId:'',
-			userName:'',
-			terminalIP:''
-		}
+		// revisionInfo:{
+		// 	operationTime:new Date(),
+		// 	userId:'',
+		// 	userName:'',
+		// 	terminalIP:''
+		// }
 	};
 	if (req.body.status != null){
 		upObj['status'] = req.body.status;
@@ -231,7 +231,7 @@ exports.getStatus = function(req, res, next) {
     		var counsels = [];
     		counsels = items.sort(sortTime);
     		req.body.counselId = counsels[0].counselId;
-    		if (req.body.status == null) {
+    		if (req.body.status == null && req.body.changeType == null) {
     			return res.json({result: counsels[0]});
     		}
     		else {
@@ -240,4 +240,31 @@ exports.getStatus = function(req, res, next) {
     	}
     	// res.json({});
 	}, opts, fields, populate);
+}
+
+exports.changeCounselType = function(req, res) {
+
+	if (req.body.type == 1 && req.body.changeType === 'true') {
+		var query = {
+			counselId: req.body.counselId
+		};
+		var upObj = {
+			type: 2
+		};
+	}
+	else {
+		return res.json({result:'不可更改的类型!'});
+	}
+
+
+	//return res.json({query: query, upObj: upObj});
+	Counsel.updateOne(query, upObj, function(err, upCounsel) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		if (upCounsel == null) {
+			return res.json({result:'修改失败，不存在的counselId！'});
+		}
+		res.json({result: '修改成功', editResults:upCounsel});
+	}, {new: true});
 }
