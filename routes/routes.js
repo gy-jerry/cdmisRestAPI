@@ -178,7 +178,7 @@ module.exports = function(app,webEntry) {
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
 
   
-    //user
+  //user
   app.get('/user/getPhoneNoByRole', userCtrl.getPhoneNoByRole);
 
   // order
