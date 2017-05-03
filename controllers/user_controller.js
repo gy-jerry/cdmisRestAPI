@@ -599,8 +599,8 @@ exports.sendSMS = function(req, res) {
                 }
                 if(item==null){
                     //not exist
-                    var _expire=60*3
-                    
+                    // var _expire=60*3
+                    var _expire=60
                     //insert a sms
                     var smsData = {
                         mobile: _mobile,
