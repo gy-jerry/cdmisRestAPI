@@ -1,5 +1,6 @@
 
 
+
 var	config = require('../config'),
 		User = require('../models/user'),
 		DictNumber = require('../models/dictNumber'),
@@ -738,3 +739,4 @@ exports.getPhoneNoByRole = function(req, res) {
         }
     });
 }
+
