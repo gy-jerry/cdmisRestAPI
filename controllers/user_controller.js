@@ -1,4 +1,5 @@
 
+
 var	config = require('../config'),
 		User = require('../models/user'),
 		DictNumber = require('../models/dictNumber'),
@@ -322,68 +323,70 @@ exports.register = function(req, res) {
         res.json({results: 0,userNo:_userNo,mesg:"User Register Success!"});
     });
 }
-exports.registerWithOpenIdTest = function(req, res,next) {
-    var parser = new xml2js.Parser();
-    var data = {};
-    parser.parseString(req.body,function(err,result){
-        data = result || {};
-    });
-    // var _openId = req.query.openId
-    // var _role = req.query.role
-    var _openId=data.xml.FromUserName
-    // var _openId=data.xml.FromUserName
-    var query = {openId:_openId};
-    // var _userNo = req.newId
-    User.getOne(query, function(err, item) {
-        if (err) {
-            return res.status(500).send(err.errmsg);
-        }
-        if(item!=null){
-            var query1 = {openId:_openId,role: _role};
-            User.getOne(query1, function(err, item1) {
-                if (err) {
-                    return res.status(500).send(err.errmsg);
-                }
-                if(item1!=null){
-                    res.json({results: 1,userNo:"",mesg:"User Already Exist!"});
-                }
-                else{
-                    User.updateOne(query,{ $push: { role: _role } },function(err, item2){
-                        if (err) {
-                            return res.status(500).send(err.errmsg);
-                        }
-                        res.json({results: 0,mesg:"User Register Success!"});
-                    });
-                }
-            });
-        }
-        else{
-            next();
-        }
-  
-    });
-}
-exports.registerWithOpenId = function(req, res) {
-    // var _phoneNo = req.query.phoneNo
-    var _openId = req.query.openId
-    var _password = "123456"
-    var _role = req.query.role
-    var _userNo = req.newId
 
-    var userData = {
-        openId:_openId,
-        password:_password,
-        role: _role,
-        userId:_userNo
-    };
-    var newUser = new User(userData);
-    newUser.save(function(err, Info) {
-        if (err) {
-            return res.status(500).send(err.errmsg);
-        }
-        res.json({results: 0,userNo:_userNo,mesg:"User Register Success!"});
-    });
-}
+// exports.registerWithOpenIdTest = function(req, res,next) {
+//     var parser = new xml2js.Parser();
+//     var data = {};
+//     parser.parseString(req.body,function(err,result){
+//         data = result || {};
+//     });
+//     // var _openId = req.query.openId
+//     // var _role = req.query.role
+//     var _openId=data.xml.FromUserName
+//     // var _openId=data.xml.FromUserName
+//     var query = {openId:_openId};
+//     // var _userNo = req.newId
+//     User.getOne(query, function(err, item) {
+//         if (err) {
+//             return res.status(500).send(err.errmsg);
+//         }
+//         if(item!=null){
+//             var query1 = {openId:_openId,role: _role};
+//             User.getOne(query1, function(err, item1) {
+//                 if (err) {
+//                     return res.status(500).send(err.errmsg);
+//                 }
+//                 if(item1!=null){
+//                     res.json({results: 1,userNo:"",mesg:"User Already Exist!"});
+//                 }
+//                 else{
+//                     User.updateOne(query,{ $push: { role: _role } },function(err, item2){
+//                         if (err) {
+//                             return res.status(500).send(err.errmsg);
+//                         }
+//                         res.json({results: 0,mesg:"User Register Success!"});
+//                     });
+//                 }
+//             });
+//         }
+//         else{
+//             next();
+//         }
+  
+//     });
+// }
+// exports.registerWithOpenId = function(req, res) {
+//     // var _phoneNo = req.query.phoneNo
+//     var _openId = req.query.openId
+//     var _password = "123456"
+//     var _role = req.query.role
+//     var _userNo = req.newId
+
+//     var userData = {
+//         openId:_openId,
+//         password:_password,
+//         role: _role,
+//         userId:_userNo
+//     };
+//     var newUser = new User(userData);
+//     newUser.save(function(err, Info) {
+//         if (err) {
+//             return res.status(500).send(err.errmsg);
+//         }
+//         res.json({results: 0,userNo:_userNo,mesg:"User Register Success!"});
+//     });
+// }
+
 exports.reset = function(req, res) {
     var _phoneNo = req.query.phoneNo
     var _password = req.query.password
@@ -405,6 +408,40 @@ exports.reset = function(req, res) {
         }
     });
 }
+
+exports.setOpenId = function(req, res) {
+    var _phoneNo = req.body.phoneNo
+    var _openId = req.body.openId
+    var query = {phoneNo:_phoneNo};
+    User.updateOne(query,{$set:{openId: _openId}},function(err, item){
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        res.json({results: item,msg:"success!"});
+    });
+}
+exports.openIdLoginTest = function(req, res,next) {
+    var username = req.body.username;
+    if (username === '' ) {
+        return res.status(422).send('请输入用户名!'); 
+    }
+    // var query = {phoneNo:_phoneNo};
+    var query = {
+        openId: username
+    };
+    var openIdFlag=0;
+    User.getOne(query, function(err, item) {
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        if(item!=null){
+            openIdFlag=1;
+        }
+        req.openIdFlag=openIdFlag;
+        next();
+    });
+}
+
 exports.login = function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -520,6 +557,7 @@ exports.getUserIDbyOpenId = function(req, res) {
         }
     });
 }
+
 exports.sendSMS = function(req, res) {
     var now = new Date()
     var _mobile = req.query.mobile;
@@ -636,6 +674,7 @@ exports.sendSMS = function(req, res) {
         }
     });
 }
+
 exports.verifySMS = function(req, res) {
     var now = new Date()
     var _mobile = req.query.mobile;

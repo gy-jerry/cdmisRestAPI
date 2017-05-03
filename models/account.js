@@ -1,4 +1,5 @@
 
+
 var mongoose = require('mongoose');
 
 var accountSchema = new mongoose.Schema({
@@ -25,6 +26,13 @@ var accountSchema = new mongoose.Schema({
 	  	time: Date, 
 	  	money: Number, 
 	  	title: String
+	  }
+	], 
+	incomeRecords: [
+	  {
+	  	time: Date, 
+	  	money: Number, 
+	  	from: String
 	  }
 	], 
 	revisionInfo:{

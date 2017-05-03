@@ -1,4 +1,5 @@
 
+
 // 3rd packages
 
 
@@ -70,7 +71,9 @@ module.exports = function(app,webEntry) {
 
   // wf
   app.post('/user/register',userCtrl.registerTest,getNoMid.getNo(1), userCtrl.register);
-  app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
+  app.post('/user/setOpenId',userCtrl.setOpenId);
+ 
+  // app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
   app.post('/user/login', userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
@@ -141,7 +144,8 @@ module.exports = function(app,webEntry) {
   app.get('/account/getAccountInfo', accountCtrl.getAccountInfo);
   app.get('/account/getCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts);
   app.post('/account/modifyCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts, accountCtrl.modifyCounts);
-
+  app.post('/account/rechargeDoctor', accountCtrl.rechargeDoctor);
+  
   //message
   app.get('/message/getMessages', messageCtrl.getMessages);
   app.post('/message/changeMessageStatus', messageCtrl.changeMessageStatus);
