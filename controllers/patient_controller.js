@@ -659,3 +659,28 @@ exports.bindingPatient = function(req, res) {
 		// res.json({results: uprelation});
 	}, {new: true});
 }
+
+//修改患者VIP状态 2017-05-04 GY
+exports.changeVIP = function(req, res) {
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result:'请填写userId!'});
+	}
+	var query = {
+		userId: req.body.userId
+	};
+	
+	var upObj = {};
+	if (req.body.VIP != null){
+		upObj['VIP'] = req.body.VIP;
+	}
+
+	Patient.updateOne(query, upObj, function(err, upPatient) {
+		if (err){
+			return res.status(500).send(err.message);
+		}
+		if (upPatient == null) {
+			return res.json({result:'修改失败，不存在的患者ID！'})
+		}
+		res.json({result: '修改成功', results: upPatient});
+	}, {new: true});
+}

@@ -217,17 +217,17 @@ exports.changeCounselStatus = function(req, res) {
 
 //根据医生患者获取咨询问诊状态
 exports.getStatus = function(req, res, next) {
-	if (req.query.type == null || req.query.type == '') {
-		if (req.body.type == null || req.body.type == '') {
-			return res.json({result: '请填写type!'});
-		}
-		else {
-			req.type = req.body.type;
-		}
-	}
-	else {
-		req.type = req.query.type;
-	}
+	// if (req.query.type == null || req.query.type == '') {
+	// 	if (req.body.type == null || req.body.type == '') {
+	// 		return res.json({result: '请填写type!'});
+	// 	}
+	// 	else {
+	// 		req.type = req.body.type;
+	// 	}
+	// }
+	// else {
+	// 	req.type = req.query.type;
+	// }
 	if (req.body.status === null || req.body.status === '' || req.body.status === undefined) {
 		req.body.status = null;
 	}
@@ -238,9 +238,15 @@ exports.getStatus = function(req, res, next) {
 
 	var query = {
 		patientId: req.body.patientObject._id, 
-		doctorId:req.body.doctorObject._id, 
-		type:req.type
+		doctorId:req.body.doctorObject._id//, 
+		// type:req.type
 	};
+	if (req.query.type != null) {
+		query['type'] = req.query.type;
+	}
+	else if (req.body.type != null) {
+		query['type'] = req.body.type;
+	}
 
 	//设置排序规则函数，时间降序
 	function sortTime(a, b) {
