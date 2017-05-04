@@ -95,6 +95,13 @@ exports.insertMessage = function(req, res) {
 		type: req.body.type, 
 		readOrNot: readOrNot
 	};
+	if (req.body.sendBy != null && req.body.sendBy != '') {
+		messageData['sendBy'] = req.body.sendBy
+	}
+	else {
+		//默认发送者为系统
+		messageData['sendBy'] = 'System';
+	}
 	if (req.body.time != null && req.body.time != ''){
 		messageData['time'] = new Date(req.body.time);
 	}
