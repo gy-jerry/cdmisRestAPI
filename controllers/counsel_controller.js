@@ -2,6 +2,7 @@
 var	config = require('../config'),
 	Counsel = require('../models/counsel'), 
 	Doctor = require('../models/doctor'), 
+	Comment = require('../models/comment'), 
 	Patient = require('../models/patient');
 
 
