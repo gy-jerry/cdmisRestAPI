@@ -8,8 +8,9 @@ var accountSchema = new mongoose.Schema({
 	times: [
 	  {
 	  	_id:0, 
-		count: Number, 
-		doctorId: {type:String, unique:true}
+		count: Number,
+		doctorId: {type:String} 
+		// doctorId: {type:String, unique:true}
 	  } 
 	], 
 	money: {type: Number, default: 0}, 
