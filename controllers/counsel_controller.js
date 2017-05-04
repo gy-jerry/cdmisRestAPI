@@ -13,8 +13,14 @@ exports.getCounsels = function(req, res) {
 	var _doctorId = req.body.doctorObject._id;
 	var _status = req.query.status;
 	var _type = req.query.type;
+	var _name = req.query.name;
+	var _skip = req.query.skip;
+	var _limit = req.query.limit;
 	var query;
 
+	if(_skip==""||_skip==undefined){
+		_skip=0;
+	}
 	//type和status可以为空
 	if(_type == null && _status != null){
 		query = {doctorId:_doctorId, status:_status};
@@ -28,18 +34,42 @@ exports.getCounsels = function(req, res) {
 	else{
 		query = {doctorId:_doctorId, status:_status, type:_type};
 	}
-	
-	
+	// if(_name!=""&&_name!=undefined){
+	// 	query["patientId.name"]=_name;
+	// }
 	var opts = '';
 	var fields = {"_id":0, "messages":0, "revisionInfo":0};
 	//关联主表patient获取患者信息
 	var populate = {path: 'patientId', select:{'_id':0, 'revisionInfo':0, 'doctors':0}}
-
+	if(_name!=""&&_name!=undefined){
+		populate["match"]={"name":_name};
+	}
 	Counsel.getSome(query, function(err, item) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item, count:item.length});
+    	var item1=[];
+    	for(var i=0;i<item.length;i++){
+    		if(item[i].patientId!=null){
+    			if(_skip>0)
+    			{
+    				_skip--;
+    			}
+    			else{
+    				if(_limit===""||_limit===undefined){
+    					item1.push(item[i]);
+    				}
+    				else{
+    					if(_limit>0)
+    					{
+    						item1.push(item[i]);
+    						_limit--;
+    					}
+    				}
+    			}
+    		}
+    	}
+    	res.json({results: item1, count:item1.length});
 	}, opts, fields, populate);
 }
 
@@ -275,7 +305,8 @@ exports.insertCommentScore = function(req, res) {
 		doctorId: req.body.doctorObject._id, 				//doc01
 		time: new Date(),
 		totalScore:req.body.totalScore,
-		content:req.body.content
+		content:req.body.content,
+		counselId: req.body.counselId
 	};
 
 	var newComment = new Comment(commentData);
