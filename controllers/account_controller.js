@@ -353,7 +353,7 @@ exports.rechargeDoctor = function(req, res) {
     var _pid=req.body.patientId
     var _did=req.body.doctorId
     if(_chargetype==""||_chargetype==undefined||_pid==""||_pid==undefined||_did==""||_did==undefined){
-        return res.json({result: '请输入医生收费类型-type（咨询1/问诊2）、病人id-patientId、医生id-doctorId'});
+        return res.json({result: '请输入医生收费类型-type（咨询1/问诊2/咨询转问诊3）、病人id-patientId、医生id-doctorId'});
     }
     else{
         query={userId:_did};
@@ -369,8 +369,11 @@ exports.rechargeDoctor = function(req, res) {
                 if(_chargetype==1){
                     _money=item.charge1
                 }
-                else{
+                else if(_chargetype==2){
                     _money=item.charge2
+                }
+                else{
+                	_money=item.charge2-item.charge1
                 }
                 // console.log(_money)
                 Account.getOne(query, function(err, item1) {
