@@ -136,6 +136,7 @@ module.exports = function(app,webEntry) {
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
   // app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
   app.post('/patient/bindingMyDoctor', patientCtrl.debindingDoctor, patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
+  app.post('/patient/changeVIP', patientCtrl.changeVIP);
 
   //comment_query
   app.get('/comment/getComments', doctorCtrl.getDoctorObject, commentCtrl.getCommentsByDoc);
