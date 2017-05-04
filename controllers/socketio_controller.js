@@ -76,7 +76,7 @@ function messageSaveSend(data, url){
                 console.log(111);
                 console.log(receiver);
                 request({
-                    url: 'http://121.43.107.106:4050/communication/getTeam?teamId=' + receiver,
+                    url: 'http://121.43.107.106:4050/communication/getTeam?teamId=' + data.msg.teamId,
                     method: 'GET',
                     json:true
                 }, function(err, response){

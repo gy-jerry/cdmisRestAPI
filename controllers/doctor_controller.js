@@ -4,6 +4,7 @@ var	config = require('../config'),
 	Team = require('../models/team'), 
 	DpRelation = require('../models/dpRelation'), 
 	Consultation = require('../models/consultation'), 
+	Counsel = require('../models/counsel'), 
 	Comment = require('../models/comment'), 
 	commonFunc = require('../middlewares/commonFunc');
 
@@ -75,8 +76,8 @@ exports.insertDocBasic = function(req, res) {
 	if (req.body.major != null){
 		doctorData['major'] = req.body.major;
 	}
-	if (req.body.descirption != null){
-		doctorData['descirption'] = req.body.descirption;
+	if (req.body.description != null){
+		doctorData['description'] = req.body.description;
 	}
 	if (req.body.charge1 != null){
 		doctorData['charge1'] = req.body.charge1;
@@ -138,74 +139,7 @@ exports.getDoctorObject = function (req, res, next) {
     });
 };
 
-//根据医生ID获取患者基本信息 
-exports.getPatientList = function(req, res) {
-	//查询条件
-	var doctorObject = req.body.doctorObject;
-	var query = {doctorId:doctorObject._id};
-	var _name = req.query.name;
-	var _skip = req.query.skip;
-	var _limit = req.query.limit;
-	if(_skip==""||_skip==undefined){
-		_skip=0;
-	}
-	var opts = '';
-	var fields = {'_id':0, 'patients.patientId':1};
-	//通过子表查询主表，定义主表查询路径及输出内容
-	var populate = {path: 'patients.patientId', select: {'_id':0, 'revisionInfo':0}};
-	if(_name!=""&&_name!=undefined){
-		
-	}
-	DpRelation.getOne(query, function(err, item) {
-		if (err) {
-      		return res.status(500).send(err.errmsg);
-    	}
-    	if (item == null) {
-    		// return res.json({result:'请先与其他医生或患者建立联系!'});
-    		var dpRelationData = {
-    			doctorId: req.body.doctorObject._id, 
-    			revisionInfo:{
-					operationTime:new Date(),
-					userId:"gy",
-					userName:"gy",
-					terminalIP:"10.12.43.32"
-				}
-    		};
-    		// return res.json({result:dpRelationData});
-    		var newDpRelation = new DpRelation(dpRelationData);
-			newDpRelation.save(function(err, dpRelationInfo) {
-				if (err) {
-      				return res.status(500).send(err.errmsg);
-    			}
-    			// return res.json({result: '暂无患者2!'});
-			});
-			return res.json({results: {patients:[]}});
-    	}
-    	var patients = [];
-    	for(var i=0;i<item.patients.length;i++){
-    		if(item.patients[i].patientId.name==_name||_name===""||_name==undefined){
-    			if(_skip>0)
-    			{
-    				_skip--;
-    			}
-    			else{
-    				if(_limit===""||_limit===undefined){
-    					patients.push(item.patients[i]);
-    				}
-    				else{
-    					if(_limit>0)
-    					{
-    						patients.push(item.patients[i]);
-    						_limit--;
-    					}
-    				}
-    			}
-    		}
-    	}
-    	var item1={"patients":patients};
-    	res.json({results: item1});
-	}, opts, fields, populate);
-}
+
 
 //通过team表中teamId查询teamObject 2017-03-30 GY 
 exports.getTeamObject = function (req, res, next) {
@@ -325,6 +259,30 @@ exports.getComments = function(req, res, next) {
     	next();
 	}, opts, fields, populate);
 }
+exports.getCount1AndCount2 = function(req, res, next) {
+	var _doctorId = req.body.doctorObject._id;
+	var query = {doctorId:_doctorId};
+
+	Counsel.getSome(query, function(err, items) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	var count1 = 0;
+    	var count2 = 0;
+    	for (var i = items.length - 1; i >= 0; i--) {
+    		if (items[i].type == 1 || items[i].type == 3) {
+    			count1 += 1;
+    		}
+    		if (items[i].type == 2 || items[i].type == 3) {
+    			count2 += 1;
+    		}
+    	}
+    	req.count1 = count1;
+    	req.count2 = count2;
+    	next();
+    	// res.json({results: items, count:items.length});
+	});
+}
 // exports.getDoctorInfo = function(req, res){
 // 	var query = {userId: req.query.userId};
 // 	var comments = req.body.comments;
@@ -359,7 +317,9 @@ exports.getDoctorInfo = function(req, res) {
 	}
 
 	var upObj = {
-		score: newScore
+		score: newScore, 
+		count1: req.count1, 
+		count2: req.count2
 	};
 
 	Doctor.updateOne(query, upObj, function(err, upDoctor) {
@@ -427,8 +387,8 @@ exports.editDoctorDetail = function(req, res) {
 	if (req.body.major != null){
 		upObj['major'] = req.body.major;
 	}
-	if (req.body.descirption != null){
-		upObj['descirption'] = req.body.descirption;
+	if (req.body.description != null){
+		upObj['description'] = req.body.description;
 	}
 	if (req.body.charge1 != null){
 		upObj['charge1'] = req.body.charge1;
@@ -747,3 +707,77 @@ exports.getPatientByDate = function(req, res) {
 	}, opts, fields, populate);
 }
 
+
+
+
+
+
+
+//根据医生ID获取患者基本信息 
+exports.getPatientList = function(req, res) {
+	//查询条件
+	var doctorObject = req.body.doctorObject;
+	var query = {doctorId:doctorObject._id};
+	var _name = req.query.name;
+	var _skip = req.query.skip;
+	var _limit = req.query.limit;
+	if(_skip==""||_skip==undefined){
+		_skip=0;
+	}
+	var opts = '';
+	var fields = {'_id':0, 'patients.patientId':1};
+	//通过子表查询主表，定义主表查询路径及输出内容
+	var populate = {path: 'patients.patientId', select: {'_id':0, 'revisionInfo':0}};
+	if(_name!=""&&_name!=undefined){
+		
+	}
+	DpRelation.getOne(query, function(err, item) {
+		if (err) {
+      		return res.status(500).send(err.errmsg);
+    	}
+    	if (item == null) {
+    		// return res.json({result:'请先与其他医生或患者建立联系!'});
+    		var dpRelationData = {
+    			doctorId: req.body.doctorObject._id, 
+    			revisionInfo:{
+					operationTime:new Date(),
+					userId:"gy",
+					userName:"gy",
+					terminalIP:"10.12.43.32"
+				}
+    		};
+    		// return res.json({result:dpRelationData});
+    		var newDpRelation = new DpRelation(dpRelationData);
+			newDpRelation.save(function(err, dpRelationInfo) {
+				if (err) {
+      				return res.status(500).send(err.errmsg);
+    			}
+    			// return res.json({result: '暂无患者2!'});
+			});
+			return res.json({results: {patients:[]}});
+    	}
+    	var patients = [];
+    	for(var i=0;i<item.patients.length;i++){
+    		if(item.patients[i].patientId.name==_name||_name===""||_name==undefined){
+    			if(_skip>0)
+    			{
+    				_skip--;
+    			}
+    			else{
+    				if(_limit===""||_limit===undefined){
+    					patients.push(item.patients[i]);
+    				}
+    				else{
+    					if(_limit>0)
+    					{
+    						patients.push(item.patients[i]);
+    						_limit--;
+    					}
+    				}
+    			}
+    		}
+    	}
+    	var item1={"patients":patients};
+    	res.json({results: item1});
+	}, opts, fields, populate);
+}
