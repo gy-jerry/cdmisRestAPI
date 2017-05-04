@@ -16,11 +16,12 @@ exports.updateInsuranceMsg = function(req, res, next) {
 
 	//为调用insertMessage方法传入参数
 	req.body.userId = req.body.patientId;
+	req.body.sendBy = req.body.doctorId;
 	//定义保险消息类型为5
 	req.body.type = 5;
 	// return res.json({result: req.body})
 
-	if (req.body.insDescription == null) {
+	if (req.body.insDescription == null || req.body.insDescription == '') {
 		var insDescription = '';
 	}
 	if (req.body.tiem == null || req.body.time == '') {
@@ -139,7 +140,12 @@ exports.getInsMsg = function(req, res) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-
-    	res.json({results:item});
+    	if (item == null) {
+    		return res.json({results:null})
+    	}
+    	else {
+    		return res.json({results:item});
+    	}
+    	
 	}, opts, fields, populate);
 }

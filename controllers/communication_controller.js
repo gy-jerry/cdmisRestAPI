@@ -212,14 +212,14 @@ exports.newConsultation = function(req, res) {
 	 //  	  }
 		// ], 
 		// conclusion: String, 
-		teamId: req.body.teamObject._id, 
+		teamId: req.body.teamObject._id//, 
 
-		revisionInfo:{
-			operationTime:new Date(),
-			userId:"gy",
-			userName:"gy",
-			terminalIP:"10.12.43.32"
-		}
+		// revisionInfo:{
+		// 	operationTime:new Date(),
+		// 	userId:"gy",
+		// 	userName:"gy",
+		// 	terminalIP:"10.12.43.32"
+		// }
 	};
 	
 	var newConsultation = new Consultation(consultationData);
@@ -242,7 +242,10 @@ exports.getConsultation = function(req, res) {
 	var opts = '';
 	var fields = '';
 	var populate = {
-		'path': 'patientId diseaseInfo'
+		'path': 'patientId diseaseInfo sponsorId', 
+		'select': {
+			'diagnosisInfo':0, 'doctors':0, 'revisionInfo':0
+		}
 	}
 	Consultation.getOne(query, function(err, item) {
 		if (err){
