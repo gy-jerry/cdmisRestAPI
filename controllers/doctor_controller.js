@@ -142,12 +142,19 @@ exports.getPatientList = function(req, res) {
 	//查询条件
 	var doctorObject = req.body.doctorObject;
 	var query = {doctorId:doctorObject._id};
-
+	var _name = req.query.name;
+	var _skip = req.query.skip;
+	var _limit = req.query.limit;
+	if(_skip==""||_skip==undefined){
+		_skip=0;
+	}
 	var opts = '';
 	var fields = {'_id':0, 'patients.patientId':1};
 	//通过子表查询主表，定义主表查询路径及输出内容
 	var populate = {path: 'patients.patientId', select: {'_id':0, 'revisionInfo':0}};
-
+	if(_name!=""&&_name!=undefined){
+		
+	}
 	DpRelation.getOne(query, function(err, item) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
@@ -173,7 +180,29 @@ exports.getPatientList = function(req, res) {
 			});
 			return res.json({results: {patients:[]}});
     	}
-    	res.json({results: item});
+    	var patients = [];
+    	for(var i=0;i<item.patients.length;i++){
+    		if(item.patients[i].patientId.name==_name||_name===""||_name==undefined){
+    			if(_skip>0)
+    			{
+    				_skip--;
+    			}
+    			else{
+    				if(_limit===""||_limit===undefined){
+    					patients.push(item.patients[i]);
+    				}
+    				else{
+    					if(_limit>0)
+    					{
+    						patients.push(item.patients[i]);
+    						_limit--;
+    					}
+    				}
+    			}
+    		}
+    	}
+    	var item1={"patients":patients};
+    	res.json({results: item1});
 	}, opts, fields, populate);
 }
 
@@ -716,4 +745,3 @@ exports.getPatientByDate = function(req, res) {
     	res.json({results2:patientsitem});
 	}, opts, fields, populate);
 }
-
