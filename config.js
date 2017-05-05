@@ -8,7 +8,7 @@ module.exports = {
       appid: 'wx8a6a43fb9585fb7c',
       appsecret: 'b23a4696c3b0c9b506891209d2856ab2',
       merchantid: '1',
-      merchantkey: 'a'
+      merchantkey: 'qwertyuiopasdfghjklzxcvbnmbme319'
     }
   },
   cookieSecretExt: '111', 
