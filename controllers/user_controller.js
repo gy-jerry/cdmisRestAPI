@@ -722,6 +722,7 @@ exports.getPhoneNoByRole = function(req, res) {
     }
 
     var query = {role:req.query.role};
+    var fields = {userName:1, phoneNo:1, _id:0}
 
     User.getSome(query, function(err, items) {
         if (err) {
@@ -731,12 +732,13 @@ exports.getPhoneNoByRole = function(req, res) {
             // res.json({results: 1,mesg:"User doesn't Exist!"});
         }
         else{
-            var phoneNos = [];
-            for (var i = items.length - 1; i >= 0; i--) {
-                phoneNos[i] = items[i].phoneNo
-            }
-            res.json({results: phoneNos});
+            // var phoneNos = [];
+            // for (var i = items.length - 1; i >= 0; i--) {
+            //     phoneNos[i] = items[i].phoneNo
+            // }
+            // res.json({results: phoneNos});
+            res.json({results: items})
         }
-    });
+    }, '', fields);
 }
 
