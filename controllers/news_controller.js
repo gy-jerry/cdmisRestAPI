@@ -298,4 +298,4 @@ exports.insertTeamNews = function(req, res) {
         	// res.json({results: item});
         }
     });
-}}
+}
