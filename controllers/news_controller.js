@@ -1,4 +1,5 @@
 var	config = require('../config'),
+	Team = require('../models/team'), 
 	News = require('../models/news');
 
 //根据类型查询消息链接 2017-04-05 GY 
@@ -68,23 +69,26 @@ exports.getNewsByReadOrNot = function(req, res) {
 	}, opts);
 }
 
-exports.insertNews = function(req, res) {
-
-	if (req.body.userId == null || req.body.userId == '') {
-		return res.json({result: '请填写userId'});
-	}
-	if (req.body.sendBy == null || req.body.sendBy == '') {
-		return res.json({result: '请填写sendBy'});
-	}
-	if (req.body.readOrNot == null || req.body.readOrNot == '') {
-		return res.json({resutl: '请填写readOrNot'});
-	}
+function insertOneNews(userId,sendBy,req,res) {
+	// if (req.body.userId == null || req.body.userId == '') {
+	// 	return res.json({result: '请填写userId'});
+	// }
+	// if (req.body.sendBy == null || req.body.sendBy == '') {
+	// 	return res.json({result: '请填写sendBy'});
+	// }
+	// if (req.body.readOrNot == null || req.body.readOrNot == '') {
+	// 	return res.json({resutl: '请填写readOrNot'});
+	// }
 	// var readOrNot = 0;
 	// return res.json({messageId:req.newId})
+	// console.log("11");
+	// var ret=1;
 
 	var newData = {
-		userId: req.body.userId,
-		sendBy: req.body.sendBy,
+		// userId: req.body.userId,
+		// sendBy: req.body.sendBy,
+		userId: userId,
+		sendBy: sendBy,
 		readOrNot: req.body.readOrNot
 	};
 	if (req.body.type != null){
@@ -111,49 +115,68 @@ exports.insertNews = function(req, res) {
 
 	// return res.json({messageData:messageData})
 	var query1 = {
-		userId:req.body.userId,
-		sendBy:req.body.sendBy
+		userId:userId,
+		sendBy:sendBy
 	};
 	var query2 = {
-		sendBy:req.body.userId,
-		userId:req.body.sendBy
+		sendBy:userId,
+		userId:sendBy
 	};
 	News.getOne(query1, function(err, item1) {
         if (err) {
-            return res.status(500).send(err.errmsg);
+        	if(res!=undefined){
+        		return res.status(500).send(err.errmsg);}
+            // return 500;
         }
         if(item1==null){
-        	console.log(123);
+        	// console.log(123);
     		News.getOne(query2, function(err, item2) {
 		        if (err) {
-		            return res.status(500).send(err.errmsg);
+		        	if(res!=undefined){
+		            return res.status(500).send(err.errmsg);}
+		            // return 500;
 		        }
 		        if(item2==null){
 		        	//insert
 		        	var newnew = new News(newData);
 					newnew.save(function(err, newInfo) {
 						if (err) {
-					  		return res.status(500).send(err.errmsg);
+							if(res!=undefined){
+					  		return res.status(500).send(err.errmsg);}
+					  		// return 500;
 						}
 						var newResults = newInfo;
-						res.json({result:'新建成功', newResults: newResults});
+						if(res!=undefined){
+						res.json({result:'新建成功', newResults: newResults});}
+						// return 0;
 					});
 		        }
 		        else{
 		        	//update query2
 		        	News.update(query2,newData, function(err, upmessage) {
 						if (err){
-							return res.status(422).send(err.message);
+							if(res!=undefined){
+							return res.status(422).send(err.message);}
+							// return 422;
 						}
 						
 						if (upmessage.n != 0 && upmessage.nModified == 0) {
+							if(res!=undefined){
 							return res.json({result:'未修改！请检查修改目标是否与原来一致！', results: upmessage});
+							}
+							// return 1;
 						}
 						if (upmessage.n != 0 && upmessage.nModified != 0) {
 							if (upmessage.n == upmessage.nModified) {
+								if(res!=undefined){
 								return res.json({result:'全部更新成功', results: upmessage});
+								}
+								// return 0;
 							}
+							if(res!=undefined){
 							return res.json({result: '未全部更新！', results: upmessage});
+							}
+							// return 2;
 						}
 						
 					});
@@ -165,17 +188,29 @@ exports.insertNews = function(req, res) {
 			//return res.json({query: query, upObj: upObj});
 			News.update(query1, newData, function(err, upmessage) {
 				if (err){
+					if(res!=undefined){
 					return res.status(422).send(err.message);
+					}
+					// return 422;
 				}
 				
 				if (upmessage.n != 0 && upmessage.nModified == 0) {
+					if(res!=undefined){
 					return res.json({result:'未修改！请检查修改目标是否与原来一致！', results: upmessage});
+					}
+					// return 1;
 				}
 				if (upmessage.n != 0 && upmessage.nModified != 0) {
 					if (upmessage.n == upmessage.nModified) {
-						return res.json({result:'全部更新成功', results: upmessage});
+						if(res!=undefined){
+							return res.json({result:'全部更新成功', results: upmessage});
+						}
+						// return 0;
 					}
+					if(res!=undefined){
 					return res.json({result: '未全部更新！', results: upmessage});
+					}
+					// return 2;
 				}
 				
 			});
@@ -183,119 +218,105 @@ exports.insertNews = function(req, res) {
         }
     });
 }
-
-exports.insertTeamNews = function(req, res) {
-
+exports.insertNews = function(req, res) {
 	if (req.body.userId == null || req.body.userId == '') {
 		return res.json({result: '请填写userId'});
 	}
 	if (req.body.sendBy == null || req.body.sendBy == '') {
 		return res.json({result: '请填写sendBy'});
 	}
-	// if (req.body.readOrNot == null || req.body.readOrNot == '') {
-	// 	return res.json({resutl: '请填写readOrNot'});
+	if (req.body.readOrNot == null || req.body.readOrNot == '') {
+		return res.json({resutl: '请填写readOrNot'});
+	}
+	var userId=req.body.userId;
+	var sendBy=req.body.sendBy;
+	return insertOneNews(userId,sendBy,req,res);
+	// console.log(status_code);
+	// if(status_code === 0){
+	// 	return res.json({result:'全部更新成功'});
 	// }
-	var readOrNot = 0;
-	// return res.json({messageId:req.newId})
+	// if(status_code === 1){
+	// 	return res.json({result:'未修改！请检查修改目标是否与原来一致！'});
+	// }
+	// if(status_code === 2){
+	// 	return res.json({result: '未全部更新！'});
+	// }
+	// if(status_code === 422){
+	// 	return res.status(422).send(422);
+	// }
+	// if(status_code === 500){
+	// 	return res.status(500).send(500);
+	// }
 
-	var newData = {
-		userId: req.body.userId,
-		sendBy: req.body.sendBy,
-		readOrNot: readOrNot
-	};
-	if (req.body.type != null){
-		newData['type'] = req.body.type;
+}
+exports.insertTeamNews = function(req, res) {
+	if (req.body.userId == null || req.body.userId == '') {
+		return res.json({result: '请填写userId'});
 	}
-	if (req.body.messageId != null){
-		newData['messageId'] = req.body.messageId;
+	if (req.body.sendBy == null || req.body.sendBy == '') {
+		return res.json({result: '请填写sendBy'});
 	}
-	if (req.body.time != null && req.body.time != ''){
-		newData['time'] = new Date(req.body.time);
+	if (req.body.type == null || req.body.type == '') {
+		return res.json({resutl: '请填写type'});
 	}
-	else {
-		newData['time'] = new Date();
-	}
-	if (req.body.title != null){
-		newData['title'] = req.body.title;
-	}
-	if (req.body.description != null){
-		newData['description'] = req.body.description;
-	}
-	if (req.body.url != null){
-		newData['url'] = req.body.url;
-	}
-
-	// return res.json({messageData:messageData})
-	var query1 = {
-		userId:req.body.userId,
-		sendBy:req.body.sendBy
-	};
-	var query2 = {
-		sendBy:req.body.userId,
-		userId:req.body.sendBy
-	};
-	News.getOne(query1, function(err, item1) {
+	var userId=req.body.userId;
+	var sendBy=req.body.sendBy;
+	req.body.readOrNot=1;
+	insertOneNews(userId,sendBy,req, res);
+	req.body.readOrNot=0;
+	var TeamId=userId;
+	var query = { 
+        teamId: TeamId
+    };
+    var DocId;
+    //req.body.status = _status;
+    Team.getOne(query, function (err, team1) {
         if (err) {
-            return res.status(500).send(err.errmsg);
+            console.log(err);
+            // return res.status(500).send('服务器错误, 用户查询失败!');
+            return 500;
         }
-        if(item1==null){
-        	console.log(123);
-    		News.getOne(query2, function(err, item2) {
-		        if (err) {
-		            return res.status(500).send(err.errmsg);
-		        }
-		        if(item2==null){
-		        	//insert
-		        	var newnew = new News(newData);
-					newnew.save(function(err, newInfo) {
-						if (err) {
-					  		return res.status(500).send(err.errmsg);
-						}
-						var newResults = newInfo;
-						res.json({result:'新建成功', newResults: newResults});
-					});
-		        }
-		        else{
-		        	//update query2
-		        	News.update(query2,newData, function(err, upmessage) {
-						if (err){
-							return res.status(422).send(err.message);
-						}
-						
-						if (upmessage.n != 0 && upmessage.nModified == 0) {
-							return res.json({result:'未修改！请检查修改目标是否与原来一致！', results: upmessage});
-						}
-						if (upmessage.n != 0 && upmessage.nModified != 0) {
-							if (upmessage.n == upmessage.nModified) {
-								return res.json({result:'全部更新成功', results: upmessage});
-							}
-							return res.json({result: '未全部更新！', results: upmessage});
-						}
-						
-					});
-		        }
-		    });
+        if (team1 == null) {
+			var TeamId=req.body.type;
+			var query = { 
+			    teamId: TeamId
+			};
+			//req.body.status = _status;
+			Team.getOne(query, function (err, team2) {
+			    if (err) {
+			        console.log(err);
+			        // return res.status(500).send('服务器错误, 用户查询失败!');
+			        return 500;
+			    }
+			    if (team2 == null) {
+			    	// return res.json({result:'不存在的teamId!'})
+			    	return 1;
+			    }
+			    else{
+				    //sendMesg
+				    Doctors=team2.members;
+			        for(var i=0;i<Doctors.length;i++)
+			        {
+			        	DocId=Doctors[i].userId;
+			        	if(DocId!=req.body.sendBy){
+			        		insertOneNews(DocId,userId,req);
+			        	}
+			        }
+			    }
+			});
         }
         else{
-        	//update query1
-			//return res.json({query: query, upObj: upObj});
-			News.update(query1, newData, function(err, upmessage) {
-				if (err){
-					return res.status(422).send(err.message);
-				}
-				
-				if (upmessage.n != 0 && upmessage.nModified == 0) {
-					return res.json({result:'未修改！请检查修改目标是否与原来一致！', results: upmessage});
-				}
-				if (upmessage.n != 0 && upmessage.nModified != 0) {
-					if (upmessage.n == upmessage.nModified) {
-						return res.json({result:'全部更新成功', results: upmessage});
-					}
-					return res.json({result: '未全部更新！', results: upmessage});
-				}
-				
-			});
-        	// res.json({results: item});
-        }
+	        //sendMesg
+	        Doctors=team1.members;
+	        for(var i=0;i<Doctors.length;i++)
+	        {
+	        	DocId=Doctors[i].userId;
+	        	if(DocId!=req.body.sendBy){
+	        		insertOneNews(DocId,userId,req);
+	        	}
+	        }
+	    }
     });
-}}
+	
+
+}
