@@ -37,6 +37,7 @@ var doctorCtrl = require('../controllers/doctor_controller'),
     accountCtrl = require('../controllers/account_controller'), 
     communicationCtrl = require('../controllers/communication_controller'), 
     messageCtrl = require('../controllers/message_controller'), 
+    newsCtrl = require('../controllers/news_controller'), 
     insuranceCtrl = require('../controllers/insurance_controller');
 
 var wechatCtrl = require('../controllers/wechat_controller');
@@ -156,6 +157,11 @@ module.exports = function(app,webEntry) {
   app.get('/message/getMessages', messageCtrl.getMessages);
   app.post('/message/changeMessageStatus', messageCtrl.changeMessageStatus);
   app.post('/message/insertMessage', getNoMid.getNo(6), messageCtrl.insertMessage);
+
+  //new
+  app.get('/new/getNews', newsCtrl.getNews);
+  app.get('/new/getNewsByReadOrNot', newsCtrl.getNews);
+  app.post('/new/insertNews', newsCtrl.insertNews);
 
   //communication
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
