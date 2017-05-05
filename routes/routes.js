@@ -160,9 +160,10 @@ module.exports = function(app,webEntry) {
 
   //new
   app.get('/new/getNews', newsCtrl.getNews);
-  app.get('/new/getNewsByReadOrNot', newsCtrl.getNews);
+  app.get('/new/getNewsByReadOrNot', newsCtrl.getNewsByReadOrNot);
   app.post('/new/insertNews', newsCtrl.insertNews);
-
+  app.post('/new/insertTeamNews', newsCtrl.insertTeamNews);
+  
   //communication
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
   app.post('/communication/insertMember', communicationCtrl.insertMember, communicationCtrl.updateNumber);
