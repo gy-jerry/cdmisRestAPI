@@ -18,7 +18,7 @@ exports.insertOrder = function(req, res) {
     var orderData = {
         userId: req.body.userId,
         orderNo: req.newId,//req.body.orderNo,
-        ordertime:new Date(req.body.ordertime),
+        ordertime:new Date(),
         money:req.body.money,
         goodsInfo:{
             class:req.body.class,

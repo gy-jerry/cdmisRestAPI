@@ -144,7 +144,8 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
     }, function (err, response, body) {
         if (err) return res.status(401).send('换取网页授权access_token失败!');
         
-        var wechatData = {
+      
+          var wechatData = {
             access_token: body.access_token, //获取用户信息的access_token
             expires_in: body.expires_in,
             refresh_token: body.refresh_token,
@@ -152,18 +153,20 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
             scope: body.scope//,
             // unionid: body.unionid,
             // api_type: 1
-        }
-        if(wechatData.scope == 'snsapi_base')
-        {
+          }
+          if(wechatData.scope == 'snsapi_base')
+          {
             return res.json({results:wechatData})
-        }
-        else if (wechatData.scope == 'snsapi_userinfo')
-        {
+          }
+          else if (wechatData.scope == 'snsapi_userinfo')
+          {
             req.wechatData = wechatData;
             req.state = state;
 
             next();
-        }
+          } 
+       
+        
       });
 };
 
@@ -263,7 +266,7 @@ exports.getPaymentOrder = function(req, res, next) {
       orderObject['orderNo'] = orderNo;
       orderObject['goodsInfo'] = item.goodsInfo;
       orderObject['money'] = item.money;
-      orderObject['attach'] = req.status;
+      orderObject['attach'] = "";        // req.state;
       req.orderObject = orderObject;
       next();
     }
@@ -306,7 +309,7 @@ exports.addOrder = function(req, res, next) {
     // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
     notify_url: 'http://121.43.107.106:4050/wechat/payResult',   // 通知地址
     trade_type: 'JSAPI',    // 交易类型
-    openid: req.wechatData.openid    // 用户标识
+    openid: req.query.openid    // 用户标识
   };
 
   var signStr = commonFunc.rawSort(paramData);
