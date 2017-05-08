@@ -513,6 +513,7 @@ exports.updateLastTalkTime = function(req, res) {
 exports.postCommunication = function(req, res) {
 	
 	var commmunicationData = {
+		messageNo:req.newId,
 		messageType: req.body.messageType, 
 		sendBy: req.body.sendBy, 
 		receiver: req.body.receiver, 
@@ -532,7 +533,7 @@ exports.postCommunication = function(req, res) {
             request({
                 url:'http://121.43.107.106:4050/new/insertNews',
                 method:'POST',
-                body:bodyGen(msg,communicationInfo['_id']),
+                body:bodyGen(msg,communicationInfo['messageNo']),
                 json:true
             },function(err,response){
                 if(err) return res.status(500).send(err);
