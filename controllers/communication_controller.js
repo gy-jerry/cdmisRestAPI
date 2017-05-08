@@ -349,7 +349,7 @@ exports.updateNumber = function(req, res) {
 			else {
 				return res.json({result: '更新成员成功', results: upteam});
 			}
-        });
+        }, {new:true});
         // res.json({results:team});
     });
 }
