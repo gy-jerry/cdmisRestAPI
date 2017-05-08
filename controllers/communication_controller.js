@@ -7,7 +7,8 @@ var	config = require('../config'),
 	Patient = require('../models/patient'), 
 	Doctor = require('../models/doctor'), 
 	Consultation = require('../models/consultation'), 
-	DpRelation = require('../models/dpRelation');
+	DpRelation = require('../models/dpRelation'),
+	request = require('request');
 
 //根据counselId获取counsel表除messages外的信息 2017-03-31 GY 
 exports.getCounselReport = function(req, res) {
@@ -525,9 +526,56 @@ exports.postCommunication = function(req, res) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({result:'新建成功', newResults: communicationInfo});
+
+        var msg=communicationInfo.content;
+        if(msg.targetType=='single'){
+            request({
+                url:'http://121.43.107.106:4050/new/insertNews',
+                method:'POST',
+                body:bodyGen(msg,communicationInfo['_id']),
+                json:true
+            },function(err,response){
+                if(err) return res.status(500).send(err);
+                return res.json({result:'新建成功', newResults: communicationInfo});
+            });
+        }else{
+            request({
+                url:'http://121.43.107.106:4050/new/insertTeamNews',
+                method:'POST',
+                body:bodyGen(msg,communicationInfo['_id']),
+                json:true
+            },function(err,response){
+                // console.log('err');
+                // console.log(err);
+                // console.log('res');
+                // console.log(response);
+                if(err) return res.status(500).send(err);
+                return res.json({result:'新建成功', newResults: communicationInfo});
+            });
+        }
+
+    	// res.json({result:'新建成功', newResults: communicationInfo});
 	});
 }
+// exports.postCommunication = function(req, res) {
+	
+// 	var commmunicationData = {
+// 		messageType: req.body.messageType, 
+// 		sendBy: req.body.sendBy, 
+// 		receiver: req.body.receiver, 
+// 		sendDateTime: req.body.content.createTimeInMillis, 
+// 		content: req.body.content
+// 	};
+	
+
+// 	var newCommunication = new Communication(commmunicationData);
+// 	newCommunication.save(function(err, communicationInfo) {
+// 		if (err) {
+//       		return res.status(500).send(err.errmsg);
+//     	}
+//     	res.json({result:'新建成功', newResults: communicationInfo});
+// 	});
+// }
 
 //根据ID及type获取交流记录 2017-04-21 GY 
 exports.getCommunication = function(req, res) {
@@ -610,4 +658,71 @@ exports.getCommunication = function(req, res) {
 			}
 		}, opts);
 	}
+}
+
+function isID(str){
+    var pat = /^[DUP][0-9]{12}$/;
+    if(pat.test(str)) return str;
+    return null;
+}
+function bodyGen(msg,MESSAGE_ID){
+    // type define 4 种
+    // 11:医-患
+    // 12:医-医
+    // 13:医-团队
+    // teamId as type:医-会诊
+    var msgType=msg.contentType,
+        isSingle = msg.targetType=='single',
+        receiver=msg.targetID,
+        sender =  isID(msg.fromID) || isID(msg.fromName),
+        content = {},
+        desc='';
+
+    var body={
+        userId:receiver,
+        sendBy:sender,
+        type:msg.newsType,
+        title:'',
+        description:'',
+        readOrNot:0,
+        url:'',
+        messageId:MESSAGE_ID //从post communication/postCommunication response取
+    }
+    if(msgType=='custom'){
+        if(msg.content.contentStringMap){
+            msgType=msg.content.contentStringMap.type;
+            // content=JSON.parse(msg.content.contentStringMap);
+        }else{
+            msgType=msg.content.type;
+            // content = msg.content;
+        }
+        // msgType=content.type;
+    }
+    //body.description
+    switch(msgType){
+        case 'text':desc=msg.content.text;break;
+        case 'image':desc='[图片]';break;
+        case 'voice':desc='[语音]';break;
+        case 'card':desc = isSingle?'[咨询消息]':'[会诊消息]';break;
+        case 'contact':desc='[联系人名片]';break;
+        case 'endl':desc='[咨询结束]';break;
+        default:break;
+    }
+    // if(!isSingle) desc=msg.fromName + ':' +desc;
+    body.description=desc;
+    //body.title
+    if(isSingle){
+    	var twoUser={};
+    	twoUser[msg.fromID]=msg.targetName;
+    	twoUser[msg.targetID]=msg.fromName;
+    	body.title=JSON.stringify(twoUser);
+    }
+    else body.title = msg.targetName;
+
+    var sendInfo={
+    	userId:msg.fromID,
+    	name:msg.fromName
+    }
+    body.url=JSON.stringify(sendInfo);
+    return body;
 }

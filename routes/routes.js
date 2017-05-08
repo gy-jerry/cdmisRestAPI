@@ -76,7 +76,7 @@ module.exports = function(app,webEntry) {
  
   // app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
-  app.post('/user/login', userCtrl.login);
+  app.post('/user/login', userCtrl.openIdLoginTest,userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
   app.get('/user/getUserID', userCtrl.getUserID);
   app.get('/user/getUserIDbyOpenId', userCtrl.getUserIDbyOpenId);
@@ -179,7 +179,7 @@ module.exports = function(app,webEntry) {
   app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');
   app.get('/communication/getConsultation', communicationCtrl.getConsultation);
-  app.post('/communication/postCommunication', communicationCtrl.postCommunication);
+  app.post('/communication/postCommunication', getNoMid.getNo(8),communicationCtrl.postCommunication);
   app.get('/communication/getCommunication', communicationCtrl.getCommunication);
 
   //task

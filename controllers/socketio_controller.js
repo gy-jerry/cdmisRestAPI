@@ -26,7 +26,7 @@ function messageSaveSend(data, url){
     else{       // 群聊
         messageType = 2;
     }
-    var sendBy = data.msg.fromName;
+    var sendBy = data.msg.fromID;
     var receiver = data.to;
 
     var url = url;
@@ -73,7 +73,6 @@ function messageSaveSend(data, url){
                 }
             }
             else{           // 群聊
-                console.log(111);
                 console.log(receiver);
                 request({
                     url: 'http://121.43.107.106:4050/communication/getTeam?teamId=' + data.msg.teamId,
