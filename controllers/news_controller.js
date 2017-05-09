@@ -222,13 +222,13 @@ function insertOneNews(userId,sendBy,req,res) {
     });
 }
 exports.insertNews = function(req, res) {
-	if (req.body.userId == null || req.body.userId == '') {
+	if (req.body.userId === null || req.body.userId === '') {
 		return res.json({result: '请填写userId'});
 	}
-	if (req.body.sendBy == null || req.body.sendBy == '') {
+	if (req.body.sendBy === null || req.body.sendBy === '') {
 		return res.json({result: '请填写sendBy'});
 	}
-	if (req.body.readOrNot == null || req.body.readOrNot == '') {
+	if (req.body.readOrNot === null || req.body.readOrNot === '') {
 		return res.json({resutl: '请填写readOrNot'});
 	}
 	var userId=req.body.userId;
@@ -253,13 +253,13 @@ exports.insertNews = function(req, res) {
 
 }
 exports.insertTeamNews = function(req, res) {
-	if (req.body.userId == null || req.body.userId == '') {
+	if (req.body.userId === null || req.body.userId === '') {
 		return res.json({result: '请填写userId'});
 	}
-	if (req.body.sendBy == null || req.body.sendBy == '') {
+	if (req.body.sendBy === null || req.body.sendBy === '') {
 		return res.json({result: '请填写sendBy'});
 	}
-	if (req.body.type == null || req.body.type == '') {
+	if (req.body.type === null || req.body.type === '') {
 		return res.json({resutl: '请填写type'});
 	}
 	var userId=req.body.userId;
