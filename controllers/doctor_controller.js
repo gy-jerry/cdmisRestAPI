@@ -1,5 +1,6 @@
 
 var	config = require('../config'),
+	webEntry = require('../settings').webEntry,
 	Doctor = require('../models/doctor'), 
 	Team = require('../models/team'), 
 	DpRelation = require('../models/dpRelation'), 
@@ -234,7 +235,10 @@ exports.getComments = function(req, res, next) {
 	var doctorObject = req.body.doctorObject;
 	var query = {doctorId:doctorObject._id};
 
-	var opts = {sort:'-_id'};
+	var limit = Number(req.query.limit);
+	var skip = Number(req.query.skip);
+
+	var opts = {limit: limit, skip:skip, sort:'-_id'};
 	var fields = {'_id':0, 'revisionInfo':0};
 	//通过子表查询主表，定义主表查询路径及输出内容
 	var populate = {
@@ -244,6 +248,32 @@ exports.getComments = function(req, res, next) {
 			'userId':1, 'name':1, 'photoUrl':1
 		}
 	};
+
+	var _Url = '';
+	var userIdUrl = 'userId=' + req.query.userId;
+	var limitUrl = '';
+	var skipUrl = '';
+
+	if (limit != null && limit != undefined) {
+		limitUrl = 'limit=' + String(limit);
+	}
+	if (skip != null && skip != undefined) {
+		skipUrl = 'skip=' + String(skip + limit);
+	}
+	if (userIdUrl != '' || limitUrl != '' || skipUrl != '') {
+		_Url = _Url + '?';
+		if (userIdUrl != '') {
+			_Url = _Url + userIdUrl + '&';
+		}
+		if (limitUrl != '') {
+			_Url = _Url + limitUrl + '&';
+		}
+		if (skipUrl != '') {
+			_Url = _Url + skipUrl + '&';
+		}
+		_Url = _Url.substr(0, _Url.length - 1)
+	}
+	req.body.nexturl = webEntry.domain + ':' + webEntry.restPort + '/doctor/getDoctorInfo' + _Url
 
 	Comment.getSome(query, function(err, items) {
 		if (err) {
@@ -327,7 +357,7 @@ exports.getDoctorInfo = function(req, res) {
 			return res.status(422).send(err.message);
 		}
 		
-		res.json({results:upDoctor, comments: comments});
+		res.json({results:upDoctor, comments: comments, nexturl:req.body.nexturl});
 	}, {new: true});
 }
 
