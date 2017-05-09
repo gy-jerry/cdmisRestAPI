@@ -234,14 +234,14 @@ exports.getComments = function(req, res, next) {
 	var doctorObject = req.body.doctorObject;
 	var query = {doctorId:doctorObject._id};
 
-	var opts = '';
+	var opts = {sort:'-_id'};
 	var fields = {'_id':0, 'revisionInfo':0};
 	//通过子表查询主表，定义主表查询路径及输出内容
 	var populate = {
 		path: 'patientId', 
 		select: {
 			'_id':0, 
-			'userId':1, 'name':1
+			'userId':1, 'name':1, 'photoUrl':1
 		}
 	};
 
