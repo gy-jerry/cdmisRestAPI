@@ -52,7 +52,7 @@ function messageSaveSend(data, url){
             // do-something
         }
         else{
-            console.log('success 6');
+            // console.log('success 6');
             // send message
             /// send to sendBy
             if(userServer.hasOwnProperty(sendBy)){         // 用户在线
@@ -73,7 +73,7 @@ function messageSaveSend(data, url){
                 }
             }
             else{           // 群聊
-                console.log(receiver);
+                // console.log(receiver);
                 request({
                     url: 'http://121.43.107.106:4050/communication/getTeam?teamId=' + data.msg.teamId,
                     method: 'GET',
@@ -97,7 +97,7 @@ function messageSaveSend(data, url){
                         console.log(err.errmsg);
                     }
                     else{
-                        console.log(response.body);
+                        // console.log(response.body);
                         var sponsorId = response.body.results.sponsorId;
                         var members = response.body.results.members;
                         members.push({"userId":sponsorId});
@@ -127,7 +127,7 @@ function messageSaveSend(data, url){
 exports.chat = function (io, socket) {
     count += 1;
     socket.on('newUser',function(data){
-        console.log('newUser: ' +data.user_id);
+        // console.log('newUser: ' +data.user_id);
         var nickname = data.user_name,
             user_id = data.user_id;
         socket.id = user_id;
@@ -149,7 +149,7 @@ exports.chat = function (io, socket) {
         // }
     })
     socket.on('disconnect',function(){ //用户注销登陆执行内容
-        console.log('disconnect');
+        // console.log('disconnect');
         count -= 1; 
         var id = socket.id
         delete userServer[id]

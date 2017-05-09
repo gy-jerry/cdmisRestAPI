@@ -577,13 +577,17 @@ exports.messageTemplate = function(req, res) {
   var token = tokenObject.token;
 
   var jsondata = req.body || {};
+  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  var xmlString = xmlBuilder.buildObject(jsondata);
+
 
   request({
     url: wxApis.messageTemplate + '?access_token=' + token,
     method: 'POST',
-    body: jsondata
+    body: xmlString
   }, function(err, response, body){
-    if (!err && response.statusCode == 200) {       
+    if (!err && response.statusCode == 200) {   
+
       res.json({results:body});
     }
     else{
