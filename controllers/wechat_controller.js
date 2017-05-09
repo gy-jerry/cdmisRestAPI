@@ -655,6 +655,19 @@ var download = function(url, dir, filename) {
 
 
 
+// 消息模板
+exports.receiveTextMessage = function(req, res) {
+  var body = '';
+  req.on('data',function(data){
+    body += data;
+    // console.log("partial: " + body);
+  });
+  req.on('end',function(){
+    console.log("finish: " + body);
+  });
+  response.writeHead(200, {'Content-Type': 'text/html'});
+  response.end('success');
+}
 
 
 

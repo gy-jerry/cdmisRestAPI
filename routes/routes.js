@@ -238,7 +238,7 @@ module.exports = function(app,webEntry) {
   app.get('/wechat/messageTemplate', Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
   // 下载
   app.get('/wechat/download', Wechat.baseTokenManager("access_token"), wechatCtrl.download);
-
+  app.get('/wechat/receiveTextMessage', wechatCtrl.receiveTextMessage);
 
 
   //app.get('/find',function(req, res){
