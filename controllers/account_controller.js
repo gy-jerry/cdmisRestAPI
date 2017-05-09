@@ -488,7 +488,9 @@ exports.modifyCounts = function(req, res) {
 		}
 	}
 	else if (req.modify > 0) {
-		var modifyResult = req.count + req.modify;
+		//无论之前req.count是否大于0，均为3，保证这个数字不大于3
+		// var modifyResult = req.count + req.modify;
+		var modifyResult = 3;
 		var upObj = {
 			$pull: {
 				times: {
