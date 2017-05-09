@@ -282,10 +282,10 @@ exports.newPatientDetail = function(req, res) {
 	if (req.body.city != null){
 		patientData['address.city'] = req.body.city;
 	}
-	if (req.body.operationTime != null){
+	if (req.body.operationTime != null && req.body.operationTime != ''){
 		patientData['operationTime'] = req.body.operationTime;
 	}
-	if (req.body.lastVisittime != null){
+	if (req.body.lastVisittime != null && req.body.lastVisittime != ''){
 		patientData['lastVisit.time'] = req.body.lastVisittime;
 	}
 	if (req.body.lastVisithospital != null){
@@ -330,7 +330,7 @@ exports.editPatientDetail = function(req, res) {
 	if (req.body.photoUrl != null){
 		upObj['photoUrl'] = req.body.photoUrl;
 	}
-	if (req.body.birthday != null){
+	if (req.body.birthday != null && req.body.birthday != ''){
 		upObj['birthday'] = new Date(req.body.birthday);
 	}
 	if (req.body.gender != null){
@@ -363,8 +363,8 @@ exports.editPatientDetail = function(req, res) {
 	if (req.body.class_info != null){
 		upObj['class_info'] = req.body.class_info;
 	}
-	if (req.body.operationTime != null){
-		upObj['operationTime'] = req.body.operationTime;
+	if (req.body.operationTime != null && req.body.operationTime != ''){
+		upObj['operationTime'] = new Date(req.body.operationTime);
 	}
 	if (req.body.hypertension != null){
 		upObj['hypertension'] = req.body.hypertension;
@@ -372,14 +372,14 @@ exports.editPatientDetail = function(req, res) {
 	if (req.body.allergic != null){
 		upObj['allergic'] = req.body.allergic;
 	}
-	if (req.body.lastVisittime != null){
-		upObj['lastVisit.time'] = new Date(req.body.lastVisit.time);
+	if (req.body.lastVisittime != null && req.body.lastVisittime != ''){
+		upObj['lastVisit.time'] = new Date(req.body.lastVisittime);
 	}
 	if (req.body.lastVisithospital != null){
-		upObj['lastVisit.hospital'] = req.body.lastVisit.hospital;
+		upObj['lastVisit.hospital'] = req.body.lastVisithospital;
 	}
 	if (req.body.lastVisitdiagnosis != null){
-		upObj['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
+		upObj['lastVisit.diagnosis'] = req.body.lastVisitdiagnosis;
 	}
 	//return res.json({query: query, upObj: upObj});
 	Patient.updateOne(query, upObj, function(err, upPatient) {
