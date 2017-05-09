@@ -548,7 +548,7 @@ exports.modifyCounts = function(req, res) {
 		});
 	}
 	else if (req.modify == 999) {
-		//无论之前req.count是否大于0，均为3，保证这个数字不大于3
+		//问诊情况，将count置为999
 		var modifyResult = 999;
 		var upObj = {
 			$pull: {
@@ -607,7 +607,7 @@ exports.modifyCounts = function(req, res) {
 		});
 	}
 	else if (req.modify == 900) {
-		//无论之前req.count是否大于0，均为3，保证这个数字不大于3
+		//问诊结束，将count置为0
 		var modifyResult = 0;
 		var upObj = {
 			$pull: {
