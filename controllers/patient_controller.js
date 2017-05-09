@@ -372,15 +372,18 @@ exports.editPatientDetail = function(req, res) {
 	if (req.body.allergic != null){
 		upObj['allergic'] = req.body.allergic;
 	}
-	if (req.body.lastVisit.time != null && req.body.lastVisit.time != ''){
-		upObj['lastVisit.time'] = new Date(req.body.lastVisit.time);
+	if (req.body.lastVisit != null) {
+		if (req.body.lastVisit.time != null && req.body.lastVisit.time != ''){
+			upObj['lastVisit.time'] = new Date(req.body.lastVisit.time);
+		}
+		if (req.body.lastVisit.hospital != null){
+			upObj['lastVisit.hospital'] = req.body.lastVisit.hospital;
+		}
+		if (req.body.lastVisit.diagnosis != null){
+			upObj['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
+		}
 	}
-	if (req.body.lastVisit.hospital != null){
-		upObj['lastVisit.hospital'] = req.body.lastVisit.hospital;
-	}
-	if (req.body.lastVisit.diagnosis != null){
-		upObj['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
-	}
+	
 	//return res.json({query: query, upObj: upObj});
 	Patient.updateOne(query, upObj, function(err, upPatient) {
 		if (err){
