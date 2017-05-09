@@ -91,8 +91,18 @@ function insertOneNews(userId,sendBy,req,res) {
 		sendBy: sendBy,
 		readOrNot: req.body.readOrNot
 	};
+	var query1 = {
+		userId:userId,
+		sendBy:sendBy
+	};
+	var query2 = {
+		sendBy:userId,
+		userId:sendBy
+	};
 	if (req.body.type != null){
 		newData['type'] = req.body.type;
+		query1['type'] = req.body.type;
+		query2['type'] = req.body.type;
 	}
 	if (req.body.messageId != null){
 		newData['messageId'] = req.body.messageId;
@@ -114,14 +124,7 @@ function insertOneNews(userId,sendBy,req,res) {
 	}
 
 	// return res.json({messageData:messageData})
-	var query1 = {
-		userId:userId,
-		sendBy:sendBy
-	};
-	var query2 = {
-		sendBy:userId,
-		userId:sendBy
-	};
+
 	News.getOne(query1, function(err, item1) {
         if (err) {
         	if(res!=undefined){
