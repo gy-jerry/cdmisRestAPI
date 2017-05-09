@@ -285,14 +285,14 @@ exports.newPatientDetail = function(req, res) {
 	if (req.body.operationTime != null && req.body.operationTime != ''){
 		patientData['operationTime'] = req.body.operationTime;
 	}
-	if (req.body.lastVisittime != null && req.body.lastVisittime != ''){
-		patientData['lastVisit.time'] = req.body.lastVisittime;
+	if (req.body.lastVisit.time != null && req.body.lastVisit.time != ''){
+		patientData['lastVisit.time'] = req.body.lastVisit.time;
 	}
-	if (req.body.lastVisithospital != null){
-		patientData['lastVisit.hospital'] = req.body.lastVisithospital;
+	if (req.body.lastVisit.hospital != null){
+		patientData['lastVisit.hospital'] = req.body.lastVisit.hospital;
 	}
-	if (req.body.lastVisitdiagnosis != null){
-		patientData['lastVisit.diagnosis'] = req.body.lastVisitdiagnosis;
+	if (req.body.lastVisit.diagnosis != null){
+		patientData['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
 	}
 	//return res.status(200).send(counselData);
 	var newPatient = new Patient(patientData);
@@ -372,14 +372,14 @@ exports.editPatientDetail = function(req, res) {
 	if (req.body.allergic != null){
 		upObj['allergic'] = req.body.allergic;
 	}
-	if (req.body.lastVisittime != null && req.body.lastVisittime != ''){
-		upObj['lastVisit.time'] = new Date(req.body.lastVisittime);
+	if (req.body.lastVisit.time != null && req.body.lastVisit.time != ''){
+		upObj['lastVisit.time'] = new Date(req.body.lastVisit.time);
 	}
-	if (req.body.lastVisithospital != null){
-		upObj['lastVisit.hospital'] = req.body.lastVisithospital;
+	if (req.body.lastVisit.hospital != null){
+		upObj['lastVisit.hospital'] = req.body.lastVisit.hospital;
 	}
-	if (req.body.lastVisitdiagnosis != null){
-		upObj['lastVisit.diagnosis'] = req.body.lastVisitdiagnosis;
+	if (req.body.lastVisit.diagnosis != null){
+		upObj['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
 	}
 	//return res.json({query: query, upObj: upObj});
 	Patient.updateOne(query, upObj, function(err, upPatient) {

@@ -5,8 +5,10 @@ var mongoose = require('mongoose');
 var messageSchema = new mongoose.Schema({
 	messageId:String,
 	userId:String,
+
 	sendBy: String, 
 	readOrNot: Number, 
+
 	type:Number,
 	time:Date,
 	title:String,

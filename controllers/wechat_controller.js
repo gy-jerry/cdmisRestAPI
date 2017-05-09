@@ -1,6 +1,7 @@
 var request = require('request'),
     xml2js = require('xml2js'),
     https = require('https'),
+    moment = require('moment'),
     fs = require('fs');
 
 var config = require('../config'),
@@ -144,7 +145,8 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
     }, function (err, response, body) {
         if (err) return res.status(401).send('换取网页授权access_token失败!');
         
-        var wechatData = {
+      
+          var wechatData = {
             access_token: body.access_token, //获取用户信息的access_token
             expires_in: body.expires_in,
             refresh_token: body.refresh_token,
@@ -152,18 +154,20 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
             scope: body.scope//,
             // unionid: body.unionid,
             // api_type: 1
-        }
-        if(wechatData.scope == 'snsapi_base')
-        {
+          }
+          if(wechatData.scope == 'snsapi_base')
+          {
             return res.json({results:wechatData})
-        }
-        else if (wechatData.scope == 'snsapi_userinfo')
-        {
+          }
+          else if (wechatData.scope == 'snsapi_userinfo')
+          {
             req.wechatData = wechatData;
             req.state = state;
 
             next();
-        }
+          } 
+       
+        
       });
 };
 
@@ -260,10 +264,10 @@ exports.getPaymentOrder = function(req, res, next) {
     }
     if(item){
       var orderObject = {};
-      orderObject['orderNo'] = orderNo;
+      orderObject['orderNo'] = req.query.orderNo;
       orderObject['goodsInfo'] = item.goodsInfo;
       orderObject['money'] = item.money;
-      orderObject['attach'] = req.status;
+      orderObject['attach'] = "123";        // req.state;
       req.orderObject = orderObject;
       next();
     }
@@ -278,7 +282,7 @@ exports.getPaymentOrder = function(req, res, next) {
 // 统一下单   请求api获取prepay_id的值
 exports.addOrder = function(req, res, next) {
   var orderObject = req.orderObject || {};
-  console.log('orderObject', orderObject);
+  // console.log('orderObject', orderObject);
 
   var currentDate = new Date();
   var ymdhms = moment(currentDate).format('YYYYMMDDhhmmss');
@@ -301,12 +305,12 @@ exports.addOrder = function(req, res, next) {
     out_trade_no: out_trade_no + '-' + commonFunc.getRandomSn(4),   // 商户订单号
     
     total_fee: total_fee,   // 标价金额
-    spbill_create_ip: req.ip,   // 终端IP
+    spbill_create_ip: req.query.ip,   // 终端IP
     time_start: ymdhms,     // 交易起始时间
     // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
     notify_url: 'http://121.43.107.106:4050/wechat/payResult',   // 通知地址
     trade_type: 'JSAPI',    // 交易类型
-    openid: req.wechatData.openid    // 用户标识
+    openid: req.query.openid    // 用户标识
   };
 
   var signStr = commonFunc.rawSort(paramData);
@@ -349,8 +353,8 @@ exports.getPaySign = function(req, res, next) {
 
   var wcPayParams = {
     "appId" : wxApiUserObject.appid,     //公众号名称，由商户传入
-    "timeStamp" : commonFunc.createTimestamp,         //时间戳，自1970年以来的秒数
-    "nonceStr" : commonFunc.createNonceStr, //随机串
+    "timeStamp" : commonFunc.createTimestamp(),         //时间戳，自1970年以来的秒数
+    "nonceStr" : commonFunc.createNonceStr(), //随机串
     // 通过统一下单接口获取
     "package" : "prepay_id="+prepay_id,
     "signType" : "MD5"        //微信签名方式
@@ -362,11 +366,11 @@ exports.getPaySign = function(req, res, next) {
 
   res.json({ results: {
     appId:wxApiUserObject.appid, 
-    timestamp: paramData.timeStamp,
-    nonceStr: paramData.nonceStr,
-    package: paramData.package,
-    signType: paramData.signType,
-    paySign: paramData.paySign
+    timestamp: wcPayParams.timeStamp,
+    nonceStr: wcPayParams.nonceStr,
+    package: wcPayParams.package,
+    signType: wcPayParams.signType,a
+    paySign: wcPayParams.paySign
   }});
 }
 
@@ -607,7 +611,7 @@ exports.download = function(req, res) {
       request.head(fileurl, function(err, response1, body) {
         request(fileurl).pipe(fs.createWriteStream(dir + '/' + name));
         
-        console.log("Done: " + fileurl);
+        // console.log("Done: " + fileurl);
         res.json({results:"success"});
       });   
     }    

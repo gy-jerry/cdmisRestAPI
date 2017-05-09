@@ -37,6 +37,7 @@ var doctorCtrl = require('../controllers/doctor_controller'),
     accountCtrl = require('../controllers/account_controller'), 
     communicationCtrl = require('../controllers/communication_controller'), 
     messageCtrl = require('../controllers/message_controller'), 
+    newsCtrl = require('../controllers/news_controller'), 
     insuranceCtrl = require('../controllers/insurance_controller');
 
 var wechatCtrl = require('../controllers/wechat_controller');
@@ -75,7 +76,7 @@ module.exports = function(app,webEntry) {
  
   // app.post('/user/registerWithOpenId',userCtrl.registerWithOpenIdTest,getNoMid.getNo(1), userCtrl.registerWithOpenId);
   app.post('/user/reset', userCtrl.reset);
-  app.post('/user/login', userCtrl.login);
+  app.post('/user/login', userCtrl.openIdLoginTest,userCtrl.login);
   app.post('/user/logout', userCtrl.logout);
   app.get('/user/getUserID', userCtrl.getUserID);
   app.get('/user/getUserIDbyOpenId', userCtrl.getUserIDbyOpenId);
@@ -140,7 +141,7 @@ module.exports = function(app,webEntry) {
 
   //comment_query
   app.get('/comment/getComments', doctorCtrl.getDoctorObject, commentCtrl.getCommentsByDoc);
-
+  app.get('/comment/getCommentsByC', commentCtrl.getCommentsByCounselId);
   //vitalSign_query
   app.get('/vitalSign/getVitalSigns', patientCtrl.getPatientObject, vitalSignCtrl.getVitalSigns);
   app.post('/vitalSign/insertVitalSign', vitalSignCtrl.getPatientObject, vitalSignCtrl.getVitalSign, vitalSignCtrl.insertData);
@@ -158,6 +159,12 @@ module.exports = function(app,webEntry) {
   app.post('/message/changeMessageStatus', messageCtrl.changeMessageStatus);
   app.post('/message/insertMessage', getNoMid.getNo(6), messageCtrl.insertMessage);
 
+  //new
+  app.get('/new/getNews', newsCtrl.getNews);
+  app.get('/new/getNewsByReadOrNot', newsCtrl.getNewsByReadOrNot);
+  app.post('/new/insertNews', newsCtrl.insertNews);
+  app.post('/new/insertTeamNews', newsCtrl.insertTeamNews);
+  
   //communication
   app.get('/communication/getCounselReport', communicationCtrl.getCounselReport);
   app.post('/communication/insertMember', communicationCtrl.insertMember, communicationCtrl.updateNumber);
@@ -172,7 +179,7 @@ module.exports = function(app,webEntry) {
   app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');
   app.get('/communication/getConsultation', communicationCtrl.getConsultation);
-  app.post('/communication/postCommunication', communicationCtrl.postCommunication);
+  app.post('/communication/postCommunication', getNoMid.getNo(8),communicationCtrl.postCommunication);
   app.get('/communication/getCommunication', communicationCtrl.getCommunication);
 
   //task
@@ -216,7 +223,8 @@ module.exports = function(app,webEntry) {
   app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
   // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
   // 输入：微信用户授权的code 商户系统生成的订单号 
-  app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
+  // app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
+  app.get('/wechat/addOrder', wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
   // 订单支付结果回调 
   app.get('/wechat/payResult', wechatCtrl.payResult);
   // 查询订单   orderNo 
