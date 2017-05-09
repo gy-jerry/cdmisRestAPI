@@ -369,7 +369,7 @@ exports.getPaySign = function(req, res, next) {
     timestamp: wcPayParams.timeStamp,
     nonceStr: wcPayParams.nonceStr,
     package: wcPayParams.package,
-    signType: wcPayParams.signType,a
+    signType: wcPayParams.signType,
     paySign: wcPayParams.paySign
   }});
 }
