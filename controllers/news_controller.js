@@ -91,8 +91,18 @@ function insertOneNews(userId,sendBy,req,res) {
 		sendBy: sendBy,
 		readOrNot: req.body.readOrNot
 	};
+	var query1 = {
+		userId:userId,
+		sendBy:sendBy
+	};
+	var query2 = {
+		sendBy:userId,
+		userId:sendBy
+	};
 	if (req.body.type != null){
 		newData['type'] = req.body.type;
+		query1['type'] = req.body.type;
+		query2['type'] = req.body.type;
 	}
 	if (req.body.messageId != null){
 		newData['messageId'] = req.body.messageId;
@@ -114,14 +124,7 @@ function insertOneNews(userId,sendBy,req,res) {
 	}
 
 	// return res.json({messageData:messageData})
-	var query1 = {
-		userId:userId,
-		sendBy:sendBy
-	};
-	var query2 = {
-		sendBy:userId,
-		userId:sendBy
-	};
+
 	News.getOne(query1, function(err, item1) {
         if (err) {
         	if(res!=undefined){
@@ -219,13 +222,13 @@ function insertOneNews(userId,sendBy,req,res) {
     });
 }
 exports.insertNews = function(req, res) {
-	if (req.body.userId == null || req.body.userId == '') {
+	if (req.body.userId === null || req.body.userId === '') {
 		return res.json({result: '请填写userId'});
 	}
-	if (req.body.sendBy == null || req.body.sendBy == '') {
+	if (req.body.sendBy === null || req.body.sendBy === '') {
 		return res.json({result: '请填写sendBy'});
 	}
-	if (req.body.readOrNot == null || req.body.readOrNot == '') {
+	if (req.body.readOrNot === null || req.body.readOrNot === '') {
 		return res.json({resutl: '请填写readOrNot'});
 	}
 	var userId=req.body.userId;
@@ -250,13 +253,13 @@ exports.insertNews = function(req, res) {
 
 }
 exports.insertTeamNews = function(req, res) {
-	if (req.body.userId == null || req.body.userId == '') {
+	if (req.body.userId === null || req.body.userId === '') {
 		return res.json({result: '请填写userId'});
 	}
-	if (req.body.sendBy == null || req.body.sendBy == '') {
+	if (req.body.sendBy === null || req.body.sendBy === '') {
 		return res.json({result: '请填写sendBy'});
 	}
-	if (req.body.type == null || req.body.type == '') {
+	if (req.body.type === null || req.body.type === '') {
 		return res.json({resutl: '请填写type'});
 	}
 	var userId=req.body.userId;

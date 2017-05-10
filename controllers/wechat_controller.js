@@ -369,7 +369,7 @@ exports.getPaySign = function(req, res, next) {
     timestamp: wcPayParams.timeStamp,
     nonceStr: wcPayParams.nonceStr,
     package: wcPayParams.package,
-    signType: wcPayParams.signType,a
+    signType: wcPayParams.signType,
     paySign: wcPayParams.paySign
   }});
 }
@@ -577,13 +577,17 @@ exports.messageTemplate = function(req, res) {
   var token = tokenObject.token;
 
   var jsondata = req.body || {};
+  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  var xmlString = xmlBuilder.buildObject(jsondata);
+
 
   request({
     url: wxApis.messageTemplate + '?access_token=' + token,
     method: 'POST',
-    body: jsondata
+    body: xmlString
   }, function(err, response, body){
-    if (!err && response.statusCode == 200) {       
+    if (!err && response.statusCode == 200) {   
+
       res.json({results:body});
     }
     else{
@@ -651,6 +655,19 @@ var download = function(url, dir, filename) {
 
 
 
+// 消息模板
+exports.receiveTextMessage = function(req, res) {
+  var body = '';
+  req.on('data',function(data){
+    body += data;
+    // console.log("partial: " + body);
+  });
+  req.on('end',function(){
+    console.log("finish: " + body);
+  });
+  response.writeHead(200, {'Content-Type': 'text/html'});
+  response.end('success');
+}
 
 
 
