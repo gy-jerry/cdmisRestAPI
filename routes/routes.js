@@ -27,6 +27,7 @@ var dictTypeTwoCtrl = require('../controllers/dictTypeTwo_controller'),
     taskCtrl = require('../controllers/task_controller'),
     orderCtrl = require('../controllers/order_controller'),
     complianceCtrl = require('../controllers/compliance_controller');
+    jpushCtrl = require('../controllers/jpush_controller');
 
 // controllers updated by GY 
 var doctorCtrl = require('../controllers/doctor_controller'), 
@@ -240,6 +241,11 @@ module.exports = function(app,webEntry) {
   app.get('/wechat/download', Wechat.baseTokenManager("access_token"), wechatCtrl.download);
   app.get('/wechat/receiveTextMessage', wechatCtrl.receiveTextMessage);
 
+
+  // jpush
+  app.post('/jm/users', jpushCtrl.register);
+  app.post('/jm/groups', jpushCtrl.createGroup);
+  app.post('/jm/groups/members', jpushCtrl.updateGroup);
 
   //app.get('/find',function(req, res){
   //  var url_parts = url.parse(req.url, true);
