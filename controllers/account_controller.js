@@ -487,10 +487,128 @@ exports.modifyCounts = function(req, res) {
 			});
 		}
 	}
-	else if (req.modify > 0) {
+	else if (req.modify == 3) {
 		//无论之前req.count是否大于0，均为3，保证这个数字不大于3
 		// var modifyResult = req.count + req.modify;
 		var modifyResult = 3;
+		var upObj = {
+			$pull: {
+				times: {
+					doctorId: req.doctorId
+				}
+			}
+		};
+		Account.update(query, upObj, function(err, upaccountadd) {
+			if (err) {
+				return res.status(500).send(err.errmsg);
+			}
+			if (upaccountadd.nModified == 0) {
+				var upObjfirst = {
+					$addToSet: {
+						times: {
+							count:modifyResult, 
+							doctorId: req.doctorId
+						}
+					}
+				};
+				Account.update(query, upObjfirst, function(err, upaccountfirst) {
+					if (err) {
+						return res.status(500).send(err.errmsg);
+					}
+					if (upaccountfirst.nModified == 0) {
+						return res.json({result:'修改成功', updateResult:upaccountfirst});
+					}
+					else if (upaccountfirst.nModified != 0) {
+						return res.json({result:'修改成功', updateResult:upaccountfirst});
+					}
+				});
+			}
+			else if (upaccountadd.nModified != 0) {
+				var upObjnotfirst = {
+					$addToSet: {
+						times: {
+							count: modifyResult, 
+							doctorId: req.doctorId
+						}
+					}
+				};
+				Account.update(query, upObjnotfirst, function(err, upaccountnotfirst) {
+					if (err) {
+						return res.status(500).send(err.errmsg);
+					}
+					if (upaccountnotfirst.nModified == 0) {
+						return res.json({result:'修改失败，讲道理这句话不会执行'});
+					}
+					else if (upaccountnotfirst.nModified != 0) {
+						return res.json({result:'修改成功', updateResult:upaccountnotfirst});
+					}
+				});
+				// return res.json({result: '修改成功', updateResult: upaccountadd});
+			}
+		});
+	}
+	else if (req.modify == 999) {
+		//问诊情况，将count置为999
+		var modifyResult = 999;
+		var upObj = {
+			$pull: {
+				times: {
+					doctorId: req.doctorId
+				}
+			}
+		};
+		Account.update(query, upObj, function(err, upaccountadd) {
+			if (err) {
+				return res.status(500).send(err.errmsg);
+			}
+			if (upaccountadd.nModified == 0) {
+				var upObjfirst = {
+					$addToSet: {
+						times: {
+							count:modifyResult, 
+							doctorId: req.doctorId
+						}
+					}
+				};
+				Account.update(query, upObjfirst, function(err, upaccountfirst) {
+					if (err) {
+						return res.status(500).send(err.errmsg);
+					}
+					if (upaccountfirst.nModified == 0) {
+						return res.json({result:'修改成功', updateResult:upaccountfirst});
+					}
+					else if (upaccountfirst.nModified != 0) {
+						return res.json({result:'修改成功', updateResult:upaccountfirst});
+					}
+				});
+			}
+			else if (upaccountadd.nModified != 0) {
+				var upObjnotfirst = {
+					$addToSet: {
+						times: {
+							count: modifyResult, 
+							doctorId: req.doctorId
+						}
+					}
+				};
+				Account.update(query, upObjnotfirst, function(err, upaccountnotfirst) {
+					if (err) {
+						return res.status(500).send(err.errmsg);
+					}
+					if (upaccountnotfirst.nModified == 0) {
+						return res.json({result:'修改失败，讲道理这句话不会执行'});
+					}
+					else if (upaccountnotfirst.nModified != 0) {
+						return res.json({result:'修改成功', updateResult:upaccountnotfirst});
+					}
+				});
+				// return res.json({result: '修改成功', updateResult: upaccountadd});
+			}
+		});
+	}
+	else if (req.modify == 900) {
+		//问诊结束，将count置为0
+		var modifyResult = 0;
 		var upObj = {
 			$pull: {
 				times: {
