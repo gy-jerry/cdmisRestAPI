@@ -531,7 +531,7 @@ exports.postCommunication = function(req, res) {
         var msg=communicationInfo.content;
         if(msg.targetType=='single'){
             request({
-                url:'http://121.43.107.106:4050/new/insertNews',
+                url:'http://' + webEntry.domain + ':4050/new/insertNews',
                 method:'POST',
                 body:bodyGen(msg,communicationInfo['messageNo']),
                 json:true
@@ -541,7 +541,7 @@ exports.postCommunication = function(req, res) {
             });
         }else{
             request({
-                url:'http://121.43.107.106:4050/new/insertTeamNews',
+                url:'http://' + webEntry.domain + ':4050/new/insertTeamNews',
                 method:'POST',
                 body:bodyGen(msg,communicationInfo['_id']),
                 json:true

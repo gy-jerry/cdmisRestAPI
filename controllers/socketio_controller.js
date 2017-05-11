@@ -1,5 +1,6 @@
 // var config = require('../config');
 var request = require('request');
+var webEntry = require('../settings').webEntry;
 
 var userServer = {};
 var userList = {};
@@ -34,7 +35,7 @@ function messageSaveSend(data, url){
     data.msg.status = 'send_success';
 
     // save data
-    var url = 'http://121.43.107.106:4050/communication/postCommunication';
+    var url = 'http://' + webEntry.domain + ':4050/communication/postCommunication';
     var jsondata = {
         messageType: messageType,
         sendBy:sendBy,
@@ -75,7 +76,7 @@ function messageSaveSend(data, url){
             else{           // 群聊
                 // console.log(receiver);
                 request({
-                    url: 'http://121.43.107.106:4050/communication/getTeam?teamId=' + data.msg.teamId,
+                    url: 'http://' + webEntry.domain + ':4050/communication/getTeam?teamId=' + data.msg.teamId,
                     method: 'GET',
                     json:true
                 }, function(err, response){
@@ -162,7 +163,7 @@ exports.chat = function (io, socket) {
         var contentType = data.msg.contentType;
         // var toUserId = data.to;
         
-        var url = 'http://121.43.107.106:4050/wechat/download';
+        var url = 'http://'+ webEntry.domain +':4050/wechat/download';
 
         if(contentType == 'image' || contentType == 'voice'){           // image voice
             var mediaId = data.msg.content.mediaId;
