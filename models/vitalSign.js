@@ -10,7 +10,8 @@ var vitalSignSchema = new mongoose.Schema({
 	  {
 	  	_id:0, 
 	  	time: Date, 
-	  	value: Number
+	  	value: Number, 
+	  	value2: Number
 	  }
 	], 
 	unit: String, 

@@ -1,4 +1,0 @@
-[2017-05-11 19:49:00.053] [INFO] cheese - ::ffff:183.157.160.31 - - "GET /doctor/getDoctorInfo?userId=doc01 HTTP/1.1" 200 36 "" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36"
-[2017-05-11 21:30:36.298] [INFO] cheese - ::ffff:183.157.160.31 - - "GET /new/getNewsByReadOrNot?userId=U123&type=4&readOrNot=0 HTTP/1.1" 200 14 "" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36"
-[2017-05-11 21:30:48.522] [INFO] cheese - ::ffff:183.157.160.31 - - "GET /dict/typeTwo?category=patient_class HTTP/1.1" 200 1552 "" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36"
-[2017-05-11 21:37:12.929] [INFO] cheese - ::ffff:183.157.160.31 - - "GET /dict/typeTwo?category=patient_class HTTP/1.1" 200 1552 "" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36"
