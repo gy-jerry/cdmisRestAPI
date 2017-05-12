@@ -3,9 +3,10 @@ var f = require('util').format;
 
 var user = "rest";
 var password = "zjubme319";
-var ip="121.43.107.106";
+var ip_in = "172.16.156.6";
 var port="27017";
 var db = "cdmis";
+var ip = "121.196.221.44"
 
 module.exports = {
   webEntry: {
