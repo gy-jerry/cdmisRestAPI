@@ -529,6 +529,10 @@ exports.postCommunication = function(req, res) {
     	}
 
         var msg=communicationInfo.content;
+        // do not save into news
+        if(msg.contentType == 'custom' && (msg.content.type == 'count-notice'||msg.content.type == 'counsel-upgrade')){
+        	return res.json({result:'新建成功', newResults: communicationInfo});
+        }
         if(msg.targetType=='single'){
             request({
                 url:'http://' + webEntry.domain + ':4050/new/insertNews',
@@ -720,10 +724,10 @@ function bodyGen(msg,MESSAGE_ID){
     }
     else body.title = msg.targetName;
 
-    var sendInfo={
-    	userId:msg.fromID,
-    	name:msg.fromName
-    }
-    body.url=JSON.stringify(sendInfo);
+    // var sendInfo={
+    // 	userId:msg.fromID,
+    // 	name:msg.fromName
+    // }
+    body.url = JSON.stringify(msg);
     return body;
 }

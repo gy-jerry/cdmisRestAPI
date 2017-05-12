@@ -285,14 +285,16 @@ exports.newPatientDetail = function(req, res) {
 	if (req.body.operationTime != null && req.body.operationTime != ''){
 		patientData['operationTime'] = req.body.operationTime;
 	}
-	if (req.body.lastVisit.time != null && req.body.lastVisit.time != ''){
-		patientData['lastVisit.time'] = req.body.lastVisit.time;
-	}
-	if (req.body.lastVisit.hospital != null){
-		patientData['lastVisit.hospital'] = req.body.lastVisit.hospital;
-	}
-	if (req.body.lastVisit.diagnosis != null){
-		patientData['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
+	if (req.body.lastVisit != null) {
+		if (req.body.lastVisit.time != null && req.body.lastVisit.time != ''){
+			upObj['lastVisit.time'] = new Date(req.body.lastVisit.time);
+		}
+		if (req.body.lastVisit.hospital != null){
+			upObj['lastVisit.hospital'] = req.body.lastVisit.hospital;
+		}
+		if (req.body.lastVisit.diagnosis != null){
+			upObj['lastVisit.diagnosis'] = req.body.lastVisit.diagnosis;
+		}
 	}
 	//return res.status(200).send(counselData);
 	var newPatient = new Patient(patientData);
