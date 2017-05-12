@@ -110,21 +110,39 @@ exports.insertData = function(req, res) {
     if (req.body.datavalue == null || req.body.datavalue == '') {
         return res.json({result:'请填写datavalue!'});
     }
+    //datavalue2用于存储血压值
+    if (req.body.datavalue2 != null && req.body.datavalue2 != '') {
+        var datavalue2 = req.body.datavalue2;
+    }
+    // console.log(datavalue2)
 	var query = {
 		patientId: req.body.patientObject._id, 
 		type: req.body.type, 
 		code: req.body.code, 
 		date: new Date(req.body.date)
 	};
+	if (datavalue2 != undefined) {
+        var upObj = {
+            $push: {
+                data: {
+                    time:new Date(req.body.datatime), 
+                    value:req.body.datavalue, 
+                    value2:datavalue2
+                }
+            }
+        };
+    }
+    else {
+        var upObj = {
+            $push: {
+                data: {
+                    time:new Date(req.body.datatime), 
+                    value:req.body.datavalue
+                }
+            }
+        };
+    }
 	
-	var upObj = {
-		$push: {
-			data: {
-				time:new Date(req.body.datatime), 
-				value:req.body.datavalue
-			}
-		}
-	};
 	//return res.json({query: query, upObj: upObj});
 	VitalSign.update(query, upObj, function(err, updata) {
 		if (err){
