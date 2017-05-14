@@ -7,7 +7,11 @@ var insuranceMsgSchema = new mongoose.Schema({
 		insuranceId: String,
 		time: Date,
 		description: String}],
-	count: {type:Number, default:0}
+	count: {type:Number, default:0},
+	preference:{
+		status:Number,
+		time:Date
+	}
 });
 
 

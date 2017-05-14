@@ -149,3 +149,36 @@ exports.getInsMsg = function(req, res) {
     	
 	}, opts, fields, populate);
 }
+
+exports.setPrefer = function(req,res){
+	var preference = {
+		status: req.query.status,
+		time: req.query.date
+	}
+	var query = {patientId: req.query.patientId};
+
+	InsuranceMsg.updateOne(query,{ $set: { preference: preference} },function(err, item){
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        if(item === null){
+        	return res.status(400).send('Patient do not exist!');
+        }
+        res.json({results: "success"});
+    });
+}
+
+exports.getPrefer = function(req,res){
+
+	var query = {patientId: req.query.patientId};
+
+	InsuranceMsg.getOne(query,function(err, item){
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        if(item === null){
+        	return res.status(400).send('Patient do not exist!');
+        }
+        res.json({results: item});
+    });
+}

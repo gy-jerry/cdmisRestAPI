@@ -195,7 +195,8 @@ module.exports = function(app,webEntry) {
   //insurance
   app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
-
+  app.get('/insurance/setPrefer', insuranceCtrl.setPrefer);
+  app.get('/insurance/getPrefer', insuranceCtrl.getPrefer);
 
   
   //user
