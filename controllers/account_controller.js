@@ -788,3 +788,44 @@ exports.updateFreeTime = function(req, res) {
 		}
 	});
 }
+
+//根据患者ID获取未完成咨询/问诊计数 GY 0504
+exports.getCountsRespective = function(req, res) {
+	var query = {userId:req.patientId}
+	Account.getOne(query, function(err, item) {
+		if (err) {
+			return res.status(500).send(err.errmsg);
+		}
+		if (item == null) {
+			// return res.json({result: '不存在的账户'});
+			var accountData = {
+    			userId: req.patientId, 
+    			freeTimes: 3, 
+    			money: 0
+    		};
+    		var newAccount = new Account(accountData);
+			newAccount.save(function(err, accountInfo) {
+				if (err) {
+      				return res.status(500).send(err.errmsg);
+    			}
+    			return res.json({result:{count1:0, count2:0}});
+			});
+		}
+		else {
+			var count1 = 0; //咨询
+			var count2 = 0; //问诊
+
+			for (var i = item.times.length - 1; i >= 0; i--) {
+				// item.times[i]
+				if (item.times[i].count == 999){
+					count2 += 1;
+				}
+				else if (item.times[i].count > 0 && item.times[i].count < 4){
+					count1 += 1;
+				}
+			}
+
+			return res.json({result:{count1:count1, count2:count2}});
+		}
+	})
+}
