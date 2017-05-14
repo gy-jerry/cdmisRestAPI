@@ -298,6 +298,8 @@ exports.insertTeamNews = function(req, res) {
 			    else{
 				    //sendMesg
 				    Doctors=team2.members;
+				    Doctors.push({"userId":team2.sponsorId});
+				    console.log(Doctors);
 			        for(var i=0;i<Doctors.length;i++)
 			        {
 			        	DocId=Doctors[i].userId;
@@ -311,6 +313,7 @@ exports.insertTeamNews = function(req, res) {
         else{
 	        //sendMesg
 	        Doctors=team1.members;
+		    Doctors.push({"userId":team1.sponsorId});
 	        for(var i=0;i<Doctors.length;i++)
 	        {
 	        	DocId=Doctors[i].userId;

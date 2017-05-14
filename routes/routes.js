@@ -154,6 +154,7 @@ module.exports = function(app,webEntry) {
   app.get('/account/getCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts);
   app.post('/account/modifyCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts, accountCtrl.modifyCounts);
   app.post('/account/rechargeDoctor', accountCtrl.rechargeDoctor);
+  app.post('/account/updateFreeTime', accountCtrl.checkPatient, accountCtrl.updateFreeTime);
   
   //message
   app.get('/message/getMessages', messageCtrl.getMessages);
@@ -177,7 +178,7 @@ module.exports = function(app,webEntry) {
   // app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/newConsultation', communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/conclusion', communicationCtrl.conclusion);
-  app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
+  app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.removeDoctor2, communicationCtrl.updateLastTalkTime2, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');
   app.get('/communication/getConsultation', communicationCtrl.getConsultation);
   app.post('/communication/postCommunication', getNoMid.getNo(8),communicationCtrl.postCommunication);

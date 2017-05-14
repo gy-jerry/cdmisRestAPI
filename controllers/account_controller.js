@@ -749,3 +749,42 @@ exports.rechargeDoctor = function(req, res) {
     }
 }
 
+//更新免费次数 GY 0511
+//以后求求各位需求明确之后再让我写好吗
+exports.updateFreeTime = function(req, res) {
+	var query = {userId:req.patientId};
+	Account.getOne(query, function(err, item) {
+		if (err) {
+			return res.status(500).send(err.errmsg);
+		}
+		if (item == null) {
+			// return res.json({result:'不存在的账户'})；
+			var accountData = {
+    			userId: req.patientId, 
+    			freeTimes: 2, 
+    			money: 0
+    		};
+    		var newAccount = new Account(accountData);
+			newAccount.save(function(err, accountInfo) {
+				if (err) {
+      				return res.status(500).send(err.errmsg);
+    			}
+    			return res.json({result:accountInfo});
+			});
+		}
+		else {
+			if (item.freeTimes == 0) {
+				return res.json({result:'freeTimes = 0 !'})
+			}
+			else {
+				var upObj = {freeTimes:item.freeTimes - 1};
+				Account.updateOne(query, upObj, function(err, upaccount) {
+					if (err) {
+						return res.status(500).send(err.errmsg);
+					}
+					return res.json({result:upaccount});
+				}, {new:true});
+			}
+		}
+	});
+}

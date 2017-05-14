@@ -449,13 +449,7 @@ exports.removeDoctor = function(req, res, next) {
 		if (updpRelation.n == 0) {
 			// return res.json({result: updpRelation});
 			var dpRelationData = {
-    			doctorId: req.body.doctorObject._id, 
-    			revisionInfo:{
-					operationTime:new Date(),
-					userId:"gy",
-					userName:"gy",
-					terminalIP:"10.12.43.32"
-				}
+    			doctorId: req.body.doctorObject._id
     		};
     		//return res.json({result:dpRelationData});
     		var newDpRelation = new DpRelation(dpRelationData);
@@ -477,6 +471,81 @@ exports.removeDoctor = function(req, res, next) {
 		}
 		
 	}, {new: true});
+}
+exports.removeDoctor2 = function(req, res, next) {
+	var query = {
+		doctorId: req.body.doctor2Object._id
+	};
+	
+	var upObj = {
+		$pull: {
+			doctors: {
+				doctorId:req.body.doctorObject._id
+			}
+		}
+	};
+	//return res.json({query: query, upObj: upObj});
+	DpRelation.update(query, upObj, function(err, updpRelation) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		if (updpRelation.n == 0) {
+			// return res.json({result: updpRelation});
+			var dpRelationData = {
+    			doctorId: req.body.doctor2Object._id
+    		};
+    		//return res.json({result:dpRelationData});
+    		var newDpRelation = new DpRelation(dpRelationData);
+			newDpRelation.save(function(err, dpRelationInfo) {
+				if (err) {
+      				return res.status(500).send(err.errmsg);
+    			}
+    			// return res.json({result: dpRelationInfo});
+    			next();
+			});
+		}
+		if (updpRelation.n != 0 && updpRelation.nModified == 0) {
+		 	// return res.json({result:'未成功移除，请检查成员是否存在！', results: updpRelation})
+		 	next();
+		}
+		if (updpRelation.n != 0 && updpRelation.nModified == 1) {
+			// return res.json({result:'移除成功', results: updpRelation})
+			next();
+		}
+		
+	}, {new: true});
+}
+exports.updateLastTalkTime2 = function(req, res, next) {
+
+	var query = {
+		doctorId: req.body.doctor2Object._id
+	};
+	
+	var upObj = {
+		$addToSet:{
+			doctors:{
+				doctorId:req.body.doctorObject._id, 
+				lastTalkTime:new Date(req.body.lastTalkTime)
+			}
+		}
+	};
+
+	//return res.json({query: query, upObj: upObj});
+	DpRelation.update(query, upObj, function(err, updpRelation) {
+		if (err){
+			return res.status(422).send(err.message);
+		}
+		
+		if (updpRelation.n != 0 && updpRelation.nModified == 0) {
+			// return res.json({result:'', results: updpRelation})
+			next();
+		}
+		if (updpRelation.n != 0 && updpRelation.nModified == 1) {
+			// return res.json({result:'更新成功', results: updpRelation})
+			next();
+		}
+		
+	});
 }
 exports.updateLastTalkTime = function(req, res) {
 
@@ -529,9 +598,14 @@ exports.postCommunication = function(req, res) {
     	}
 
         var msg=communicationInfo.content;
+        // do not save into news
+        if(msg.contentType == 'custom' && ((msg.content.type == 'count-notice')||(msg.content.type == 'counsel-upgrade'))){
+        	return res.json({result:'新建成功', newResults: communicationInfo});
+        }
         if(msg.targetType=='single'){
+        	console.log("111");
             request({
-                url:'http://121.43.107.106:4050/new/insertNews',
+                url:'http://' + webEntry.domain + ':4050/new/insertNews',
                 method:'POST',
                 body:bodyGen(msg,communicationInfo['messageNo']),
                 json:true
@@ -541,7 +615,7 @@ exports.postCommunication = function(req, res) {
             });
         }else{
             request({
-                url:'http://121.43.107.106:4050/new/insertTeamNews',
+                url:'http://' + webEntry.domain + ':4050/new/insertTeamNews',
                 method:'POST',
                 body:bodyGen(msg,communicationInfo['_id']),
                 json:true
@@ -720,10 +794,10 @@ function bodyGen(msg,MESSAGE_ID){
     }
     else body.title = msg.targetName;
 
-    var sendInfo={
-    	userId:msg.fromID,
-    	name:msg.fromName
-    }
-    body.url=JSON.stringify(sendInfo);
+    // var sendInfo={
+    // 	userId:msg.fromID,
+    // 	name:msg.fromName
+    // }
+    body.url = JSON.stringify(msg);
     return body;
 }

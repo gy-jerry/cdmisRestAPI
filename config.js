@@ -98,7 +98,7 @@ module.exports = {
    'http://localhost:8100', 'http://10.12.43.26:8100', 'http://10.12.43.28:8100', 'http://10.12.43.29:8100', 'http://10.12.43.61:8100', 'http://10.12.43.56:8100',
    'http://10.13.22.149:8100','http://test.go5le.net','http://t.go5le.net','http://localhost:3000','http://10.13.22.148:8100','http://121.43.107.106:6698',
    'http://10.13.22.128:8100','http://localhost:8101','http://10.12.43.61:8101','http://121.43.107.106:8060','http://121.43.107.106:8070',
-   'http://patient.haihonghospitalmanagement.com','http://doctor.haihonghospitalmanagement.com','http://10.12.43.67:8100'],
+   'http://patient.haihonghospitalmanagement.com','http://doctor.haihonghospitalmanagement.com','http://10.12.43.67:8100','http://localhost:3002'],
   postAdvisor: 0,
   commentAdvisor: 0, 
   multerFieldSize: 100, 
