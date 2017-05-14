@@ -155,6 +155,7 @@ module.exports = function(app,webEntry) {
   app.post('/account/modifyCounts', accountCtrl.checkPatient, accountCtrl.checkDoctor, accountCtrl.getCounts, accountCtrl.modifyCounts);
   app.post('/account/rechargeDoctor', accountCtrl.rechargeDoctor);
   app.post('/account/updateFreeTime', accountCtrl.checkPatient, accountCtrl.updateFreeTime);
+  app.get('/account/getCountsRespective', accountCtrl.checkPatient, accountCtrl.getCountsRespective);
   
   //message
   app.get('/message/getMessages', messageCtrl.getMessages);
