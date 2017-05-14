@@ -536,7 +536,9 @@ exports.getUserID = function(req, res) {
             res.json({results: 1,mesg:"User doesn't Exist!"});
         }
         else{
+
             res.json({results: 0,UserId:item.userId,roles:item.role, mesg:"Get UserId Success!"});
+
         }
     });
 }

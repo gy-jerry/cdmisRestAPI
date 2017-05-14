@@ -599,7 +599,9 @@ exports.postCommunication = function(req, res) {
 
         var msg=communicationInfo.content;
         // do not save into news
-        if(msg.contentType == 'custom' && ((msg.content.type == 'count-notice')||(msg.content.type == 'counsel-upgrade'))){
+
+        if(msg.contentType == 'custom' && (msg.content.type == 'count-notice'||msg.content.type == 'counsel-upgrade')){
+
         	return res.json({result:'新建成功', newResults: communicationInfo});
         }
         if(msg.targetType=='single'){
