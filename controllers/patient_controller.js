@@ -6,6 +6,7 @@ var	config = require('../config'),
 	Counsel = require('../models/counsel');
 
 //根据userId查询患者详细信息 2017-03-29 GY
+//修改：只输出最新的诊断内容 2017-05-14 GY
 exports.getPatientDetail = function(req, res) {
 	if (req.query.userId == null || req.query.userId == '') {
         return res.json({result:'请填写userId!'});
@@ -21,7 +22,20 @@ exports.getPatientDetail = function(req, res) {
 		if (err) {
       		return res.status(500).send(err.errmsg);
     	}
-    	res.json({results: item});
+    	if (item == null) {
+    		return res.json({results:item});
+    	}
+    	else {
+    		//输出最新的诊断内容
+    		var recentDiagnosis = [];
+    		if (item.diagnosisInfo.length != 0) {
+    			recentDiagnosis[0] = item.diagnosisInfo[item.diagnosisInfo.length - 1];
+    		}
+    		//禁止输出item.diagnosisInfo
+    		// item.diagnosisInfo = [];
+    		return res.json({results: item, recentDiagnosis:recentDiagnosis});
+    	}
+    	// res.json({results: item});
 	}, '', fields, populate);
 }
 
