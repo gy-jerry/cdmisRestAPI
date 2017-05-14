@@ -32,7 +32,7 @@ exports.getPatientDetail = function(req, res) {
     			recentDiagnosis[0] = item.diagnosisInfo[item.diagnosisInfo.length - 1];
     		}
     		//禁止输出item.diagnosisInfo
-    		item.diagnosisInfo = [];
+    		// item.diagnosisInfo = [];
     		return res.json({results: item, recentDiagnosis:recentDiagnosis});
     	}
     	// res.json({results: item});
