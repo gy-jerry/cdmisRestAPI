@@ -239,7 +239,7 @@ module.exports = function(app,webEntry) {
 
   // app.post('/wechat/notif',wechatCtrl.register);
   // 消息模板
-  app.get('/wechat/messageTemplate', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
+  app.post('/wechat/messageTemplate', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
   // 下载
   app.get('/wechat/download', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.download);
   app.get('/wechat/receiveTextMessage', wechatCtrl.chooseAppId,wechatCtrl.receiveTextMessage);

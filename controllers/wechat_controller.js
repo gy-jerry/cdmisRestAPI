@@ -7,6 +7,7 @@ var request = require('request'),
 var config = require('../config'),
     webEntry = require('../settings').webEntry,
     commonFunc = require('../middlewares/commonFunc'),
+    User = require('../models/user'),
     Order = require('../models/order');
 
 // appid: wx8a6a43fb9585fb7c;secret: b23a4696c3b0c9b506891209d2856ab2
@@ -41,13 +42,15 @@ var wxApis = {
 
 // var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
-exports.chooseAppId = function(req,res){
+exports.chooseAppId = function(req,res,next){
   var role = req.query.role;
   if(role == 'doctor'){
     req.wxApiUserObject = config.wxDeveloperConfig.sjkshz;
+    next();
   }
   else if(role == 'patient'){
     req.wxApiUserObject = config.wxDeveloperConfig.ssgj;
+    next();
   }
   else{
     return res.status(400).send('role do not exist!'); 
@@ -181,7 +184,7 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
        
         
       });
-};
+}
 
 exports.refresh_token = function(req,res,next) {
     var refresh_Token = req.query.refresh_token;
@@ -205,7 +208,7 @@ exports.refresh_token = function(req,res,next) {
         res.json(wechatData);
         next();
     });
-};
+}
 
 exports.verifyaccess_token = function(req,res,next) {//获取用户信息的access_token
     var openid = req.query.openid;
@@ -234,7 +237,7 @@ exports.verifyaccess_token = function(req,res,next) {//获取用户信息的acce
             return res.status(401).send('验证access_token失败!');
         }
     });
-};
+}
 
 exports.getuserinfo = function(req,res) {
     var openid = req.wechatData.openid;
@@ -260,7 +263,7 @@ exports.getuserinfo = function(req,res) {
         }
         res.json({results:wechatData})
     });
-};
+}
 
 
 // 订单相关方法
@@ -588,24 +591,42 @@ exports.messageTemplate = function(req, res) {
   var tokenObject = req.wxToken || {};
   var token = tokenObject.token;
 
-  var jsondata = req.body || {};
-  var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
-  var xmlString = xmlBuilder.buildObject(jsondata);
+  var query = {userId: req.body.userId};
+  User.getOne(query, function(err, item) {
+        if (err) {
+            return res.status(500).send(err.errmsg);
+        }
+        // res.json({results: item});
+        if(item === null ){
+          return res.status(400).send('user do not exist');
+        }
+        else if(item.openId === null){
+          return res.status(400).send('openId do not exist');
+        }
+        else{
+          var jsondata = {};
+          jsondata = req.body.postdata;
+          jsondata.touser = item.openId;
 
+          request({
+            url: wxApis.messageTemplate + '?access_token=' + token,
+            method: 'POST',
+            body: jsondata,
+            json:true
+          }, function(err, response, body){
+            if (!err && response.statusCode == 200) {   
+              res.json({results:body});
+            }
+            else{
+              return res.status(500).send('Error');
+            }
+          });
+        }
+    });
 
-  request({
-    url: wxApis.messageTemplate + '?access_token=' + token,
-    method: 'POST',
-    body: xmlString
-  }, function(err, response, body){
-    if (!err && response.statusCode == 200) {   
-
-      res.json({results:body});
-    }
-    else{
-      return res.status(500).send('Error');
-    }
-  });
+  // var jsondata = req.body || {};
+  // var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
+  // var xmlString = xmlBuilder.buildObject(jsondata);
 }
 
 // 下载

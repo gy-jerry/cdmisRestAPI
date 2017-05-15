@@ -187,14 +187,14 @@ exports.getUser = function(req, res) {
         // return res.status(422).send('username字段请输入UserId或openId或手机号!'); 
         return res.status(422).send('username字段请输入openId!'); 
     }
-    var query = {openId:username};
-    // var query = {
-    //     $or: [
-    //         {userId: username},
-    //         {openId: username},
-    //         {phoneNo: username}
-    //     ]
-    // };
+    // var query = {openId:username};
+    var query = {
+        $or: [
+            {userId: username},
+            {openId: username},
+            {phoneNo: username}
+        ]
+    };
     User.getOne(query, function(err, item) {
         if (err) {
             return res.status(500).send(err.errmsg);
