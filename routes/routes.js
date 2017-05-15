@@ -131,7 +131,7 @@ module.exports = function(app,webEntry) {
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
   app.get('/patient/getMyDoctors', patientCtrl.getMyDoctor);
-  app.post('/patient/insertDiagnosis', patientCtrl.getDoctorObject, patientCtrl.insertDiagnosis);
+  app.post('/patient/insertDiagnosis', patientCtrl.getDoctorObject, patientCtrl.insertDiagnosis, patientCtrl.editPatientDetail);
   app.get('/patient/getDoctorLists', patientCtrl.getDoctorLists);
   app.post('/patient/newPatientDetail', patientCtrl.checkPatientId, patientCtrl.newPatientDetail);
   app.post('/patient/editPatientDetail', patientCtrl.editPatientDetail);
@@ -221,28 +221,28 @@ module.exports = function(app,webEntry) {
 
 
   // weixin wechatCtrl
-  app.get('/wechat/settingConfig', Wechat.baseTokenManager("access_token"), wechatCtrl.settingConfig);
+  app.get('/wechat/settingConfig',wechatCtrl.chooseAppId, Wechat.baseTokenManager("access_token"), wechatCtrl.settingConfig);
 
   // 获取用户基本信息
-  app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
+  app.get('/wechat/getUserInfo', wechatCtrl.chooseAppId,wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
   // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
   // 输入：微信用户授权的code 商户系统生成的订单号 
   // app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
-  app.get('/wechat/addOrder', wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
+  app.get('/wechat/addOrder', wechatCtrl.chooseAppId,wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
   // 订单支付结果回调 
-  app.get('/wechat/payResult', wechatCtrl.payResult);
+  app.get('/wechat/payResult', wechatCtrl.chooseAppId,wechatCtrl.payResult);
   // 查询订单   orderNo 
-  app.get('/wechat/getWechatOrder', Wechat.baseTokenManager("access_token"), wechatCtrl.getWechatOrder);
+  app.get('/wechat/getWechatOrder', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.getWechatOrder);
   // 关闭订单   orderNo 
-  app.get('/wechat/closeWechatOrder', Wechat.baseTokenManager("access_token"), wechatCtrl.closeWechatOrder);
+  app.get('/wechat/closeWechatOrder', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.closeWechatOrder);
 
 
   // app.post('/wechat/notif',wechatCtrl.register);
   // 消息模板
-  app.get('/wechat/messageTemplate', Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
+  app.get('/wechat/messageTemplate', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
   // 下载
-  app.get('/wechat/download', Wechat.baseTokenManager("access_token"), wechatCtrl.download);
-  app.get('/wechat/receiveTextMessage', wechatCtrl.receiveTextMessage);
+  app.get('/wechat/download', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.download);
+  app.get('/wechat/receiveTextMessage', wechatCtrl.chooseAppId,wechatCtrl.receiveTextMessage);
 
 
   // jpush

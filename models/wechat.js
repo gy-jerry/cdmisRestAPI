@@ -4,7 +4,7 @@ var crypto = require('crypto');
 var request = require('request');
 var mongoose = require('mongoose');
 
-var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
+// var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
 var wechatSchema = new mongoose.Schema({
   token: {
@@ -23,6 +23,10 @@ var wechatSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ['access_token', 'web_access_token', 'web_refresh_Token']
+  },
+   role: {
+    type: String,
+    enum: ['doctor', 'patient']
   },
   createAt: {
     type: Date,
@@ -55,9 +59,9 @@ Wechat.baseTokenManager = function (type) {
   // console.log(type || 'access_token');
   return function (req, res, next) {
     // console.log(req.headers);
-    var query = {type: type || 'access_token'};
-    var appid = wxApiUserObject.appid;
-    var secret = wxApiUserObject.appsecret;
+    var query = {type: type || 'access_token',role:req.query.role};
+    var appid = req.wxApiUserObject.appid;
+    var secret = req.wxApiUserObject.appsecret;
 
     wechatModel
     .findOne(query, function (err, tokenObject) {

@@ -161,6 +161,7 @@ exports.chat = function (io, socket) {
     })
     socket.on('message',function(data){
         var contentType = data.msg.contentType;
+        var role = data.role;
         // var toUserId = data.to;
         
         var url = 'http://'+ webEntry.domain +':4050/wechat/download';
@@ -177,7 +178,7 @@ exports.chat = function (io, socket) {
         
             // download
             request({
-                url: url + '?serverId=' + mediaId + '&name=' + name,
+                url: url + '?serverId=' + mediaId + '&name=' + name + '&role=' + role,
                 method: 'GET',
                 json: true
             }, function(err, response){

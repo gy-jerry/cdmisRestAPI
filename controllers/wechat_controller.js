@@ -39,9 +39,20 @@ var wxApis = {
 
 };
 
-var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
+// var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
-
+exports.chooseAppId = function(req,res){
+  var role = req.query.role;
+  if(role == 'doctor'){
+    req.wxApiUserObject = config.wxDeveloperConfig.sjkshz;
+  }
+  else if(role == 'patient'){
+    req.wxApiUserObject = config.wxDeveloperConfig.ssgj;
+  }
+  else{
+    return res.status(400).send('role do not exist!'); 
+  }
+}
 // exports.getAccessToken = function (req, res) {
 //     // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
 
@@ -120,7 +131,7 @@ exports.settingConfig = function(req, res) {
 
   res.json({results: {
     debug: false,
-    appId: wxApiUserObject.appid,
+    appId: req.wxApiUserObject.appid,
     timestamp: paramData.timestamp,
     nonceStr: paramData.noncestr,
     signature: signature,
@@ -135,8 +146,8 @@ exports.gettokenbycode = function(req,res,next) {//获取用户信息的access_t
     var code = paramObject.code;
     var state = paramObject.state;
 
-    var url = wxApis.oauth_access_token + '?appid=' + wxApiUserObject.appid
-            + '&secret=' + wxApiUserObject.appsecret
+    var url = wxApis.oauth_access_token + '?appid=' + req.wxApiUserObject.appid
+            + '&secret=' + req.wxApiUserObject.appsecret
             + '&code=' + code
             + '&grant_type=authorization_code';
 
@@ -294,8 +305,8 @@ exports.addOrder = function(req, res, next) {
   var detail = '<![CDATA[{"goods_detail":' + JSON.stringify(orderObject.goodsInfo) + '}]]>';
 
   var paramData = {
-    appid: wxApiUserObject.appid,   // 公众账号ID
-    mch_id: wxApiUserObject.merchantid,   // 商户号
+    appid: req.wxApiUserObject.appid,   // 公众账号ID
+    mch_id: req.wxApiUserObject.merchantid,   // 商户号
     
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     
@@ -315,7 +326,7 @@ exports.addOrder = function(req, res, next) {
   };
 
   var signStr = commonFunc.rawSort(paramData);
-  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  signStr = signStr + '&key=' + req.wxApiUserObject.merchantkey;
   
   paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
   var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
@@ -353,7 +364,7 @@ exports.getPaySign = function(req, res, next) {
   prepay_id = req.prepay_id;
 
   var wcPayParams = {
-    "appId" : wxApiUserObject.appid,     //公众号名称，由商户传入
+    "appId" : req.wxApiUserObject.appid,     //公众号名称，由商户传入
     "timeStamp" : commonFunc.createTimestamp(),         //时间戳，自1970年以来的秒数
     "nonceStr" : commonFunc.createNonceStr(), //随机串
     // 通过统一下单接口获取
@@ -362,11 +373,11 @@ exports.getPaySign = function(req, res, next) {
   };
 
   var signStr = commonFunc.rawSort(wcPayParams);
-  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  signStr = signStr + '&key=' + req.wxApiUserObject.merchantkey;
   wcPayParams.paySign = commonFunc.convertToMD5(signStr, true);  //微信支付签名
 
   res.json({ results: {
-    appId:wxApiUserObject.appid, 
+    appId:req.wxApiUserObject.appid, 
     timestamp: wcPayParams.timeStamp,
     nonceStr: wcPayParams.nonceStr,
     package: wcPayParams.package,
@@ -431,15 +442,15 @@ function updateOrder(query,upObj){
 exports.getWechatOrder = function(req, res) {
   
   var paramData = {
-    appid: wxApiUserObject.appid,   // 公众账号ID
-    mch_id: wxApiUserObject.merchantid,   // 商户号
+    appid: req.wxApiUserObject.appid,   // 公众账号ID
+    mch_id: req.wxApiUserObject.merchantid,   // 商户号
     out_trade_no : req.query.orderNo,     // 商户订单号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5'
   };
 
   var signStr = commonFunc.rawSort(paramData);
-  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  signStr = signStr + '&key=' + req.wxApiUserObject.merchantkey;
   
   paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
   var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
@@ -463,15 +474,15 @@ exports.getWechatOrder = function(req, res) {
 exports.closeWechatOrder = function(req, res) {
   
   var paramData = {
-    appid: wxApiUserObject.appid,   // 公众账号ID
-    mch_id: wxApiUserObject.merchantid,   // 商户号
+    appid: req.wxApiUserObject.appid,   // 公众账号ID
+    mch_id: req.wxApiUserObject.merchantid,   // 商户号
     out_trade_no : req.query.orderNo,     // 商户订单号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5'
   };
 
   var signStr = commonFunc.rawSort(paramData);
-  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  signStr = signStr + '&key=' + req.wxApiUserObject.merchantkey;
   
   paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
   var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
@@ -496,19 +507,19 @@ exports.refund = function(req, res) {
   
   // 请求参数
   var paramData = {
-    appid: wxApiUserObject.appid,   // 公众账号ID
-    mch_id: wxApiUserObject.merchantid,   // 商户号
+    appid: req.wxApiUserObject.appid,   // 公众账号ID
+    mch_id: req.wxApiUserObject.merchantid,   // 商户号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5',
     out_trade_no : req.query.orderNo,     // 商户订单号
     out_refund_no : req.query.out_refund_no,
     total_fee: total_fee,
     refund_fee: refund_fee,
-    op_user_id: wxApiUserObject.merchantid // 默认为商户号
+    op_user_id: req.wxApiUserObject.merchantid // 默认为商户号
   };
 
   var signStr = commonFunc.rawSort(paramData);
-  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  signStr = signStr + '&key=' + req.wxApiUserObject.merchantkey;
   
   paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
   var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});
@@ -544,15 +555,15 @@ exports.refund = function(req, res) {
 exports.refundquery = function(req, res) {
   
   var paramData = {
-    appid: wxApiUserObject.appid,   // 公众账号ID
-    mch_id: wxApiUserObject.merchantid,   // 商户号
+    appid: req.wxApiUserObject.appid,   // 公众账号ID
+    mch_id: req.wxApiUserObject.merchantid,   // 商户号
     nonce_str: commonFunc.randomString(32),   // 随机字符串
     sign_type : 'MD5',
     out_trade_no : req.orderNo,     // 商户订单号
   };
 
   var signStr = commonFunc.rawSort(paramData);
-  signStr = signStr + '&key=' + wxApiUserObject.merchantkey;
+  signStr = signStr + '&key=' + req.wxApiUserObject.merchantkey;
   
   paramData.sign = commonFunc.convertToMD5(signStr, true);    // 签名
   var xmlBuilder = new xml2js.Builder({rootName: 'xml', headless: true});

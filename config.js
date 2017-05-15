@@ -9,6 +9,18 @@ module.exports = {
       appsecret: 'b23a4696c3b0c9b506891209d2856ab2',
       merchantid: '1328668501',
       merchantkey: 'qwertyuiopasdfghjklzxcvbnmbme319'
+    },
+     ssgj: {
+      appid: 'wxb830b12dc0fa74e5',
+      appsecret: '396a8d1e4035d26da080656867ad196a',
+      merchantid: '1411910102',
+      merchantkey: 'hzhhyygl11132797201705143052ssgj'
+    },
+     sjkshz: {
+      appid: 'wxfa2216ac422fb747',
+      appsecret: '866a7f0e0df9082b3d7a9b780a794606',
+      merchantid: '1423163702',
+      merchantkey: 'qwertyuiopasdfghjklzxcvbnmBME319'
     }
   },
   cookieSecretExt: '111', 
