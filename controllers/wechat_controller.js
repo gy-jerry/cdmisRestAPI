@@ -689,7 +689,7 @@ var download = function(url, dir, filename) {
 
 
 
-// 消息模板
+// 消息管理--接收消息
 exports.receiveTextMessage = function(req, res) {
   var body = '';
   req.on('data',function(data){
@@ -698,9 +698,40 @@ exports.receiveTextMessage = function(req, res) {
   });
   req.on('end',function(){
     console.log("finish: " + body);
+    var parser = new xml2js.Parser();
+    var jsondata = {};
+    parser.parseString(body, function(err, result) {        
+      jsondata = result || {};
+    });
+    MsgType = jsondata.xml.MsgType;
+
+    // 扫描带参数二维码事件
+    if(MsgType == 'event'){
+      // 用户未关注时，进行关注后的事件推送
+      if(jsondata.xml.Event == 'subscribe'){
+        // do something
+        if(jsondata.xml.EventKey != null ){
+          // 
+          if(jsondata.xml.EventKey == 'xxx' ){
+            // 注册 绑定医生
+          }
+        }
+      }
+      // 用户已关注时的事件推送
+      else if(jsondata.xml.Event == 'SCAN'){
+        // do something
+        if(jsondata.xml.EventKey != null ){
+          // 
+          if(jsondata.xml.EventKey == 'xxx' ){
+            // 绑定医生
+          }
+        }
+      }
+    }
+
   });
-  response.writeHead(200, {'Content-Type': 'text/html'});
-  response.end('success');
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.end('success');
 }
 
 
