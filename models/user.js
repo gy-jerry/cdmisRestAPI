@@ -12,6 +12,8 @@ var userSchema = new mongoose.Schema({
 	role:[String],
 	loginStatus:Number,
 	lastLogin:Date,
+	certificatePhotoUrl:String, //资格证书地址
+	practisingPhotoUrl:String, //执业证书地址
 	jpush:{
 		registrationID:String,
 		alias:String,
