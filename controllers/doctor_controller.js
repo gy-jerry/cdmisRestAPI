@@ -29,10 +29,10 @@ exports.insertDocBasic = function(req, res) {
 	}
 	var doctorData = {
 		revisionInfo:{
-			operationTime:new Date(),
-			userId:"gy",
-			userName:"gy",
-			terminalIP:"10.12.43.32"
+			// operationTime:new Date(),
+			// userId:"gy",
+			// userName:"gy",
+			// terminalIP:"10.12.43.32"
 		}
 	};
 	// certificatePhotoUrl:String, //资格证书地址
