@@ -5,6 +5,8 @@ var doctorSchema = new mongoose.Schema({
 	userId: {type:String, unique:true}, 
 	name: String, 
 	photoUrl:String, 
+	certificatePhotoUrl:String, //资格证书地址
+	practisingPhotoUrl:String, //执业证书地址
 	birthday: Date, 
 	gender: Number, 
 	IDNo: String, 
