@@ -243,7 +243,7 @@ module.exports = function(app,webEntry) {
   // 下载
   app.get('/wechat/download', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.download);
   app.post('/wechat/receiveTextMessage', wechatCtrl.receiveTextMessage);
-
+  app.get('/wechat/getServerSignature', wechatCtrl.getServerSignature);
 
   // jpush
   app.post('/jm/users', jpushCtrl.register);

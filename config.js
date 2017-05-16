@@ -23,6 +23,7 @@ module.exports = {
       merchantkey: 'qwertyuiopasdfghjklzxcvbnmBME319'
     }
   },
+  getServerSignatureTOKEN: 'hhyygl',
   cookieSecretExt: '111', 
   outerSecrets: ['111'], 
   defaultPwd: '123456', 

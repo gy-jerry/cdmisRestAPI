@@ -2,6 +2,7 @@ var request = require('request'),
     xml2js = require('xml2js'),
     https = require('https'),
     moment = require('moment'),
+    crypto = require('crypto'),
     fs = require('fs');
 
 var config = require('../config'),
@@ -57,6 +58,41 @@ exports.chooseAppId = function(req,res,next){
     return res.status(400).send('role do not exist!'); 
   }
 }
+
+exports.getServerSignature = function(req,res){
+  var signature = req.query.signature;
+  var timestamp = req.query.timestamp;
+  var nonce = req.query.nonce;
+  var token = config.getServerSignatureTOKEN;
+  var echostr = req.query.echostr;
+
+  var sha1Gen = crypto.createHash('sha1');
+  var input = [token, timestamp, nonce].sort().join('');  // .sort()对数组元素进行字典排序, .join('')必须加参数空字符''
+  var sha1 = sha1Gen.update(input).digest('hex');
+
+  if (sha1 === signature) {
+    res.status(200).send(echostr); 
+  }
+  else {
+    res.sendStatus(400);
+  }
+
+  // dataCheck = {
+  //   token: token,
+  //   timestamp: timestamp,
+  //   nonce: nonce
+  // };
+
+  // var signStr = commonFunc.rawSort(dataCheck);
+  // var tmpSign = commonFunc.convertToSha1(signStr, true);  
+
+  // if( tmpSign == signature ){
+  //   return true;
+  // }else{
+  //   return false;
+  // }
+}
+
 // exports.getAccessToken = function (req, res) {
 //     // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
 
@@ -762,35 +798,6 @@ exports.receiveTextMessage = function(req, res) {
 
 
 
-
-
-
-exports.wxTestApi = function (req, res) {
-    // console.log(req.query);
-
-    var ts = req.query.timestamp,
-        sig = req.query.signature,
-        nonce = req.query.nonce,
-        echostr = req.query.echostr;
-
-    var token = 'qbtest';
-
-    // var sa = _.sortBy([ts, nonce, token], function(t){ return t; });  // 字典排序
-    // console.log(sa);
-
-    var sha1Gen = crypto.createHash('sha1');
-    var input = [ts, nonce, token].sort().join('');  // .sort()对数组元素进行字典排序, .join('')必须加参数空字符''
-    // console.log(input);
-    var sha1 = sha1Gen.update(input).digest('hex');
-    // console.log(sha1 + '\n' + sig);
-
-    if (sha1 === sig) {
-        res.status(200).send(echostr);  // 必须返回echostr, 不是true
-    }
-    else {
-        res.sendStatus(400);
-    }
-};
 
 exports.wxTestApiP = function (req, res) {
     console.log(req.body);
