@@ -127,7 +127,7 @@ function messageSaveSend(data, url){
                                             "template_id": "DWrM__2UuaLxYf5da6sKOQA_hlmYhlsazsaxYX59DtE",
                                             "data": {
                                                 "first": {
-                                                    "value": "您有一个新的咨询（问诊）消息，请及时处理",
+                                                    "value": "您的团队有一个新的咨询（问诊）消息，请及时处理",
                                                     "color": "#173177"
                                                 },
                                                 "keyword1": {
