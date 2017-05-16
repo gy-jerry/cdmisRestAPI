@@ -35,6 +35,14 @@ exports.insertDocBasic = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
+	// certificatePhotoUrl:String, //资格证书地址
+	// practisingPhotoUrl:String, //执业证书地址
+	if (req.body.certificatePhotoUrl != null){
+		doctorData['certificatePhotoUrl'] = req.body.certificatePhotoUrl;
+	}
+	if (req.body.practisingPhotoUrl != null){
+		doctorData['practisingPhotoUrl'] = req.body.practisingPhotoUrl;
+	}
 	if (req.body.userId != null){
 		doctorData['userId'] = req.body.userId;
 	}
@@ -378,6 +386,12 @@ exports.editDoctorDetail = function(req, res) {
 			terminalIP:"10.12.43.32"
 		}
 	};
+	if (req.body.certificatePhotoUrl != null){
+		upObj['certificatePhotoUrl'] = req.body.certificatePhotoUrl;
+	}
+	if (req.body.practisingPhotoUrl != null){
+		upObj['practisingPhotoUrl'] = req.body.practisingPhotoUrl;
+	}
 	if (req.body.name != null){
 		upObj['name'] = req.body.name;
 	}
@@ -463,13 +477,13 @@ exports.getRecentDoctorList = function(req, res) {
     	if (item == null) {
     		// return res.json({result:'请先与其他医生或患者建立联系!'});
     		var dpRelationData = {
-    			doctorId: req.body.doctorObject._id, 
-    			revisionInfo:{
-					operationTime:new Date(),
-					userId:"gy",
-					userName:"gy",
-					terminalIP:"10.12.43.32"
-				}
+    			doctorId: req.body.doctorObject._id//, 
+    // 			revisionInfo:{
+				// 	operationTime:new Date(),
+				// 	userId:"gy",
+				// 	userName:"gy",
+				// 	terminalIP:"10.12.43.32"
+				// }
     		};
     		// return res.json({result:dpRelationData});
     		var newDpRelation = new DpRelation(dpRelationData);
