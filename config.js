@@ -9,8 +9,21 @@ module.exports = {
       appsecret: 'b23a4696c3b0c9b506891209d2856ab2',
       merchantid: '1328668501',
       merchantkey: 'qwertyuiopasdfghjklzxcvbnmbme319'
+    },
+     ssgj: {
+      appid: 'wxb830b12dc0fa74e5',
+      appsecret: '396a8d1e4035d26da080656867ad196a',
+      merchantid: '1411910102',
+      merchantkey: 'hzhhyygl11132797201705143052ssgj'
+    },
+     sjkshz: {
+      appid: 'wxfa2216ac422fb747',
+      appsecret: '866a7f0e0df9082b3d7a9b780a794606',
+      merchantid: '1423163702',
+      merchantkey: 'qwertyuiopasdfghjklzxcvbnmBME319'
     }
   },
+  getServerSignatureTOKEN: 'hhyygl',
   cookieSecretExt: '111', 
   outerSecrets: ['111'], 
   defaultPwd: '123456', 
@@ -98,7 +111,7 @@ module.exports = {
    'http://localhost:8100', 'http://10.12.43.26:8100', 'http://10.12.43.28:8100', 'http://10.12.43.29:8100', 'http://10.12.43.61:8100', 'http://10.12.43.56:8100',
    'http://10.13.22.149:8100','http://test.go5le.net','http://t.go5le.net','http://localhost:3000','http://10.13.22.148:8100','http://121.43.107.106:6698',
    'http://10.13.22.128:8100','http://localhost:8101','http://10.12.43.61:8101','http://121.43.107.106:8060','http://121.43.107.106:8070',
-   'http://patient.haihonghospitalmanagement.com','http://doctor.haihonghospitalmanagement.com','http://10.12.43.67:8100'],
+   'http://patient.haihonghospitalmanagement.com','http://doctor.haihonghospitalmanagement.com','http://10.12.43.67:8100','http://localhost:3002'],
   postAdvisor: 0,
   commentAdvisor: 0, 
   multerFieldSize: 100, 

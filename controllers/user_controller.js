@@ -187,14 +187,14 @@ exports.getUser = function(req, res) {
         // return res.status(422).send('username字段请输入UserId或openId或手机号!'); 
         return res.status(422).send('username字段请输入openId!'); 
     }
-    var query = {openId:username};
-    // var query = {
-    //     $or: [
-    //         {userId: username},
-    //         {openId: username},
-    //         {phoneNo: username}
-    //     ]
-    // };
+    // var query = {openId:username};
+    var query = {
+        $or: [
+            {userId: username},
+            {openId: username},
+            {phoneNo: username}
+        ]
+    };
     User.getOne(query, function(err, item) {
         if (err) {
             return res.status(500).send(err.errmsg);
@@ -536,7 +536,9 @@ exports.getUserID = function(req, res) {
             res.json({results: 1,mesg:"User doesn't Exist!"});
         }
         else{
-            res.json({results: 0,UserId:item.userId,roles:item.role,mesg:"Get UserId Success!"});
+
+            res.json({results: 0,UserId:item.userId,roles:item.role, mesg:"Get UserId Success!"});
+
         }
     });
 }
@@ -625,6 +627,7 @@ exports.sendSMS = function(req, res) {
                         // console.log(authorization)
                         var bytes=commonFunc.stringToBytes(JSONData)
                         var Url = "https://api.ucpaas.com/2014-06-30/Accounts/" + accountSid + "/Messages/templateSMS?sig=" + md5;
+                        // console.log(Url);
                         var options={
                             hostname:"api.ucpaas.com",
                             // port:80,
@@ -646,14 +649,22 @@ exports.sendSMS = function(req, res) {
                                 "Authorization": authorization
                             }
                         }
+                        var code=1;
                         var req=https.request(options,function(res){
+                            var resdata="";
                             res.on("data",function(chunk){
-                                console.log(chunk);
+                                resdata += chunk;
+                                // console.log(chunk);
                             });
                             res.on("end",function(){
-                                console.log("### end ##");
+                                // console.log("### end ##");
+                                var json = eval('(' + resdata + ')');
+                                code=json.resp.respCode;
+
+                                // console.log(json.resp.respCode);
                             });
-                            console.log(res.statusCode);
+                            // console.log(res.statusCode);
+                            
                         });
 
                         req.on("error",function(err){
@@ -661,10 +672,12 @@ exports.sendSMS = function(req, res) {
                         })
                         req.write(JSONData);
                         req.end();
-
+                        if(code="000000"){
+                            res.json({results: 0,mesg:"User doesn't Exist!"});
+                        }
                     });
 
-                    res.json({results: 0,mesg:"User doesn't Exist!"});
+                    // res.json({results: 0,mesg:"User doesn't Exist!"});
                 }
                 else{
                     var ttl=(item.Expire-now.getTime())/1000

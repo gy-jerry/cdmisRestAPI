@@ -13,7 +13,7 @@ module.exports = {
     domain: ip,
     domainName: 'sio',
     path: '',
-    dbUri: f('mongodb://%s:%s@%s:%s/%s',user,password,ip,port,db),
+    dbUri: f('mongodb://%s:%s@%s:%s/%s',user,password,ip_in,port,db),
     restPort:4050,
     route: 'routes',
     routesSocketIO: 'routesSocketIO',

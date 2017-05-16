@@ -131,13 +131,13 @@ module.exports = function(app,webEntry) {
   //patient_Info
   app.get('/patient/getPatientDetail', patientCtrl.getPatientDetail);
   app.get('/patient/getMyDoctors', patientCtrl.getMyDoctor);
-  app.post('/patient/insertDiagnosis', patientCtrl.getDoctorObject, patientCtrl.insertDiagnosis);
+  app.post('/patient/insertDiagnosis', patientCtrl.getDoctorObject, patientCtrl.insertDiagnosis, patientCtrl.editPatientDetail);
   app.get('/patient/getDoctorLists', patientCtrl.getDoctorLists);
   app.post('/patient/newPatientDetail', patientCtrl.checkPatientId, patientCtrl.newPatientDetail);
   app.post('/patient/editPatientDetail', patientCtrl.editPatientDetail);
   app.get('/patient/getCounselRecords', patientCtrl.getPatientObject, patientCtrl.getCounselRecords);
   // app.post('/patient/bindingMyDoctor', patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient);
-  app.post('/patient/bindingMyDoctor', patientCtrl.debindingDoctor, patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient, Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
+  app.post('/patient/bindingMyDoctor', patientCtrl.debindingDoctor, patientCtrl.bindingMyDoctor, patientCtrl.bindingPatient, wechatCtrl.chooseAppId, Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
   app.post('/patient/changeVIP', patientCtrl.changeVIP);
 
   //comment_query
@@ -179,7 +179,7 @@ module.exports = function(app,webEntry) {
   // app.post('/communication/newConsultation', getNoMid.getNo(5), communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/newConsultation', communicationCtrl.checkTeam, communicationCtrl.checkCounsel, communicationCtrl.checkPatient, communicationCtrl.checkDoctor, communicationCtrl.newConsultation);
   app.post('/communication/conclusion', communicationCtrl.conclusion);
-  app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.updateLastTalkTime);
+  app.post('/communication/updateLastTalkTime', communicationCtrl.getDoctor1Object, communicationCtrl.getDoctor2Object, communicationCtrl.removeDoctor, communicationCtrl.removeDoctor2, communicationCtrl.updateLastTalkTime2, communicationCtrl.updateLastTalkTime);
   //app.get('/communication/getMessages');
   app.get('/communication/getConsultation', communicationCtrl.getConsultation);
   app.post('/communication/postCommunication', getNoMid.getNo(8),communicationCtrl.postCommunication);
@@ -196,7 +196,8 @@ module.exports = function(app,webEntry) {
   //insurance
   app.post('/insurance/updateInsuranceMsg', insuranceCtrl.updateInsuranceMsg, insuranceCtrl.updateMsgCount, getNoMid.getNo(6), messageCtrl.insertMessage);
   app.get('/insurance/getInsMsg', insuranceCtrl.getInsMsg);
-
+  app.get('/insurance/setPrefer', insuranceCtrl.setPrefer);
+  app.get('/insurance/getPrefer', insuranceCtrl.getPrefer);
 
   
   //user
@@ -220,29 +221,30 @@ module.exports = function(app,webEntry) {
 
 
   // weixin wechatCtrl
-  app.get('/wechat/settingConfig', Wechat.baseTokenManager("access_token"), wechatCtrl.settingConfig);
+  app.get('/wechat/settingConfig',wechatCtrl.chooseAppId, Wechat.baseTokenManager("access_token"), wechatCtrl.settingConfig);
 
   // 获取用户基本信息
-  app.get('/wechat/getUserInfo', wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
+  app.get('/wechat/getUserInfo', wechatCtrl.chooseAppId,wechatCtrl.gettokenbycode,wechatCtrl.getuserinfo);
   // 统一下单  根据code获取access_token，openid   获取数据库中的订单信息   获取微信统一下单的接口数据 prepay_id   生成微信PaySign
   // 输入：微信用户授权的code 商户系统生成的订单号 
   // app.get('/wechat/addOrder', wechatCtrl.gettokenbycode, wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
-  app.get('/wechat/addOrder', wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
+  app.get('/wechat/addOrder', wechatCtrl.chooseAppId,wechatCtrl.getPaymentOrder, wechatCtrl.addOrder,wechatCtrl.getPaySign);
   // 订单支付结果回调 
-  app.get('/wechat/payResult', wechatCtrl.payResult);
+  app.get('/wechat/payResult', wechatCtrl.chooseAppId,wechatCtrl.payResult);
   // 查询订单   orderNo 
-  app.get('/wechat/getWechatOrder', Wechat.baseTokenManager("access_token"), wechatCtrl.getWechatOrder);
+  app.get('/wechat/getWechatOrder', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.getWechatOrder);
   // 关闭订单   orderNo 
-  app.get('/wechat/closeWechatOrder', Wechat.baseTokenManager("access_token"), wechatCtrl.closeWechatOrder);
+  app.get('/wechat/closeWechatOrder', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.closeWechatOrder);
 
 
   // app.post('/wechat/notif',wechatCtrl.register);
   // 消息模板
-  app.get('/wechat/messageTemplate', Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
+  app.post('/wechat/messageTemplate', wechatCtrl.chooseAppId, Wechat.baseTokenManager("access_token"), wechatCtrl.messageTemplate);
   // 下载
-  app.get('/wechat/download', Wechat.baseTokenManager("access_token"), wechatCtrl.download);
-  app.get('/wechat/receiveTextMessage', wechatCtrl.receiveTextMessage);
-
+  app.get('/wechat/download', wechatCtrl.chooseAppId,Wechat.baseTokenManager("access_token"), wechatCtrl.download);
+  app.post('/wechat/receiveTextMessage', wechatCtrl.receiveTextMessage);
+  // 接收微信服务器的get请求
+  app.get('/wechat', wechatCtrl.getServerSignature);
 
   // jpush
   app.post('/jm/users', jpushCtrl.register);

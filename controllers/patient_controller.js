@@ -432,7 +432,7 @@ exports.getDoctorObject = function (req, res, next) {
         next();
     });
 }
-exports.insertDiagnosis = function(req, res) {
+exports.insertDiagnosis = function(req, res, next) {
 	if (req.body.patientId == null || req.body.patientId == '') {
 		return res.json({result:'请填写patientId!'});
 	}
@@ -485,10 +485,15 @@ exports.insertDiagnosis = function(req, res) {
 		if (updiag.nModified == 0) {
 			return res.json({result:'未成功修改！请检查输入是否符合要求！', results: updiag});
 		}
-		if (updiag.nModified == 1) {
-			return res.json({result:'修改成功', results: updiag});
-		}
-		res.json({results: updiag});
+		// if (updiag.nModified == 1) {
+		// 	return res.json({result:'修改成功', results: updiag});
+		// }
+		// res.json({results: updiag});
+		req.body.userId = req.body.patientId;
+		req.body.class = diagname;
+		req.body.class_info = diagprogress;
+		req.body.hypertension = diaghypertension;
+		next();
 	}, {new: true});
 }
 

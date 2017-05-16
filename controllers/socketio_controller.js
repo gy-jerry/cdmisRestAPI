@@ -2,6 +2,8 @@
 var request = require('request');
 var webEntry = require('../settings').webEntry;
 
+var wechatCtrl = require('../controllers/wechat_controller');
+
 var userServer = {};
 var userList = {};
 var count = 0;
@@ -53,7 +55,7 @@ function messageSaveSend(data, url){
             // do-something
         }
         else{
-            // console.log('success 6');
+            // console.log(response.body);
             // send message
             /// send to sendBy
             if(userServer.hasOwnProperty(sendBy)){         // 用户在线
@@ -113,16 +115,75 @@ function messageSaveSend(data, url){
                                     userServer[members[idx].userId].emit('getMsg',{msg:data.msg});
                                 }                            
                             }
+                            else{       // 用户不在线
+                                // custom card 群发
+                                 if(data.msg.contentType == 'custom' && data.msg.content.type == 'card'){
+                                    console.log('in');
+                                    // var 
+                                    var template = {
+                                        "userId": members[idx].userId,          // data.msg.content.doctorId, //医生的UID
+                                        "role": "doctor",
+                                        "postdata": {
+                                            "template_id": "DWrM__2UuaLxYf5da6sKOQA_hlmYhlsazsaxYX59DtE",
+                                            "data": {
+                                                "first": {
+                                                    "value": "您的团队有一个新的咨询（问诊）消息，请及时处理",
+                                                    "color": "#173177"
+                                                },
+                                                "keyword1": {
+                                                    "value": data.msg.content.counselId, //咨询ID
+                                                    "color": "#173177"
+                                                },
+                                                "keyword2": {
+                                                    "value": data.msg.content.patientName, //患者信息（姓名，性别，年龄）
+                                                    "color": "#173177"
+                                                },
+                                                "keyword3": {
+                                                    "value": data.msg.content.help, //问题描述
+                                                    "color": "#173177"
+                                                },
+                                                "keyword4": {
+                                                    "value": data.msg.content.time, //提交时间
+                                                    "color": "#173177"
+                                                },
+
+                                                "remark": {
+                                                    "value": "感谢您的使用！",
+                                                    "color": "#173177"
+                                                }
+                                            }
+                                        }
+                                    };
+
+                                    // groupSend(data);
+                                    request({
+                                        url: 'http://'+ webEntry.domain +':4050/wechat/messageTemplate',
+                                        method: 'POST',
+                                        body: template,
+                                        json:true
+                                    }, function(err, response, body){
+                                        // if (!err && response.statusCode == 200) {   
+                                        //     res.json({results:body});
+                                        // }
+                                        // else{
+                                        //     return res.status(500).send('Error');
+                                        // }
+                                    });
+
+                                   
+                                 }
+
+                                // others: no process
+                            }
                         }                      
                     }
                 })
             }
             
         }
-    });
-
-   
+    });  
 }
+
 
 // namespace chat
 exports.chat = function (io, socket) {
@@ -161,6 +222,7 @@ exports.chat = function (io, socket) {
     })
     socket.on('message',function(data){
         var contentType = data.msg.contentType;
+        var role = data.role;
         // var toUserId = data.to;
         
         var url = 'http://'+ webEntry.domain +':4050/wechat/download';
@@ -177,7 +239,7 @@ exports.chat = function (io, socket) {
         
             // download
             request({
-                url: url + '?serverId=' + mediaId + '&name=' + name,
+                url: url + '?serverId=' + mediaId + '&name=' + name + '&role=' + role,
                 method: 'GET',
                 json: true
             }, function(err, response){
@@ -216,3 +278,5 @@ exports.otherEvent = function (io) {
 };
 exports.otherRoom = function (io) {
 };
+
+
