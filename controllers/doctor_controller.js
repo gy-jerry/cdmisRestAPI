@@ -28,12 +28,12 @@ exports.insertDocBasic = function(req, res) {
 		return res.json({result:'请填写userId!'});
 	}
 	var doctorData = {
-		revisionInfo:{
+		// revisionInfo:{
 			// operationTime:new Date(),
 			// userId:"gy",
 			// userName:"gy",
 			// terminalIP:"10.12.43.32"
-		}
+		// }
 	};
 	// certificatePhotoUrl:String, //资格证书地址
 	// practisingPhotoUrl:String, //执业证书地址
