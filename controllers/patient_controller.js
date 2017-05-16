@@ -612,6 +612,7 @@ exports.bindingMyDoctor = function(req, res, next) {
 					// res.json({results: 0,msg:"success!"});
 					req.body.doctor_id = doc;
 					req.body.patient_id = patient._id;
+					req.body.patientname = patient.name;
 					next();
 				});
 			});
@@ -619,7 +620,7 @@ exports.bindingMyDoctor = function(req, res, next) {
 	}
 }
 //3. DpRelation表中医生绑定患者
-exports.bindingPatient = function(req, res) {
+exports.bindingPatient = function(req, res, next) {
 	var doctorId = req.body.doctor_id;
 	var patientId = req.body.patient_id;
 	if (req.body.dpRelationTime == null || req.body.dpRelationTime == '') {
@@ -668,7 +669,31 @@ exports.bindingPatient = function(req, res) {
 						return res.json({result:'未成功修改！请检查输入是否符合要求！', results: updpRelation, flag:'0'});
 					}
 					else if (updpRelation.nModified == 1) {
-						return res.json({result:'修改成功', results: updpRelation, flag:'0'});
+						// return res.json({result:'修改成功', results: updpRelation, flag:'0'});
+						req.body.userId = req.body.doctorId;
+						req.body.role = 'doctor';
+						req.body.postdata = {
+							"template_id":"F5UpddU9v4m4zWX8_NA9t3PU_9Yraj2kUxU07CVIT-M",
+        					"data":{
+            					"first": {
+                					"value":"您好，有一位新患者添加您为他的主管医生。",
+                					"color":"#173177"
+                				},
+                   				"keyword1":{
+                       				"value":req.body.patientname,//患者姓名
+                       				"color":"#173177"
+                   				},
+                   				"keyword2": {
+                       				"value":new Date(),//添加的时间
+                       				"color":"#173177"
+                   				},
+                   				"remark":{
+                       				"value":"感谢您的使用！",
+                       				"color":"#173177"
+                   				}
+           					}
+						}
+						next();
 					}
 					// return res.json({result:updpRelation});
 				}, {new: true});
@@ -678,7 +703,32 @@ exports.bindingPatient = function(req, res) {
 			return res.json({result:'未成功修改！请检查输入是否符合要求！', results: uprelation, flag:'1'});
 		}
 		else if (uprelation.nModified == 1) {
-			return res.json({result:'修改成功', results: uprelation, flag:'1'});
+			// return res.json({result:'修改成功', results: uprelation, flag:'1'});
+			req.body.userId = req.body.doctorId;
+			req.body.role = 'doctor';
+			req.body.postdata = {
+				"template_id":"F5UpddU9v4m4zWX8_NA9t3PU_9Yraj2kUxU07CVIT-M",
+        		"data":{
+            		"first": {
+                		"value":"您好，有一位新患者添加您为他的主管医生。",
+                		"color":"#173177"
+                	},
+                   	"keyword1":{
+                       	"value":req.body.patientname,//患者姓名
+                       	"color":"#173177"
+                   	},
+                   	"keyword2": {
+                       	"value":new Date(),//添加的时间
+                       	"color":"#173177"
+                   	},
+                   	"remark":{
+                       	"value":"感谢您的使用！",
+                       	"color":"#173177"
+                   	}
+           		}
+			}
+			// console.log(req.body);
+			next();
 		}
 		// res.json({results: uprelation});
 	}, {new: true});
