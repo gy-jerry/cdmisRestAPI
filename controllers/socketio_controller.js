@@ -113,6 +113,9 @@ function messageSaveSend(data, url){
                                     userServer[members[idx].userId].emit('getMsg',{msg:data.msg});
                                 }                            
                             }
+                            else{       // 用户不在线
+                                // do 
+                            }
                         }                      
                     }
                 })

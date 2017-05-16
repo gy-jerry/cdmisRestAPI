@@ -43,7 +43,8 @@ var wxApis = {
 // var wxApiUserObject = config.wxDeveloperConfig.zdyyszbzx;
 
 exports.chooseAppId = function(req,res,next){
-  var role = req.query.role;
+  var role = req.query.role || req.body.role;
+  // console.log(role);
   if(role == 'doctor'){
     req.wxApiUserObject = config.wxDeveloperConfig.sjkshz;
     next();
