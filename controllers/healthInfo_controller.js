@@ -5,7 +5,7 @@ var	config = require('../config'),
 exports.getAllHealthInfo = function(req, res) {
 	var _userId = req.query.userId
 	var query = {userId:_userId};
-	var opts = {sort:-"time"};
+	var opts = {sort:"-time"};
 	var fields = {'_id':0, 'revisionInfo':0};
 
 	HealthInfo.getSome(query, function(err, healthInfolist) {
